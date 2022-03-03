@@ -4,6 +4,7 @@ import { styled, Box } from '@mui/system';
 import ModalUnstyled from '@mui/base/ModalUnstyled';
 import DropZone from './DropZone';
 import Button from '@mui/material/Button';
+import{ useAuth0 } from '@auth0/auth0-react'
 
 
 const StyledModal = styled(ModalUnstyled)`
@@ -36,7 +37,6 @@ const style = {
   justifyContent: 'center',
   alignItems: 'center',
   bgcolor: '#444',
-//   border: '2px solid #FFFFFF',
   color: '#ffffff',
   p: 2,
   px: 4,
@@ -45,49 +45,99 @@ const style = {
 
 export default function ModalUnstyledComponent({ setmodalOpenState, modalOpenState, handleDropAddScore}) {
 
+    const { user } = useAuth0();
     const [score, setLocalScore] = useState('');
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        console.log({modalOpenState, location: 'ModalUnstyled', score});
-
     }, [modalOpenState])
 
     const closeModal = () => {
-        console.log('closing modal');
         setmodalOpenState(false)
     }
 
     const handleClick = () => {
-        console.log({
-            log: 'handleClick fired',
-            score
-        })
-        // TODO send score {name: 'bob', scores: [[],[],[]]} ✅
-
-        // TODO get name from logged in user
-
-        // TODO clean and ensure the score the user passed in matches a certain form
 
         /*
-            Wordle #230 1/6
+            Wordle #230 3/6
 
-            [][][][][]
-            [][][][][]
-            [][][][][]
-            [][][][][]
-        */
+            ⬛🟨⬛🟨⬛
+            🟨🟩⬛🟩🟨
+            🟩🟩🟩🟩🟩
 
-            // TODO map the gray/black yellow and green checkboxes to 0, 1, and 2
+            🟨⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬛
+            🟩🟩⬛🟩⬛
+            🟩🟩🟩🟩🟩
+        */ 
 
-        handleDropAddScore({
-            name: 'Long Ass Name',
-            score: [
-                [0,0,0,0,1],
-                [1,0,0,0,2],
-            ]
-        })
-        setLocalScore('')
-        closeModal()
+        const graybox = "⬛";
+        const yellowbox = "🟨";
+        const greenbox = "🟩";
+
+        let greenboxcount = [...score.matchAll(new RegExp(greenbox, 'gim'))].map(a => a.index).length;
+        let yellowboxcount = [...score.matchAll(new RegExp(yellowbox, 'gim'))].map(a => a.index).length;
+        let grayboxcount = [...score.matchAll(new RegExp(graybox, 'gim'))].map(a => a.index).length;
+
+        let count = greenboxcount + yellowboxcount + grayboxcount;
+        
+        let match = (count % 5 == 0 && count >= 5 && count <= 30)
+
+        if (match) {
+          setError(false)
+
+          let newScoreArray = [];
+          let scoreRowArray = [];
+
+          [...score].forEach(character => {
+
+            if (character == graybox) {
+              scoreRowArray.push(0);
+              if (scoreRowArray.length == 5) {
+                newScoreArray.push(scoreRowArray);
+                scoreRowArray = [];
+              }
+            }
+
+            if (character == yellowbox) {
+              scoreRowArray.push(1);
+              if (scoreRowArray.length == 5) {
+                newScoreArray.push(scoreRowArray);
+                scoreRowArray = [];
+              }
+            }
+
+            if (character == greenbox) {
+              scoreRowArray.push(2);
+              if (scoreRowArray.length == 5) {
+                newScoreArray.push(scoreRowArray);
+                scoreRowArray = [];
+              }
+            }
+            
+          });
+
+          let wordle = '';
+
+          const regex = /#([\d]{1,3})/gim;
+          const regexBuilder = new RegExp(regex);
+          let match = regexBuilder.exec(score);
+          if (match) {
+            wordle = match[0];
+          }
+
+          handleDropAddScore({
+              name: user.given_name,
+              score: newScoreArray,
+              wordle
+          })
+
+          closeModal()
+          setLocalScore('')
+
+        } else {
+          setError(true)
+        }
     }
 
   return (
@@ -100,9 +150,9 @@ export default function ModalUnstyledComponent({ setmodalOpenState, modalOpenSta
         BackdropComponent={Backdrop}
       >
         <Box sx={style}>
-          {/* <h2 id="unstyled-modal-title">Paste your wordle score here</h2> */}
+          <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold', color: `#ff0000${error ? 'ff': '00'}`}}>woops! make sure to paste a valid format</p>
           <DropZone setScore={setLocalScore} score={score} />
-          <Button onClick={handleClick} variant="contained">Submit Score</Button>
+          <Button onClick={() => handleClick()} variant="contained">Submit Score</Button>
         </Box>
       </StyledModal>
     </div>
