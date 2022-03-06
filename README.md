@@ -4,6 +4,8 @@ A way to record, track, and compare friends and families wordle and worldle scor
 
 - created using `npm create vite@latest`
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/18e481ae-2948-4d07-8443-01942760b1b6/deploy-status)](https://app.netlify.com/sites/scoredle/deploys)
+
 ```javascript
 /*
     Wordle #230 3/6
