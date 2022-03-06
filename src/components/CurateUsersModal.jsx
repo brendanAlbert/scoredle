@@ -84,8 +84,8 @@ export default function CurateUsersModal({
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        // user: user.given_name,
-        user: "Peach",
+        user: user.given_name,
+        // user: "Bowser",
         // user: "Mario",
         feed: localCuratedUsers,
       }),

@@ -11,6 +11,7 @@ const apiurl = import.meta.env.VITE_API_URL;
 const fetchUsersUrl = import.meta.env.VITE_FETCH_USERS_URL;
 const postScoredleUrl = import.meta.env.VITE_POST_SCOREDLE_URL;
 const env = import.meta.env.VITE_NODE_ENV;
+const postUserUrl = import.meta.env.VITE_POST_USER_URL;
 
 function App() {
   const [drawerOpenState, setDrawerOpenState] = useState(false);
@@ -87,11 +88,7 @@ function App() {
     });
   };
 
-  useEffect(async () => {
-    await update();
-  }, []);
-
-  useEffect(async () => {
+  const updateUserFeed = async () => {
     let usersResult;
     let usersData;
 
@@ -99,9 +96,9 @@ function App() {
 
     usersResult = await fetch(fetchUsersUrl, {
       method: "POST",
-      // body: user.given_name,
+      body: user.given_name,
       // body: "Mario",
-      body: "Peach",
+      //   body: "Bowser",
     });
 
     usersData = await usersResult.json();
@@ -130,6 +127,13 @@ function App() {
           });
         });
       });
+      userFeed.push({
+        // name: "Bowser", // TODO 🚧 user.given_name
+        name: user.given_name, // TODO 🚧 user.given_name
+        show: true,
+      });
+
+      // Add current user to all of the other user's feed array in userdb.json
     }
 
     console.log({
@@ -145,6 +149,30 @@ function App() {
     if (userFeed) {
       setCuratedUsers(userFeed);
     }
+
+    console.log({ line: 151 });
+
+    await fetch(postUserUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        user: user.given_name,
+        // user: "Bowser",
+        // user: "Mario",
+        feed: userFeed,
+      }),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  useEffect(async () => {
+    await update();
+  }, []);
+
+  useEffect(async () => {
+    await updateUserFeed();
   }, [initialScoreState, user]);
 
   useEffect(async () => {
@@ -158,7 +186,7 @@ function App() {
   }, [scores]);
 
   const handleDropAddScore = (newScore) => {
-    let currentScores = scores;
+    let currentScores = [...scores];
     let index = currentScores.findIndex(
       (dateObject) => dateObject.date == new Date().toDateString()
     );

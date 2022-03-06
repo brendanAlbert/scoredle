@@ -117,8 +117,8 @@ export default function ModalUnstyledComponent({
       }
 
       handleDropAddScore({
-        // name: user.given_name,
-        name: "Peach",
+        name: user.given_name,
+        // name: "Bowser",
         // name: "Mario",
         score: newScoreArray,
         wordle,

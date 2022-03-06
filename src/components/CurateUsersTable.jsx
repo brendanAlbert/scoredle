@@ -14,93 +14,101 @@ import { useEffect, useState } from "react";
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 export default function CurateUsersTable({
-  localCuratedUsers,
-  setLocalCuratedUsers,
+    localCuratedUsers,
+    setLocalCuratedUsers,
 }) {
-  const [tableLocalCuratedUsers, setTableLocalCuratedUsers] = useState([]);
+    const [tableLocalCuratedUsers, setTableLocalCuratedUsers] = useState([]);
 
-  useEffect(() => {
-    console.log({
-      localCuratedUsers,
-      tableLocalCuratedUsers,
-    });
-    setTableLocalCuratedUsers(localCuratedUsers);
-  }, []);
+    useEffect(() => {
+        console.log({
+            localCuratedUsers,
+            tableLocalCuratedUsers,
+        });
+        setTableLocalCuratedUsers(localCuratedUsers);
+    }, [localCuratedUsers]);
 
-  const toggleUserShowStatus = (index) => {
-    let newUsers = tableLocalCuratedUsers.map((usr, idx) => {
-      let showing = index == idx ? !usr.show : usr.show;
-      return { name: usr.name, show: showing };
-    });
-    setLocalCuratedUsers(newUsers);
-    setTableLocalCuratedUsers(newUsers);
-  };
+    const toggleUserShowStatus = (index) => {
+        let newUsers = tableLocalCuratedUsers.map((usr, idx) => {
+            let showing = index == idx ? !usr.show : usr.show;
+            return { name: usr.name, show: showing };
+        });
+        setLocalCuratedUsers(newUsers);
+        setTableLocalCuratedUsers(newUsers);
+    };
 
-  const populatedTable = (
-    <Table
-      sx={{ minWidth: 50, maxHeight: 100 }}
-      style={{
-        backgroundColor: "#121212",
-        padding: "20px",
-        height: "200px",
-        fontSize: "10px",
-      }}
-      size="small"
-      aria-label="a dense table"
-    >
-      <TableHead>
-        <TableRow>
-          <TableCell>User name</TableCell>
-          <TableCell align="center">Show user in feed</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {tableLocalCuratedUsers &&
-          tableLocalCuratedUsers.map((row, index) => (
-            <TableRow
-              key={guid()}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+    const populatedTable = (
+        <Table
+            sx={{ minWidth: 50, maxHeight: 100 }}
+            style={{
+                backgroundColor: "#121212",
+                padding: "20px",
+                height: "200px",
+                fontSize: "10px",
+            }}
+            size="small"
+            aria-label="a dense table"
+        >
+            <TableHead>
+                <TableRow>
+                    <TableCell>User name</TableCell>
+                    <TableCell align="center">Show user in feed</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {tableLocalCuratedUsers &&
+                    tableLocalCuratedUsers.map((row, index) => (
+                        <TableRow
+                            key={guid()}
+                            sx={{
+                                "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                },
+                            }}
+                        >
+                            <TableCell component="th" scope="row">
+                                {row.name}
+                            </TableCell>
+                            <TableCell
+                                style={{ cursor: "pointer" }}
+                                onClick={() => toggleUserShowStatus(index)}
+                                align="center"
+                            >
+                                {row.show && (
+                                    <CheckBoxIcon
+                                        style={{ color: "#78e08f" }}
+                                    />
+                                )}
+                                {!row.show && <CheckBoxOutlineBlankIcon />}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+            </TableBody>
+        </Table>
+    );
+
+    const noUsersYetTable = (
+        <>
+            <h2>Curate User Feed</h2>
+            <p>Your user feed will appear here.</p>
+        </>
+    );
+
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <TableContainer
+                component={Paper}
+                style={{
+                    padding: "20px",
+                    height: "400px",
+                    minWidth: "200px",
+                    backgroundImage: "none",
+                    fontSize: "10px",
+                }}
             >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell
-                style={{ cursor: "pointer" }}
-                onClick={() => toggleUserShowStatus(index)}
-                align="center"
-              >
-                {row.show && <CheckBoxIcon style={{ color: "#78e08f" }} />}
-                {!row.show && <CheckBoxOutlineBlankIcon />}
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
-  );
-
-  const noUsersYetTable = (
-    <>
-      <h2>Curate User Feed</h2>
-      <p>Your user feed will appear here.</p>
-    </>
-  );
-
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <TableContainer
-        component={Paper}
-        style={{
-          padding: "20px",
-          height: "400px",
-          minWidth: "200px",
-          backgroundImage: "none",
-          fontSize: "10px",
-        }}
-      >
-        {tableLocalCuratedUsers && tableLocalCuratedUsers.length > 0
-          ? populatedTable
-          : noUsersYetTable}
-      </TableContainer>
-    </ThemeProvider>
-  );
+                {tableLocalCuratedUsers && tableLocalCuratedUsers.length > 0
+                    ? populatedTable
+                    : noUsersYetTable}
+            </TableContainer>
+        </ThemeProvider>
+    );
 }
