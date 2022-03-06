@@ -26,3 +26,7 @@ dist-ssr
 secrets
 
 .env
+# Local Netlify folder
+.netlify
+db-*
+userdb-*

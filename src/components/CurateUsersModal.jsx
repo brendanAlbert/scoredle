@@ -2,6 +2,9 @@ import { styled, Box } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
 import Button from "@mui/material/Button";
 import CurateUsersTable from "./CurateUsersTable";
+import { useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+const postUserUrl = import.meta.env.VITE_POST_USER_URL;
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -49,12 +52,48 @@ export default function CurateUsersModal({
   setCuratedUsers,
   curatedUsers,
 }) {
+  const { user } = useAuth0();
+
+  const [localCuratedUsers, setLocalCuratedUsers] = useState([]);
+
+  useEffect(() => {
+    console.log({
+      curatedUsers,
+      localCuratedUsers,
+    });
+    setLocalCuratedUsers(curatedUsers);
+  }, []);
+
+  useEffect(() => {
+    console.log({
+      curatedUsers,
+      localCuratedUsers,
+    });
+    setLocalCuratedUsers(curatedUsers);
+  }, [curatedUsers]);
+
   const closeModal = () => {
+    setLocalCuratedUsers(curatedUsers);
     setCurateUserModalState(false);
   };
 
-  const done = () => {
+  const done = async () => {
+    setCuratedUsers(localCuratedUsers);
     closeModal();
+
+    await fetch(postUserUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        // user: user.given_name,
+        user: "Peach",
+        // user: "Mario",
+        feed: localCuratedUsers,
+      }),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+    });
   };
 
   return (
@@ -68,16 +107,27 @@ export default function CurateUsersModal({
       >
         <Box sx={style}>
           <CurateUsersTable
-            curatedUsers={curatedUsers}
-            setCuratedUsers={setCuratedUsers}
+            localCuratedUsers={localCuratedUsers}
+            setLocalCuratedUsers={setLocalCuratedUsers}
           />
-          <Button
-            style={buttonStyle}
-            onClick={() => done()}
-            variant="contained"
-          >
-            Done
-          </Button>
+          {localCuratedUsers && (
+            <Button
+              style={buttonStyle}
+              onClick={() => done()}
+              variant="contained"
+            >
+              Done
+            </Button>
+          )}
+          {!localCuratedUsers && (
+            <Button
+              style={buttonStyle}
+              onClick={() => closeModal()}
+              variant="contained"
+            >
+              Ok
+            </Button>
+          )}
         </Box>
       </StyledModal>
     </div>

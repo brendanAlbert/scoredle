@@ -1,0 +1,9 @@
+[
+  {
+    "user": "Toad",
+    "feed": [
+      { "name": "Mario", "show": false },
+      { "name": "Luigi", "show": true }
+    ]
+  }
+]

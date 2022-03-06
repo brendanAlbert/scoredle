@@ -5,6 +5,27 @@ A way to record, track, and compare friends and families wordle and worldle scor
 - created using `npm create vite@latest`
 
 ```javascript
+/*
+    Wordle #230 3/6
+
+    ⬛🟨⬛🟨⬛
+    🟨🟩⬛🟩🟨
+    🟩🟩🟩🟩🟩
+
+    🟨⬛⬛⬛⬛
+    ⬛⬛⬛⬛⬛
+    🟩🟩⬛🟩⬛
+    🟩🟩🟩🟩🟩
+*/
+```
+
+`🟩 green square emoji ❎`
+
+`🟨 yellow square emoji 🆚`
+
+`⬛ black square emoji`
+
+```javascript
 // 0 = gray box, 1 = yellow box, 2 = green box
 [
   {
@@ -24,3 +45,33 @@ A way to record, track, and compare friends and families wordle and worldle scor
   },
 ];
 ```
+
+```json
+[
+  {
+    "user": "user_a",
+    "feed": [
+      { "name": "user_b", "show": true },
+      { "name": "user_c", "show": false }
+    ]
+  },
+  {
+    "user": "user_b",
+    "feed": [
+      { "name": "user_a", "show": true },
+      { "name": "user_c", "show": false }
+    ]
+  },
+  {
+    "user": "user_c",
+    "feed": [
+      { "name": "user_a", "show": true },
+      { "name": "user_b", "show": false }
+    ]
+  }
+]
+```
+
+## Netlify how to
+
+`netlify dev`

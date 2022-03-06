@@ -3,6 +3,23 @@ import ScoreGrid from "./ScoreGrid";
 import Typography from "@mui/material/Typography";
 
 function Card({ score }) {
+  /* What this 'length' ternary does:
+    1 / 6
+    2 / 6
+    ...
+    6 / 6 if they got it right on last guess
+    OR
+    X / 6 if they missed the wordle
+  */
+  const length =
+    score.score.length < 6
+      ? score.score.length
+      : score.score[5].includes(0) || score.score[5].includes(1)
+      ? "X"
+      : score.score.length;
+
+  const ratio = `${length} / 6`;
+
   return (
     <Grid
       container
@@ -23,7 +40,7 @@ function Card({ score }) {
       </Grid>
       <Grid item sx={{ minWidth: 80, maxWidth: 80 }} align="center">
         <Typography component="div" sx={{ color: "#ffffff" }}>
-          {score.score.length}/6
+          {ratio}
         </Typography>
       </Grid>
     </Grid>

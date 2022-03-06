@@ -5,65 +5,22 @@ import Cards from "./components/Cards";
 import RightDrawer from "./components/Drawer";
 import Modal from "./components/Modal";
 import CurateUsersModal from "./components/CurateUsersModal";
+import { useAuth0 } from "@auth0/auth0-react";
+
+const apiurl = import.meta.env.VITE_API_URL;
+const fetchUsersUrl = import.meta.env.VITE_FETCH_USERS_URL;
+const postScoredleUrl = import.meta.env.VITE_POST_SCOREDLE_URL;
+const env = import.meta.env.VITE_NODE_ENV;
 
 function App() {
   const [drawerOpenState, setDrawerOpenState] = useState(false);
   const [modalOpenState, setmodalOpenState] = useState(false);
   const [curateUserModalState, setCurateUserModalState] = useState(false);
-  const [scores, setScores] = useState([
-    {
-      date: new Date(2022, 1, 27).toDateString(),
-      scores: [
-        {
-          name: "Al",
-          score: [
-            [0, 0, 1, 1, 2],
-            [1, 1, 1, 1, 2],
-            [0, 1, 2, 1, 0],
-            [2, 2, 2, 2, 2],
-          ],
-        },
-        {
-          name: "Bob",
-          score: [
-            [0, 0, 1, 1, 2],
-            [0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 2],
-            [0, 1, 2, 1, 0],
-            [0, 1, 2, 1, 1],
-          ],
-        },
-      ],
-      wordle: "#10",
-    },
-    {
-      date: new Date(2022, 1, 26).toDateString(),
-      scores: [
-        {
-          name: "CJ",
-          score: [
-            [0, 0, 1, 1, 2],
-            [0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 2],
-            [0, 1, 2, 1, 0],
-            [0, 1, 2, 1, 1],
-          ],
-        },
-        {
-          name: "Dan",
-          score: [
-            [0, 0, 1, 1, 2],
-            [0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 2],
-            [0, 1, 2, 1, 0],
-            [0, 1, 2, 1, 1],
-          ],
-        },
-      ],
-      wordle: "#29",
-    },
-  ]);
+  const [scores, setScores] = useState([]);
+  const [initialScoreState, setinitialScoreState] = useState([]);
   const [curatedUsers, setCuratedUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth0();
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -76,60 +33,129 @@ function App() {
     setDrawerOpenState(open);
   };
 
-  useEffect(() => {
-    const todaysDate = new Date().toDateString();
-    if (!scores.some((dateObject) => dateObject.date == todaysDate)) {
-      setScores([
-        ...scores,
-        {
-          date: todaysDate,
-          scores: [
-            {
-              name: "Bill",
-              score: [
-                [0, 1, 2, 1, 2],
-                [0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 2],
-                [0, 1, 2, 1, 0],
-                [0, 1, 2, 1, 1],
-              ],
-            },
-            {
-              name: "Jim",
-              score: [
-                [0, 0, 1, 1, 2],
-                [0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 2],
-                [0, 1, 2, 1, 0],
-                [2, 2, 2, 2, 2],
-              ],
-            },
-          ],
-          wordle: "",
-        },
-      ]);
-    }
-  }, [
-    modalOpenState,
-    curateUserModalState,
-    drawerOpenState,
-    scores,
-    curatedUsers,
-  ]);
+  const update = async () => {
+    let result = await fetch(apiurl);
+    let scoredleData = await result.json();
 
-  useEffect(() => {
-    let userFeed = [];
-    scores.forEach((dataObject) => {
-      dataObject.scores.forEach((userScoreObject) => {
-        userFeed.push({
-          name: userScoreObject.name,
-          isShowing: true, // TODO persist this value in db
+    setTimeout(
+      () => {
+        setScores(scoredleData);
+        setinitialScoreState(scoredleData);
+
+        const date = new Date().toDateString();
+        let index = scoredleData.findIndex(
+          (dateObject) => dateObject.date == date
+        );
+
+        console.log({
+          //   date,
+          //   dateType: typeof date,
+          //   date1: scoredleData[0],
+          //   date1Type: typeof scoredleData[0].date,
+          //   date2: scoredleData[1],
+          //   date1match: date == scoredleData[0].date,
+          //   date2match: date == scoredleData[1].date,
+          //   scores,
+          scoredleData,
+          //   index,
         });
-      });
+
+        if (scoredleData.length == 0 || index == -1) {
+          let newWordleDateObject = {
+            date: new Date().toDateString(),
+            scores: [],
+            wordle: "",
+          };
+          setScores([newWordleDateObject]);
+          setinitialScoreState([newWordleDateObject]);
+          persistScoredles([newWordleDateObject]);
+          setLoading(false);
+        }
+      },
+      env === "development" ? 2000 : 0
+    );
+  };
+
+  const persistScoredles = async (newScoredleState) => {
+    await fetch(postScoredleUrl, {
+      method: "POST",
+      body: JSON.stringify(newScoredleState),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  useEffect(async () => {
+    await update();
+  }, []);
+
+  useEffect(async () => {
+    let usersResult;
+    let usersData;
+
+    if (!user) return;
+
+    usersResult = await fetch(fetchUsersUrl, {
+      method: "POST",
+      // body: user.given_name,
+      // body: "Mario",
+      body: "Peach",
     });
 
-    setCuratedUsers(userFeed);
-  }, []);
+    usersData = await usersResult.json();
+
+    /*
+      for each scoredle date object
+        for each user in scores
+
+    */
+    console.log({
+      line: 114,
+      scores,
+      usersData,
+    });
+
+    let userFeed = [];
+
+    if (usersData && usersData?.feed?.length > 0) {
+      userFeed = usersData.feed;
+    } else {
+      scores.forEach((dataObject) => {
+        dataObject.scores.forEach((userScoreObject) => {
+          userFeed.push({
+            name: userScoreObject.name,
+            show: true, // TODO 🚧 use persisted value instead
+          });
+        });
+      });
+    }
+
+    console.log({
+      line: 135,
+      scores,
+      usersData,
+      userFeed,
+    });
+
+    // if (usersData.feed) {
+    //   setCuratedUsers(usersData.feed);
+    // }
+    if (userFeed) {
+      setCuratedUsers(userFeed);
+    }
+  }, [initialScoreState, user]);
+
+  useEffect(async () => {
+    console.log({
+      curatedUsers,
+    });
+  }, [curatedUsers]);
+
+  useEffect(async () => {
+    setLoading(!(scores.length > 0));
+  }, [scores]);
 
   const handleDropAddScore = (newScore) => {
     let currentScores = scores;
@@ -137,12 +163,14 @@ function App() {
       (dateObject) => dateObject.date == new Date().toDateString()
     );
 
+    console.log({ index });
     if (index > -1) {
       // date object exists, append new score value to scores array
       currentScores[index].scores.push(newScore);
       if (currentScores[index].wordle == "" && newScore.wordle != "") {
         currentScores[index].wordle = newScore.wordle;
       }
+      persistScoredles(currentScores);
       setScores(currentScores);
     } else {
       // date object does not exist, need to instantiate one and then add the new score to its scores array
@@ -151,10 +179,9 @@ function App() {
         scores: [newScore],
         wordle: newScore.wordle,
       };
+      persistScoredles([...scores, newWordleDateObject]);
       setScores([...scores, newWordleDateObject]);
     }
-
-    console.log({ latestScores: scores });
   };
 
   return (
@@ -162,6 +189,7 @@ function App() {
       <Navbar toggleDrawer={toggleDrawer} drawerOpenState={drawerOpenState} />
       <Cards
         scores={scores}
+        loading={loading}
         curatedUsers={curatedUsers}
         setmodalOpenState={setmodalOpenState}
       />
