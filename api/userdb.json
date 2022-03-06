@@ -1,9 +1,1 @@
-[
-  {
-    "user": "Toad",
-    "feed": [
-      { "name": "Mario", "show": false },
-      { "name": "Luigi", "show": true }
-    ]
-  }
-]
+[{"user":"Toad","feed":[{"name":"Mario","show":false},{"name":"Luigi","show":true}]},{"user":"Peach","feed":[{"name":"Mario","show":false},{"name":"Luigi","show":false},{"name":"Toad","show":false},{"name":"Peach","show":true}]},{"user":"Koopa","feed":[{"name":"Mario","show":false},{"name":"Luigi","show":true},{"name":"Toad","show":false},{"name":"Peach","show":false},{"name":"Koopa","show":true}]}]
