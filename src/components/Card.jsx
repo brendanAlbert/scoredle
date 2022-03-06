@@ -10,6 +10,8 @@ function Card({ score }) {
     6 / 6 if they got it right on last guess
     OR
     X / 6 if they missed the wordle
+
+    TODO 🚧 make sure X gets added correctly.
   */
   const length =
     score.score.length < 6

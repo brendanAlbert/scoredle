@@ -57,7 +57,8 @@ export default function ModalUnstyledComponent({
   };
 
   const handleClick = () => {
-    const graybox = "⬛";
+    const darkgraybox = "⬛";
+    const graybox = "⬜";
     const yellowbox = "🟨";
     const greenbox = "🟩";
 
@@ -70,8 +71,12 @@ export default function ModalUnstyledComponent({
     let grayboxcount = [...score.matchAll(new RegExp(graybox, "gim"))].map(
       (a) => a.index
     ).length;
+    let darkgrayboxcount = [
+      ...score.matchAll(new RegExp(darkgraybox, "gim")),
+    ].map((a) => a.index).length;
 
-    let count = greenboxcount + yellowboxcount + grayboxcount;
+    let count =
+      greenboxcount + yellowboxcount + grayboxcount + darkgrayboxcount;
 
     let match = count % 5 == 0 && count >= 5 && count <= 30;
 
@@ -83,6 +88,14 @@ export default function ModalUnstyledComponent({
 
       [...score].forEach((character) => {
         if (character == graybox) {
+          scoreRowArray.push(0);
+          if (scoreRowArray.length == 5) {
+            newScoreArray.push(scoreRowArray);
+            scoreRowArray = [];
+          }
+        }
+
+        if (character == darkgraybox) {
           scoreRowArray.push(0);
           if (scoreRowArray.length == 5) {
             newScoreArray.push(scoreRowArray);
