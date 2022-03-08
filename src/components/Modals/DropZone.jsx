@@ -8,7 +8,7 @@ const style = {
   fontSize: "20px",
   textAlign: "center",
 };
-export default function DropZone({ setScore, score }) {
+export default function DropZone({ setScore, score, placeholderText }) {
   const handleChange = (e) => {
     setScore(e.target.value);
   };
@@ -18,7 +18,7 @@ export default function DropZone({ setScore, score }) {
       aria-label="minimum height"
       minRows={3}
       value={score}
-      placeholder="paste your wordle score here"
+      placeholder={placeholderText}
       onChange={handleChange}
       style={style}
     />

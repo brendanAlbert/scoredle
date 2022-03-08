@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Navbar from "./components/Navbar";
-import Cards from "./components/Cards";
-import RightDrawer from "./components/Drawer";
-import Modal from "./components/Modal";
-import CurateUsersModal from "./components/CurateUsersModal";
+import Navbar from "./components/Navbar/Navbar";
+import Cards from "./components/Feed/Cards";
+import RightDrawer from "./components/Drawer/Drawer";
+import Modal from "./components/Modals/Modal";
+import WorldleModal from "./components/Modals/WorldleModal";
+import CurateUsersModal from "./components/Modals/CurateUsersModal";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const apiurl = import.meta.env.VITE_API_URL;
@@ -16,12 +17,19 @@ const postUserUrl = import.meta.env.VITE_POST_USER_URL;
 function App() {
   const [drawerOpenState, setDrawerOpenState] = useState(false);
   const [modalOpenState, setmodalOpenState] = useState(false);
+  const [worldleModalOpenState, setWorldleModalOpenState] = useState(false);
   const [curateUserModalState, setCurateUserModalState] = useState(false);
   const [scores, setScores] = useState([]);
+  // const [worldlescores, setworldleScores] = useState([]);
   const [initialScoreState, setinitialScoreState] = useState([]);
   const [curatedUsers, setCuratedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
+  // const [toggleState, setToggleState] = useState({
+  //   wordle: true,
+  //   worldle: false,
+  // });
+  const [toggleState, setToggleState] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -66,6 +74,7 @@ function App() {
             date: new Date().toDateString(),
             scores: [],
             wordle: "",
+            worldle: "",
           };
           setScores([newWordleDateObject]);
           setinitialScoreState([newWordleDateObject]);
@@ -96,8 +105,8 @@ function App() {
 
     usersResult = await fetch(fetchUsersUrl, {
       method: "POST",
-      body: user.given_name,
-      // body: "Mario",
+      // body: user.given_name,
+      body: "Mario",
       //   body: "Bowser",
     });
 
@@ -128,8 +137,8 @@ function App() {
         });
       });
       userFeed.push({
-        // name: "Bowser", // TODO 🚧 user.given_name
-        name: user.given_name, // TODO 🚧 user.given_name
+        name: "Mario", // TODO 🚧 user.given_name
+        // name: user.given_name, // TODO 🚧 user.given_name
         show: true,
       });
 
@@ -155,9 +164,9 @@ function App() {
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        user: user.given_name,
+        // user: user.given_name,
         // user: "Bowser",
-        // user: "Mario",
+        user: "Mario",
         feed: userFeed,
       }),
       headers: {
@@ -176,12 +185,6 @@ function App() {
   }, [initialScoreState, user]);
 
   useEffect(async () => {
-    console.log({
-      curatedUsers,
-    });
-  }, [curatedUsers]);
-
-  useEffect(async () => {
     setLoading(!(scores.length > 0));
   }, [scores]);
 
@@ -191,46 +194,85 @@ function App() {
       (dateObject) => dateObject.date == new Date().toDateString()
     );
 
-    console.log({ index });
-    if (index > -1) {
-      // date object exists, append new score value to scores array
-      currentScores[index].scores.push(newScore);
-      if (currentScores[index].wordle == "" && newScore.wordle != "") {
-        currentScores[index].wordle = newScore.wordle;
-      }
-      persistScoredles(currentScores);
-      setScores(currentScores);
+    let scoreExistsForThisUserIndex = currentScores[index].scores.findIndex(
+      (userScoreObject) => userScoreObject.name == newScore.name
+    );
+
+    if (scoreExistsForThisUserIndex > -1) {
+      currentScores[index].scores[scoreExistsForThisUserIndex].score =
+        newScore.score;
     } else {
-      // date object does not exist, need to instantiate one and then add the new score to its scores array
-      let newWordleDateObject = {
-        date: new Date().toDateString(),
-        scores: [newScore],
-        wordle: newScore.wordle,
-      };
-      persistScoredles([...scores, newWordleDateObject]);
-      setScores([...scores, newWordleDateObject]);
+      let lastIndex = Math.max(0, currentScores[index].scores.length);
+      currentScores[index].scores = [newScore];
     }
+
+    if (currentScores[index].wordle == "" && newScore.wordle != "") {
+      currentScores[index].wordle = newScore.wordle;
+    }
+    persistScoredles(currentScores);
+    setScores(currentScores);
+  };
+
+  const handleWorldleAddScore = (newScore) => {
+    const currentWorldleScores = [...scores];
+    let index = currentWorldleScores.findIndex(
+      (dateObject) => dateObject.date == new Date().toDateString()
+    );
+
+    let scoreExistsForThisUserIndex = currentWorldleScores[
+      index
+    ].scores.findIndex(
+      (userScoreObject) => userScoreObject.name == newScore.name
+    );
+
+    if (scoreExistsForThisUserIndex > -1) {
+      currentWorldleScores[index].scores[
+        scoreExistsForThisUserIndex
+      ].worldleScore = newScore.worldleScore;
+    } else {
+      let lastIndex = Math.max(0, currentWorldleScores[index].scores.length);
+      currentWorldleScores[index].scores = [newScore];
+    }
+
+    if (currentWorldleScores[index].worldle == "" && newScore.worldle != "") {
+      currentWorldleScores[index].worldle = newScore.worldle;
+    }
+    persistScoredles(currentWorldleScores);
+    setScores(currentWorldleScores);
   };
 
   return (
     <>
-      <Navbar toggleDrawer={toggleDrawer} drawerOpenState={drawerOpenState} />
+      <Navbar
+        toggleState={toggleState}
+        toggleDrawer={toggleDrawer}
+        drawerOpenState={drawerOpenState}
+      />
       <Cards
         scores={scores}
+        toggleState={toggleState}
         loading={loading}
         curatedUsers={curatedUsers}
         setmodalOpenState={setmodalOpenState}
       />
       <RightDrawer
+        toggleState={toggleState}
+        setToggleState={setToggleState}
         drawerOpenState={drawerOpenState}
         toggleDrawer={toggleDrawer}
         setmodalOpenState={setmodalOpenState}
+        setWorldleModalOpenState={setWorldleModalOpenState}
         setCurateUserModalState={setCurateUserModalState}
       />
       <Modal
         setmodalOpenState={setmodalOpenState}
         modalOpenState={modalOpenState}
         handleDropAddScore={handleDropAddScore}
+      />
+      <WorldleModal
+        setWorldleModalOpenState={setWorldleModalOpenState}
+        worldleModalOpenState={worldleModalOpenState}
+        handleWorldleAddScore={handleWorldleAddScore}
       />
       <CurateUsersModal
         curatedUsers={curatedUsers}

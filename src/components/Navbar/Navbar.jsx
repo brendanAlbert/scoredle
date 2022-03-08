@@ -4,10 +4,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+import { useEffect, useMemo, useState } from "react";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import WordleLogo from "./WordleLogo";
+import WorldleLogo from "./WorldleLogo";
 
 const theme = createTheme({
   palette: {
@@ -18,34 +19,40 @@ const theme = createTheme({
   },
 });
 
-export default function ButtonAppBar({toggleDrawer}) {
+const earthPhases = ["🌏", "🌍", "🌎"];
+
+// let intervalId = -1;
+
+export default function ButtonAppBar({ toggleDrawer, toggleState }) {
+  // const [index, setIndex] = useState(0);
+  // const [phase, setPhase] = useState(earthPhases[0]);
+
+  // useEffect(() => {
+  //   // if (toggleState) {
+  //     if (inter)
+  //   intervalId = setInterval(() => {
+  //     setIndex((index + 1) % 3);
+  //     setPhase(earthPhases[index]);
+  //   }, 1000);
+  //   // }
+  //   console.log({
+  //     line: 31,
+  //     toggleState,
+  //     msg: "NavBarUseEffectFired",
+  //     intervalId,
+  //   });
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [phase, index]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <ThemeProvider theme={theme}>
         <AppBar position="fixed">
           <Toolbar>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Grid container justifyContent="start" spacing={0.25}>
-                {[0, 1, 2, 3, 4].map((value) => (
-                  <Grid key={value} item>
-                    <Paper
-                      sx={{
-                        borderRadius: 0,
-                        height: 12,
-                        width: 12,
-                        backgroundColor: (theme) => {
-                          const randomColor = Math.floor(Math.random() * 3);
-                          return randomColor == 0
-                            ? "#f1c40f"
-                            : randomColor == 1
-                            ? "#2ecc71"
-                            : "#7f8c8d";
-                        },
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              {!toggleState ? <WordleLogo /> : <WorldleLogo />}
             </Box>
 
             <Typography
@@ -54,7 +61,11 @@ export default function ButtonAppBar({toggleDrawer}) {
               component="div"
               sx={{ flexGrow: 1 }}
             >
-              Scoredle
+              Sc
+              {!toggleState
+                ? "o"
+                : earthPhases[Math.floor(Math.random() * earthPhases.length)]}
+              redle
             </Typography>
             <IconButton
               size="large"
