@@ -127,25 +127,9 @@ export default function Cards({
                   ))}
 
                   {toggleState === false &&
-                    dateObject?.scores[0]?.score === undefined && (
-                      <Typography
-                        variant="h5"
-                        align="center"
-                        component="div"
-                        sx={{
-                          color: "#ffffff",
-                          mt: 1,
-                          typography: "body1",
-                          flexGrow: 1,
-                        }}
-                        style={{ fontSize: "10px" }}
-                      >
-                        No scores yet today. Be the first!
-                      </Typography>
-                    )}
-
-                  {toggleState === false &&
-                    dateObject?.scores[0]?.score?.length == 0 && (
+                    !dateObject?.scores.some(
+                      (userScoreObj) => userScoreObj.score
+                    ) && (
                       <Typography
                         variant="h5"
                         align="center"
@@ -163,24 +147,9 @@ export default function Cards({
                     )}
 
                   {toggleState === true &&
-                    dateObject?.scores[0]?.worldleScore?.length == 0 && (
-                      <Typography
-                        variant="h5"
-                        align="center"
-                        component="div"
-                        sx={{
-                          color: "#ffffff",
-                          mt: 1,
-                          typography: "body1",
-                          flexGrow: 1,
-                        }}
-                        style={{ fontSize: "10px" }}
-                      >
-                        No scores yet today. Be the first!
-                      </Typography>
-                    )}
-                  {toggleState === true &&
-                    dateObject?.scores[0]?.worldleScore == undefined && (
+                    !dateObject?.scores.some(
+                      (userScoreObj) => userScoreObj.worldleScore
+                    ) && (
                       <Typography
                         variant="h5"
                         align="center"
