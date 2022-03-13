@@ -7,9 +7,11 @@ import { guid } from "../../helpers/helpers";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth0 } from "@auth0/auth0-react";
 
+const earthPhases = ["🌏", "🌍", "🌎"];
+
 export default function Cards({
   scores: allDateObjects,
-  curatedUsers,
+  dontShowUsers,
   loading,
   toggleState,
 }) {
@@ -18,8 +20,6 @@ export default function Cards({
   const [cardsScores, setcardsScores] = useState([]);
 
   useEffect(() => {
-    console.log({ line: 16, scores: allDateObjects, curatedUsers });
-
     const showWordleFeed = toggleState == false;
     const showWorldleFeed = toggleState == true;
 
@@ -28,62 +28,28 @@ export default function Cards({
     );
 
     let filtered = sortedScoredleDateObjectsArray?.map((dateObject) => {
-      if (curatedUsers && curatedUsers.length > 0) {
-        console.log({
-          line: 24,
-          curatedUsers,
-          dateObject,
-        });
-
+      if (dontShowUsers?.length > 0) {
         let filteredScores;
 
         filteredScores = dateObject.scores.filter((scoreUser) => {
-          return curatedUsers.some(
-            (cu) => cu.name == scoreUser.name && cu.show
-          );
+          return !dontShowUsers.some((dsu) => dsu == scoreUser.name);
         });
 
-        console.log({
-          line: 32,
-          filteredScores,
-        });
-        // if (filteredScores.length > 0) {
         let newDateObject;
 
-        // if (showWordleFeed) {
         newDateObject = {
           date: dateObject.date,
           scores: filteredScores,
         };
-        // }
-
-        // if (showWorldleFeed) {
-        //   newDateObject = {
-        //     date: dateObject.date,
-        //     worldleScores: filteredScores,
-        //   };
-        // }
 
         return newDateObject;
-        // } else {
-        //   return { date: dateObject.date, scores: dateObject.scores };
-        // }
       } else {
         return dateObject;
       }
     });
 
-    // let filtered = scores;
-    console.log({
-      // sortedScoredleDateObjectsArray,
-      // scores,
-      // curatedUsers,
-      filtered,
-      // cardsScores,
-      // filteredScores
-    });
     setcardsScores(filtered);
-  }, [allDateObjects, curatedUsers, toggleState]);
+  }, [allDateObjects, dontShowUsers, toggleState]);
 
   return (
     <Container sx={{ mb: "100px" }} maxWidth="lg">
@@ -98,7 +64,15 @@ export default function Cards({
           flexGrow: 1,
         }}
       >
-        {!toggleState ? "wordle" : "worldle"} scores
+        {!toggleState ? (
+          <span style={{ fontWeight: "500" }}>{" WORDLE"}</span>
+        ) : (
+          <span style={{ fontWeight: "500" }}>
+            {earthPhases[Math.floor(Math.random() * earthPhases.length)]} WOR
+            <span style={{ color: "green" }}>L</span>DLE
+          </span>
+        )}{" "}
+        scores
       </Typography>
 
       {loading || isLoading ? (

@@ -30,3 +30,5 @@ secrets
 .netlify
 db-*
 userdb-*
+
+exported*.json

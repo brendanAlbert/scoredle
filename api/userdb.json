@@ -1,1 +1,6 @@
-[{"user":"Brendan","feed":[{"name":"Brendan","show":true}]},{"user":"Mario","feed":[{"name":"Mario","show":true}]}]
+[
+  { "user": "Mario", "dontShowUsers": [] },
+  { "user": "Luigi", "dontShowUsers": [] },
+  { "user": "Toad", "dontShowUsers": [] },
+  { "user": "Bowser", "dontShowUsers": [] }
+]

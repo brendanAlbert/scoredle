@@ -14,26 +14,29 @@ import { useEffect, useState } from "react";
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 export default function CurateUsersTable({
-  localCuratedUsers,
-  setLocalCuratedUsers,
+  localModalCuratedUsers,
+  setLocalModalCuratedUsers,
+  allUsers,
 }) {
-  const [tableLocalCuratedUsers, setTableLocalCuratedUsers] = useState([]);
+  const [localTableDontShowUsers, setlocalTableDontShowUsers] = useState([]);
 
   useEffect(() => {
-    console.log({
-      localCuratedUsers,
-      tableLocalCuratedUsers,
-    });
-    setTableLocalCuratedUsers(localCuratedUsers);
-  }, [localCuratedUsers]);
+    setlocalTableDontShowUsers(localModalCuratedUsers);
+  }, []);
 
-  const toggleUserShowStatus = (index) => {
-    let newUsers = tableLocalCuratedUsers.map((usr, idx) => {
-      let showing = index == idx ? !usr.show : usr.show;
-      return { name: usr.name, show: showing };
-    });
-    setLocalCuratedUsers(newUsers);
-    setTableLocalCuratedUsers(newUsers);
+  const toggleUserShowStatus = (name) => {
+    let newDontShowUsersList = [];
+
+    if (localTableDontShowUsers.includes(name)) {
+      newDontShowUsersList = localTableDontShowUsers.filter(
+        (usr) => name != usr
+      );
+    } else {
+      newDontShowUsersList = [...localTableDontShowUsers, name];
+    }
+
+    setlocalTableDontShowUsers(newDontShowUsersList);
+    setLocalModalCuratedUsers(newDontShowUsersList);
   };
 
   const populatedTable = (
@@ -49,14 +52,14 @@ export default function CurateUsersTable({
       aria-label="a dense table"
     >
       <TableHead>
-        <TableRow>
+        <TableRow style={{ display: "sticky " }}>
           <TableCell>User name</TableCell>
           <TableCell align="center">Show user in feed</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {tableLocalCuratedUsers &&
-          tableLocalCuratedUsers.map((row, index) => (
+        {allUsers &&
+          allUsers.map((userName) => (
             <TableRow
               key={guid()}
               sx={{
@@ -66,15 +69,19 @@ export default function CurateUsersTable({
               }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {userName}
               </TableCell>
               <TableCell
                 style={{ cursor: "pointer" }}
-                onClick={() => toggleUserShowStatus(index)}
+                onClick={() => toggleUserShowStatus(userName)}
                 align="center"
               >
-                {row.show && <CheckBoxIcon style={{ color: "#78e08f" }} />}
-                {!row.show && <CheckBoxOutlineBlankIcon />}
+                {localTableDontShowUsers &&
+                localTableDontShowUsers.some((ldsu) => ldsu == userName) ? (
+                  <CheckBoxOutlineBlankIcon />
+                ) : (
+                  <CheckBoxIcon style={{ color: "#78e08f" }} />
+                )}
               </TableCell>
             </TableRow>
           ))}
@@ -101,9 +108,7 @@ export default function CurateUsersTable({
           fontSize: "10px",
         }}
       >
-        {tableLocalCuratedUsers && tableLocalCuratedUsers.length > 0
-          ? populatedTable
-          : noUsersYetTable}
+        {allUsers && allUsers.length > 0 ? populatedTable : noUsersYetTable}
       </TableContainer>
     </ThemeProvider>
   );

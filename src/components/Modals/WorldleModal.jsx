@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { styled, Box } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
 import DropZone from "./DropZone";
@@ -54,14 +54,12 @@ export default function WorldleModal({
   const [score, setLocalScore] = useState("");
   const [error, setError] = useState(false);
 
-  //   useEffect(() => {}, [modalOpenState]);
-
   const closeModal = () => {
     setWorldleModalOpenState(false);
   };
 
   const handleClick = () => {
-    const darkgraybox = "⬛"; // TODO update for Worldle input
+    const darkgraybox = "⬛";
     const graybox = "⬜";
     const yellowbox = "🟨";
     const greenbox = "🟩";
@@ -123,9 +121,8 @@ export default function WorldleModal({
       }
 
       handleWorldleAddScore({
-        // name: user.given_name,
-        // name: "Bowser",
-        name: "Mario",
+        name: user.given_name,
+        // name: import.meta.env.VITE_USER,
         worldleScore: newScoreArray,
         worldle,
       });

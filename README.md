@@ -6,6 +6,8 @@ A way to record, track, and compare friends and families wordle and worldle scor
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/18e481ae-2948-4d07-8443-01942760b1b6/deploy-status)](https://app.netlify.com/sites/scoredle/deploys)
 
+## Todos
+
 ```javascript
 /*
     Wordle #230 3/6
@@ -56,6 +58,8 @@ A way to record, track, and compare friends and families wordle and worldle scor
           [0, 1, 2, 1, 0],
           [2, 2, 2, 2, 2],
         ],
+        wordle: "#235",
+        worldle: "#14",
       },
     ],
     wordle: "#235",
@@ -68,24 +72,11 @@ A way to record, track, and compare friends and families wordle and worldle scor
 [
   {
     "user": "user_a",
-    "feed": [
-      { "name": "user_b", "show": true },
-      { "name": "user_c", "show": false }
-    ]
+    "dontShowUsers": []
   },
   {
     "user": "user_b",
-    "feed": [
-      { "name": "user_a", "show": true },
-      { "name": "user_c", "show": false }
-    ]
-  },
-  {
-    "user": "user_c",
-    "feed": [
-      { "name": "user_a", "show": true },
-      { "name": "user_b", "show": false }
-    ]
+    "dontShowUsers": ["user_a"]
   }
 ]
 ```

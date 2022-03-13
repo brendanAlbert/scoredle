@@ -2,13 +2,14 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { useMemo } from "react";
-import { DirectionCharacterList } from "../../constants/constants";
+import getDirectionIcon from "../Directions/DirectionIcons";
+const NUMBER_OF_DIRECTION_ICONS = 17;
+const MINIMUM_STARTING_NUMBER = 3;
 
 let RandomDescendingNumbersList = [];
 let satisfied = false;
 let randomNumber;
-// const DirectionCharacterList = ["⬇️", "↘", "➡️", "↗", "⬆", "↖", "⬅", "↙️", "⬇"];
-let randomDirectionCharacter;
+let randomDirectionIcon;
 
 export default function WorldleLogo() {
   useMemo(() => {
@@ -17,11 +18,12 @@ export default function WorldleLogo() {
       RandomDescendingNumbersList.push(randomNumber);
       satisfied = RandomDescendingNumbersList.length == 5;
     }
-    randomDirectionCharacter =
-      DirectionCharacterList[
-        Math.floor(Math.random() * DirectionCharacterList.length)
-      ];
-  }, [RandomDescendingNumbersList, randomDirectionCharacter]);
+    randomDirectionIcon = getDirectionIcon(
+      Math.floor(
+        Math.random() * NUMBER_OF_DIRECTION_ICONS + MINIMUM_STARTING_NUMBER
+      )
+    );
+  }, [RandomDescendingNumbersList, randomDirectionIcon]);
 
   /*
         TODO create function to generate array of numbers 0,1,2
@@ -73,7 +75,7 @@ export default function WorldleLogo() {
         </Grid>
       ))}
       <Grid key={6} item>
-        {randomDirectionCharacter}
+        {randomDirectionIcon}
       </Grid>
     </Grid>
   );

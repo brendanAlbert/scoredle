@@ -49,45 +49,40 @@ const buttonStyle = {
 export default function CurateUsersModal({
   setCurateUserModalState,
   curateUserModalState,
-  setCuratedUsers,
-  curatedUsers,
+  setDontShowUsersList,
+  persistNewDontShowUsersList,
+  dontShowUsersList,
+  allUsers,
 }) {
   const { user } = useAuth0();
 
-  const [localCuratedUsers, setLocalCuratedUsers] = useState([]);
+  const [localModalCuratedUsers, setLocalModalCuratedUsers] = useState([]);
 
   useEffect(() => {
-    console.log({
-      curatedUsers,
-      localCuratedUsers,
-    });
-    setLocalCuratedUsers(curatedUsers);
+    setLocalModalCuratedUsers(dontShowUsersList);
   }, []);
 
   useEffect(() => {
-    console.log({
-      curatedUsers,
-      localCuratedUsers,
-    });
-    setLocalCuratedUsers(curatedUsers);
-  }, [curatedUsers]);
+    setLocalModalCuratedUsers(dontShowUsersList);
+  }, [dontShowUsersList]);
 
   const closeModal = () => {
-    setLocalCuratedUsers(curatedUsers);
+    setLocalModalCuratedUsers(dontShowUsersList);
     setCurateUserModalState(false);
   };
 
   const done = async () => {
-    setCuratedUsers(localCuratedUsers);
+    persistNewDontShowUsersList(localModalCuratedUsers);
+    setDontShowUsersList(localModalCuratedUsers);
+
     closeModal();
 
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        // user: user.given_name,
-        // user: "Bowser",
-        user: "Mario",
-        feed: localCuratedUsers,
+        user: user.given_name,
+        // user: import.meta.env.VITE_USER,
+        dontShowUsers: localModalCuratedUsers,
       }),
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -107,10 +102,11 @@ export default function CurateUsersModal({
       >
         <Box sx={style}>
           <CurateUsersTable
-            localCuratedUsers={localCuratedUsers}
-            setLocalCuratedUsers={setLocalCuratedUsers}
+            allUsers={allUsers}
+            localModalCuratedUsers={localModalCuratedUsers}
+            setLocalModalCuratedUsers={setLocalModalCuratedUsers}
           />
-          {localCuratedUsers && (
+          {localModalCuratedUsers && (
             <Button
               style={buttonStyle}
               onClick={() => done()}
@@ -119,7 +115,7 @@ export default function CurateUsersModal({
               Done
             </Button>
           )}
-          {!localCuratedUsers && (
+          {!localModalCuratedUsers && (
             <Button
               style={buttonStyle}
               onClick={() => closeModal()}
