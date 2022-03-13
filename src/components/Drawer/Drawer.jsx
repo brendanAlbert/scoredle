@@ -10,20 +10,27 @@ import LoginIcon from "@mui/icons-material/Login";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Toggle from "../Toggle/Toggle";
 
 export default function RightDrawer({
   drawerOpenState,
   toggleDrawer,
   setmodalOpenState,
-  setCurateUserModalState
+  setWorldleModalOpenState,
+  setCurateUserModalState,
+  toggleState,
+  setToggleState,
 }) {
   const DRAWER_DIRECTION_FROM_RIGHT = "right";
 
-  const { loginWithRedirect, isAuthenticated, logout } =
-    useAuth0();
+  const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
 
-  const openModal = () => {
+  const openWordleModal = () => {
     setmodalOpenState(true);
+  };
+
+  const openWorldleModal = () => {
+    setWorldleModalOpenState(true);
   };
 
   const openCurateUsersModal = () => {
@@ -35,6 +42,18 @@ export default function RightDrawer({
       mode: "dark",
     },
   });
+
+  const toggleList = () => (
+    <Box
+      sx={{ width: 250 }}
+      role="presentation"
+      onKeyDown={toggleDrawer(false)}
+    >
+      <List>
+        <Toggle toggleState={toggleState} setToggleState={setToggleState} />
+      </List>
+    </Box>
+  );
 
   const list = () => (
     <Box
@@ -55,30 +74,43 @@ export default function RightDrawer({
 
         {isAuthenticated && (
           <>
-            <ListItem button key={"Logout"} onClick={() => logout()}>
+            {/* <ListItem button key={"Logout"} onClick={() => logout()}>
               <ListItemIcon>
                 <LoginIcon />
               </ListItemIcon>
               <ListItemText>Log out</ListItemText>
-            </ListItem>
+            </ListItem> */}
 
             <Divider />
 
-            <ListItem button onClick={openCurateUsersModal} key={"Curate User Feed"}>
+            <ListItem
+              button
+              onClick={openCurateUsersModal}
+              key={"Curate User Feed"}
+            >
               <ListItemIcon>
                 <GroupIcon />
               </ListItemIcon>
               <ListItemText primary={"Curate User Feed"} />
             </ListItem>
 
-            <ListItem button onClick={openModal} key={"Add Score"}>
+            <ListItem
+              button
+              onClick={() => {
+                if (toggleState == false) {
+                  openWordleModal();
+                }
+                if (toggleState) {
+                  openWorldleModal();
+                }
+              }}
+              key={"Add Score"}
+            >
               <ListItemIcon>
                 <AddBoxIcon />
               </ListItemIcon>
               <ListItemText primary={"Add Score"} />
             </ListItem>
-
-            
           </>
         )}
       </List>
@@ -93,6 +125,7 @@ export default function RightDrawer({
           open={drawerOpenState}
           onClose={toggleDrawer(false)}
         >
+          {toggleList()}
           {list()}
         </Drawer>
       </ThemeProvider>

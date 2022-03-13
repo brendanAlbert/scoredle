@@ -1,36 +1,27 @@
 require("dotenv").config();
 const collectionname = process.env.VITE_MONGO_DB_USERS_COLLECTION_NAME;
+const stagingUserCollectionName =
+  process.env.VITE_MONGO_DB_STAGING_USERS_COLLECTION_NAME;
 const dbname = process.env.MONGO_DB_NAME;
 const env = process.env.VITE_NODE_ENV;
 const localUserDbUri = process.env.LOCAL_JSON_USER_DB;
 
 const postUser = async (db, document) => {
-  console.log({ document, user: document.user, feed: document.feed });
-
-  let result = await db.collection(collectionname).updateOne(
-    { name: document.user },
-    {
-      $set: {
-        name: document.user,
-        feed: document.feed,
+  const result = await db
+    .collection(env === "prod" ? collectionname : stagingUserCollectionName)
+    .updateOne(
+      { user: document.user },
+      {
+        $set: {
+          user: document.user,
+          dontShowUsers: document.dontShowUsers,
+        },
       },
-    },
 
-    {
-      upsert: true,
-    }
-  );
-
-  // if (result.modifiedCount == 0) {
-  // result = await db.collection(collectionname).insertOne({
-  //   year_month: document.year_month,
-  //   booms: [{ day: document.day, time: document.time }],
-  // });
-  // }
-
-  console.log({
-    result,
-  });
+      {
+        upsert: true,
+      }
+    );
 
   return {
     statusCode: 200,
@@ -72,7 +63,7 @@ if (process.env.VITE_NODE_ENV === "development") {
 }
 
 exports.handler = async function (event, context) {
-  if (env === "prod") {
+  if (env === "prod" || env === "staging") {
     const client = await clientPromise;
 
     const db = await client.db(dbname);

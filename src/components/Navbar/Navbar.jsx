@@ -4,10 +4,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import WordleLogo from "./WordleLogo";
+import WorldleLogo from "./WorldleLogo";
 
 const theme = createTheme({
   palette: {
@@ -18,34 +18,14 @@ const theme = createTheme({
   },
 });
 
-export default function ButtonAppBar({toggleDrawer}) {
+export default function ButtonAppBar({ toggleDrawer, toggleState }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <ThemeProvider theme={theme}>
         <AppBar position="fixed">
           <Toolbar>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Grid container justifyContent="start" spacing={0.25}>
-                {[0, 1, 2, 3, 4].map((value) => (
-                  <Grid key={value} item>
-                    <Paper
-                      sx={{
-                        borderRadius: 0,
-                        height: 12,
-                        width: 12,
-                        backgroundColor: (theme) => {
-                          const randomColor = Math.floor(Math.random() * 3);
-                          return randomColor == 0
-                            ? "#f1c40f"
-                            : randomColor == 1
-                            ? "#2ecc71"
-                            : "#7f8c8d";
-                        },
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              {!toggleState ? <WordleLogo /> : <WorldleLogo />}
             </Box>
 
             <Typography

@@ -1,41 +1,29 @@
 require("dotenv").config();
 const collectionname = process.env.VITE_MONGO_DB_COLLECTION_NAME;
+const stagingCollectionName = process.env.VITE_MONGO_DB_STAGING_COLLECTION_NAME;
+
 const dbname = process.env.MONGO_DB_NAME;
 const env = process.env.VITE_NODE_ENV;
 const localDbUri = process.env.LOCAL_JSON_DB;
 
 const postScoredle = async (db, document) => {
-  let index = 0;
-  console.log({
-    document,
-    index,
-    scores: document[index].scores,
-    wordle: document[index].wordle,
-  });
-  let result = await db.collection(collectionname).updateOne(
-    //   // <filter>,
-    //   // <update>,
-    //   /*
-    //       {
-    //           upsert: true
-    //       }
+  const index = 0;
 
-    //       */
-    //   //      { year_month: document.year_month },
-    //   //   { $push: { booms: { day: document.day, time: document.time } } }
-    { date: document[index].date },
-    {
-      $set: {
-        scores: document[index].scores,
-        wordle: document[index].wordle ? document[index].wordle : "",
+  const result = await db
+    .collection(env === "prod" ? collectionname : stagingCollectionName)
+    .updateOne(
+      { date: document[index].date },
+      {
+        $set: {
+          scores: document[index].scores,
+          wordle: document[index].wordle ? document[index].wordle : "",
+        },
       },
-    },
 
-    {
-      upsert: true,
-    }
-  );
-  console.log({ document, result });
+      {
+        upsert: true,
+      }
+    );
 
   return {
     statusCode: 200,
@@ -77,7 +65,7 @@ if (process.env.VITE_NODE_ENV === "development") {
 }
 
 exports.handler = async function (event, context) {
-  if (env === "prod") {
+  if (env === "prod" || env === "staging") {
     // context.callbackWaitsForEmptyEventLoop = false;
 
     // const db = await connectToDatabase(uri);

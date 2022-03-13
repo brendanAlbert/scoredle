@@ -1,22 +1,43 @@
 require("dotenv").config();
 const userCollectionName = process.env.VITE_MONGO_DB_USERS_COLLECTION_NAME;
+const stagingUserCollectionName =
+  process.env.VITE_MONGO_DB_STAGING_USERS_COLLECTION_NAME;
 const dbname = process.env.MONGO_DB_NAME;
 const env = process.env.VITE_NODE_ENV;
 const localDbUri = process.env.LOCAL_JSON_USER_DB;
 
 const getUsers = async (db) => {
-  const userFeedPreferences = await db
-    .collection(userCollectionName)
-    .find({})
-    .toArray();
+  let userFeedPreferences;
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userFeedPreferences),
-  };
+  if (env === "prod") {
+    userFeedPreferences = await db
+      .collection(userCollectionName)
+      .find({})
+      .toArray();
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userFeedPreferences),
+    };
+  }
+
+  if (env === "staging") {
+    userFeedPreferences = await db
+      .collection(stagingUserCollectionName)
+      .find({})
+      .toArray();
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userFeedPreferences),
+    };
+  }
 };
 
 const { MongoClient } = require("mongodb");
@@ -47,7 +68,7 @@ if (process.env.VITE_NODE_ENV === "development") {
 }
 
 exports.handler = async function (event, context) {
-  if (env === "prod") {
+  if (env === "prod" || env === "staging") {
     const client = await clientPromise;
 
     const db = await client.db(dbname);
@@ -57,22 +78,39 @@ exports.handler = async function (event, context) {
 
   if (env === "development") {
     const { readFile } = require("fs/promises");
-    const json = JSON.parse(await readFile(new URL(localDbUri)));
-    const username = event.body;
-    const index = json.findIndex((obj) => obj.user === username);
 
-    let userFeed = [];
+    const { httpMethod } = event;
 
-    if (index > -1) {
-      userFeed = json[index];
+    if (httpMethod === "POST") {
+      const json = JSON.parse(await readFile(new URL(localDbUri)));
+      const username = event.body;
+      const index = json.findIndex((obj) => obj.user === username);
+
+      let userFeed = [];
+
+      if (index > -1) {
+        userFeed = json[index];
+      }
+
+      return {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userFeed),
+      };
     }
 
-    return {
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userFeed),
-    };
+    if (httpMethod === "GET") {
+      let result = JSON.parse(await readFile(new URL(localDbUri)));
+
+      return {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(result),
+      };
+    }
   }
 };
