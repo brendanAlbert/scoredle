@@ -20,9 +20,6 @@ export default function Cards({
   const [cardsScores, setcardsScores] = useState([]);
 
   useEffect(() => {
-    const showWordleFeed = toggleState == false;
-    const showWorldleFeed = toggleState == true;
-
     let sortedScoredleDateObjectsArray = allDateObjects.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     );
@@ -129,22 +126,76 @@ export default function Cards({
                     </div>
                   ))}
 
-                  {dateObject?.scores?.length == 0 && (
-                    <Typography
-                      variant="h5"
-                      align="center"
-                      component="div"
-                      sx={{
-                        color: "#ffffff",
-                        mt: 1,
-                        typography: "body1",
-                        flexGrow: 1,
-                      }}
-                      style={{ fontSize: "10px" }}
-                    >
-                      No scores yet today. Be the first!
-                    </Typography>
-                  )}
+                  {toggleState === false &&
+                    dateObject?.scores[0]?.score === undefined && (
+                      <Typography
+                        variant="h5"
+                        align="center"
+                        component="div"
+                        sx={{
+                          color: "#ffffff",
+                          mt: 1,
+                          typography: "body1",
+                          flexGrow: 1,
+                        }}
+                        style={{ fontSize: "10px" }}
+                      >
+                        No scores yet today. Be the first!
+                      </Typography>
+                    )}
+
+                  {toggleState === false &&
+                    dateObject?.scores[0]?.score?.length == 0 && (
+                      <Typography
+                        variant="h5"
+                        align="center"
+                        component="div"
+                        sx={{
+                          color: "#ffffff",
+                          mt: 1,
+                          typography: "body1",
+                          flexGrow: 1,
+                        }}
+                        style={{ fontSize: "10px" }}
+                      >
+                        No scores yet today. Be the first!
+                      </Typography>
+                    )}
+
+                  {toggleState === true &&
+                    dateObject?.scores[0]?.worldleScore?.length == 0 && (
+                      <Typography
+                        variant="h5"
+                        align="center"
+                        component="div"
+                        sx={{
+                          color: "#ffffff",
+                          mt: 1,
+                          typography: "body1",
+                          flexGrow: 1,
+                        }}
+                        style={{ fontSize: "10px" }}
+                      >
+                        No scores yet today. Be the first!
+                      </Typography>
+                    )}
+                  {toggleState === true &&
+                    dateObject?.scores[0]?.worldleScore == undefined && (
+                      <Typography
+                        variant="h5"
+                        align="center"
+                        component="div"
+                        sx={{
+                          color: "#ffffff",
+                          mt: 1,
+                          typography: "body1",
+                          flexGrow: 1,
+                        }}
+                        style={{ fontSize: "10px" }}
+                      >
+                        No scores yet today. Be the first!
+                      </Typography>
+                    )}
                 </Box>
               </div>
             ))}
