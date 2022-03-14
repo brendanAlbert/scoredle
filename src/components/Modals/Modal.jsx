@@ -4,6 +4,8 @@ import ModalUnstyled from "@mui/base/ModalUnstyled";
 import DropZone from "./DropZone";
 import Button from "@mui/material/Button";
 import { useAuth0 } from "@auth0/auth0-react";
+// import { titleUpdater } from "../../helpers/titleUpdater";
+import { iconUpdater } from "../../helpers/iconUpdater";
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -140,6 +142,7 @@ export default function ModalUnstyledComponent({
 
       closeModal();
       setLocalScore("");
+      iconUpdater();
     } else {
       setError(true);
     }

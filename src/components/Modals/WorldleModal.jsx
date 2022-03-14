@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import { useAuth0 } from "@auth0/auth0-react";
 import { DirectionCharacterList } from "../../constants/constants";
 import { DirectionCharacterToNumberMap } from "../../constants/constants";
+// import { titleUpdater } from "../../helpers/titleUpdater";
+import { iconUpdater } from "../../helpers/iconUpdater";
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -129,6 +131,8 @@ export default function WorldleModal({
 
       closeModal();
       setLocalScore("");
+      // titleUpdater();
+      iconUpdater();
     } else {
       setError(true);
     }
