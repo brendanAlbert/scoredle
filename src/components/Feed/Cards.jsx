@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { guid } from "../../helpers/helpers";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 
 const earthPhases = ["🌏", "🌍", "🌎"];
 
@@ -15,7 +15,7 @@ export default function Cards({
   loading,
   toggleState,
 }) {
-  const { user, isLoading } = useAuth0();
+  // const { user, isLoading } = useAuth0();
 
   const [cardsScores, setcardsScores] = useState([]);
 
@@ -72,7 +72,7 @@ export default function Cards({
         scores
       </Typography>
 
-      {loading || isLoading ? (
+      {loading ? (
         <Box
           sx={{
             mt: 4,
@@ -107,6 +107,30 @@ export default function Cards({
                   {dateObject.date}
                 </Typography>
 
+                {toggleState === true && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop:
+                        dateObject.svg && dateObject.svg !== ""
+                          ? "10px"
+                          : "0px",
+                    }}
+                  >
+                    <img
+                      src={dateObject.svg}
+                      style={{
+                        height:
+                          dateObject.svg && dateObject.svg !== ""
+                            ? "40px"
+                            : "0px",
+                        filter:
+                          "invert(100%) sepia(100%) saturate(2%) hue-rotate(27deg) brightness(104%) contrast(101%)",
+                      }}
+                    ></img>
+                  </div>
+                )}
                 <Box
                   sx={{
                     mt: 1,

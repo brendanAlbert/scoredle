@@ -51,7 +51,12 @@ A way to record, track, and compare friends and families wordle and worldle scor
     scores: [
       {
         name: "Al",
-        worldleScore: [],
+        worldleScore: [
+          [0, 0, 1, 1, 2, 4],
+          [1, 1, 1, 1, 2, 6],
+          [0, 1, 2, 1, 0, 8],
+          [2, 2, 2, 2, 2, 19],
+        ],
         score: [
           [0, 0, 1, 1, 2],
           [1, 1, 1, 1, 2],
@@ -84,3 +89,8 @@ A way to record, track, and compare friends and families wordle and worldle scor
 ## Netlify how to
 
 `netlify dev`
+
+### dependencies
+
+`chrome-aws-lambda`
+`puppeteer-core`
