@@ -16,47 +16,6 @@ export default function Cards({
 }) {
   const [cardsScores, setcardsScores] = useState([]);
 
-  const crownify = (dateObjectScoresArray) => {
-    if (dateObjectScoresArray?.length === 0) return null;
-
-    let lowestScore = 7;
-    let ties = 0;
-    let lowestScorerIndex = -1;
-
-    if (toggleState === false) {
-      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
-        if (userScoreObject?.score?.length < lowestScore) {
-          lowestScore = userScoreObject?.score?.length;
-          lowestScorerIndex = idx;
-          ties = 0;
-        } else if (userScoreObject?.score?.length === lowestScore) {
-          ties++;
-          lowestScorerIndex = -1;
-        }
-      });
-    }
-
-    if (toggleState === true) {
-      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
-        if (userScoreObject?.worldleScore?.length < lowestScore) {
-          lowestScore = userScoreObject?.worldleScore?.length;
-          lowestScorerIndex = idx;
-          ties = 0;
-        } else if (userScoreObject?.worldleScore?.length === lowestScore) {
-          ties++;
-          lowestScorerIndex = -1;
-        }
-      });
-    }
-
-    if (ties > 0) {
-      // tie!  no one gets a crown
-      return null;
-    }
-
-    return dateObjectScoresArray[lowestScorerIndex].name;
-  };
-
   useEffect(() => {
     let sortedScoredleDateObjectsArray = allDateObjects.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
@@ -170,7 +129,6 @@ export default function Cards({
                   </div>
                 )}
                 <Box
-                  // style={{ marginLeft: "-40px" }}
                   sx={{
                     mt: 1,
                     display: "flex",
@@ -183,7 +141,6 @@ export default function Cards({
                   {dateObject?.scores?.map((userScoresObject) => (
                     <div key={guid()}>
                       <Card
-                        crowned={crownify(dateObject?.scores)}
                         toggleState={toggleState}
                         userScoresObject={userScoresObject}
                       />
