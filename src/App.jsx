@@ -22,8 +22,6 @@ function App() {
   const [scores, setScores] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [dontShowUsersList, setDontShowUsersList] = useState([]);
-  const [isDontShowUsersListPopulated, setIsDontShowUsersListPopulated] =
-    useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
 
@@ -47,6 +45,7 @@ function App() {
     setTimeout(
       () => {
         setScores(scoredleData);
+        setLoading(false);
 
         const date = new Date().toDateString();
         let index = scoredleData.findIndex(
@@ -88,20 +87,7 @@ function App() {
   };
 
   const updateUserFeed = async () => {
-    let usersResult;
-    let usersData;
-
     if (!user) return;
-
-    // usersResult = await fetch(fetchUsersUrl, {
-    //   method: "POST",
-    //   body: user.given_name,
-    //   // body: import.meta.env.VITE_USER,
-    // });
-
-    // usersData = await usersResult.json();
-
-    // if (!usersData) return;
 
     let localAllUsersRaw = await fetchAllUsers();
 
@@ -135,9 +121,6 @@ function App() {
       if (dontShowUsersList) {
         setDontShowUsersList(dontShowUsersList);
       }
-
-      setIsDontShowUsersListPopulated(true);
-      // persistNewDontShowUsersList(localAllUsers[index].dontShowUsers);
     }
   };
 
@@ -166,10 +149,6 @@ function App() {
   useEffect(async () => {
     await updateUserFeed();
   }, [user]);
-
-  useEffect(async () => {
-    setLoading(!isDontShowUsersListPopulated);
-  }, [scores, isDontShowUsersListPopulated]);
 
   const handleDropAddScore = (newScore) => {
     let currentScores = [...scores];
