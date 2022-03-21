@@ -7,19 +7,17 @@ const env = process.env.VITE_NODE_ENV;
 const localDbUri = process.env.LOCAL_JSON_DB;
 
 const postScoredle = async (db, document) => {
-  const index = 0;
-
   const result = await db
     .collection(env === "prod" ? collectionname : stagingCollectionName)
     .updateOne(
-      { date: document[index].date },
+      { date: document.date },
       {
         $set: {
-          scores: document[index].scores,
-          wordle: document[index].wordle ? document[index].wordle : "",
+          scores: document.scores,
+          worldle: document.worldle ? document.worldle : "",
+          wordle: document.wordle ? document.wordle : "",
         },
       },
-
       {
         upsert: true,
       }
@@ -66,9 +64,6 @@ if (process.env.VITE_NODE_ENV === "development") {
 
 exports.handler = async function (event, context) {
   if (env === "prod" || env === "staging") {
-    // context.callbackWaitsForEmptyEventLoop = false;
-
-    // const db = await connectToDatabase(uri);
     const client = await clientPromise;
 
     const db = await client.db(dbname);
@@ -77,13 +72,25 @@ exports.handler = async function (event, context) {
   }
 
   if (env === "development") {
-    const { writeFile } = require("fs/promises");
+    const { readFile, writeFile } = require("fs/promises");
 
-    let newScoredleState = JSON.parse(event.body);
+    let newScoredleDateObject = JSON.parse(event.body);
 
-    const newJsonDb = JSON.stringify(newScoredleState);
+    const jsondb = JSON.parse(await readFile(new URL(localDbUri)));
 
-    await writeFile(new URL(localDbUri), newJsonDb);
+    let index = jsondb.findIndex(
+      (dateObject) => dateObject.date === newScoredleDateObject.date
+    );
+
+    if (index > -1) {
+      jsondb[index] = newScoredleDateObject;
+    }
+
+    if (index === -1) {
+      jsondb.push(newScoredleDateObject);
+    }
+
+    await writeFile(new URL(localDbUri), JSON.stringify(jsondb));
 
     return {
       statusCode: 200,
