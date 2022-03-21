@@ -60,7 +60,7 @@ function App() {
             worldle: "",
           };
           setScores([newWordleDateObject]);
-          persistScoredles([newWordleDateObject]);
+          persistScoredles(newWordleDateObject);
           setLoading(false);
         }
       },
@@ -68,10 +68,10 @@ function App() {
     );
   };
 
-  const persistScoredles = async (newScoredleState) => {
+  const persistScoredles = async (newScoredleDateObject) => {
     await fetch(postScoredleUrl, {
       method: "POST",
-      body: JSON.stringify(newScoredleState),
+      body: JSON.stringify(newScoredleDateObject),
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
@@ -173,7 +173,8 @@ function App() {
     if (currentScores[index].wordle == "" && newScore.wordle != "") {
       currentScores[index].wordle = newScore.wordle;
     }
-    persistScoredles(currentScores);
+
+    persistScoredles(currentScores[index]);
     setScores(currentScores);
   };
 
@@ -203,7 +204,8 @@ function App() {
     if (currentWorldleScores[index].worldle == "" && newScore.worldle != "") {
       currentWorldleScores[index].worldle = newScore.worldle;
     }
-    persistScoredles(currentWorldleScores);
+
+    persistScoredles(currentWorldleScores[index]);
     setScores(currentWorldleScores);
   };
 

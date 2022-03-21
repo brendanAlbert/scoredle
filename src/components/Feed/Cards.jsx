@@ -120,7 +120,7 @@ export default function Cards({
                       style={{
                         height:
                           dateObject.svg && dateObject.svg !== ""
-                            ? "40px"
+                            ? "100px"
                             : "0px",
                         filter:
                           "invert(100%) sepia(100%) saturate(2%) hue-rotate(27deg) brightness(104%) contrast(101%)",
@@ -148,7 +148,7 @@ export default function Cards({
                   ))}
 
                   {toggleState === false &&
-                    !dateObject?.scores.some(
+                    !dateObject?.scores?.some(
                       (userScoreObj) => userScoreObj.score
                     ) && (
                       <Typography
@@ -168,7 +168,7 @@ export default function Cards({
                     )}
 
                   {toggleState === true &&
-                    !dateObject?.scores.some(
+                    !dateObject?.scores?.some(
                       (userScoreObj) => userScoreObj.worldleScore
                     ) && (
                       <Typography
