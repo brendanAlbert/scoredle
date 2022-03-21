@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { guid } from "../../helpers/helpers";
 import CircularProgress from "@mui/material/CircularProgress";
-// import { useAuth0 } from "@auth0/auth0-react";
 
 const earthPhases = ["🌏", "🌍", "🌎"];
 
@@ -15,8 +14,6 @@ export default function Cards({
   loading,
   toggleState,
 }) {
-  // const { user, isLoading } = useAuth0();
-
   const [cardsScores, setcardsScores] = useState([]);
 
   useEffect(() => {

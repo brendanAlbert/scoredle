@@ -22,8 +22,6 @@ function App() {
   const [scores, setScores] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [dontShowUsersList, setDontShowUsersList] = useState([]);
-  // const [isDontShowUsersListPopulated, setIsDontShowUsersListPopulated] =
-  //   useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
 
@@ -47,7 +45,6 @@ function App() {
     setTimeout(
       () => {
         setScores(scoredleData);
-        // setIsDontShowUsersListPopulated(true);
         setLoading(false);
 
         const date = new Date().toDateString();
@@ -125,7 +122,6 @@ function App() {
         setDontShowUsersList(dontShowUsersList);
       }
     }
-    // setIsDontShowUsersListPopulated(true);
   };
 
   const persistNewDontShowUsersList = async (newDontShowUsersList) => {
@@ -153,10 +149,6 @@ function App() {
   useEffect(async () => {
     await updateUserFeed();
   }, [user]);
-
-  // useEffect(async () => {
-  //   setLoading(!isDontShowUsersListPopulated);
-  // }, [scores, isDontShowUsersListPopulated]);
 
   const handleDropAddScore = (newScore) => {
     let currentScores = [...scores];

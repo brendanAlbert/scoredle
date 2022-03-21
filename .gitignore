@@ -33,3 +33,4 @@ userdb-*
 
 exported*.json
 sandbox
+netlify/functions/get_svg.js
