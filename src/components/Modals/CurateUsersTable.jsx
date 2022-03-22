@@ -28,7 +28,7 @@ export default function CurateUsersTable({
     let newDontShowUsersList = [];
 
     if (localTableDontShowUsers.includes(name)) {
-      newDontShowUsersList = localTableDontShowUsers.filter(
+      newDontShowUsersList = localTableDontShowUsers?.filter(
         (usr) => name != usr
       );
     } else {

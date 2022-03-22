@@ -132,8 +132,7 @@ export default function ModalUnstyledComponent({
       }
 
       handleDropAddScore({
-        name: user.given_name,
-        // name: import.meta.env.VITE_USER,
+        name: import.meta.env.VITE_USER || user.given_name,
         score: newScoreArray,
         wordle,
       });

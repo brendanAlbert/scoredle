@@ -94,14 +94,13 @@ function App() {
     let localAllUsers = await localAllUsersRaw.json();
 
     let index = localAllUsers.findIndex(
-      // (userobj) => userobj.user === import.meta.env.VITE_USER
-      (userobj) => userobj.user === user.given_name
+      (userobj) =>
+        userobj.user === (import.meta.env.VITE_USER || user.given_name)
     );
 
     if (index === -1) {
       let newUserObject = {
-        // user: import.meta.env.VITE_USER,
-        user: user.given_name,
+        user: import.meta.env.VITE_USER || user.given_name,
         dontShowUsers: [],
       };
       let newAllUsersResult = [...localAllUsers, newUserObject];
@@ -128,8 +127,7 @@ function App() {
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        user: user.given_name,
-        // user: import.meta.env.VITE_USER,
+        user: import.meta.env.VITE_USER || user.given_name,
         dontShowUsers:
           newDontShowUsersList && newDontShowUsersList.length > 0
             ? newDontShowUsersList
