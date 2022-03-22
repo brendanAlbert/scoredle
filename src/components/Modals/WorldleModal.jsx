@@ -121,8 +121,7 @@ export default function WorldleModal({
       }
 
       handleWorldleAddScore({
-        name: user.given_name,
-        // name: import.meta.env.VITE_USER,
+        name: import.meta.env.VITE_USER || user.given_name,
         worldleScore: newScoreArray,
         worldle,
       });

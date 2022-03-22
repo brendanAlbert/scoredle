@@ -80,8 +80,7 @@ export default function CurateUsersModal({
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        user: user.given_name,
-        // user: import.meta.env.VITE_USER,
+        user: import.meta.env.VITE_USER || user.given_name,
         dontShowUsers: localModalCuratedUsers,
       }),
       headers: {

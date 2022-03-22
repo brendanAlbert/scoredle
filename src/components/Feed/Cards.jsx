@@ -16,8 +16,71 @@ export default function Cards({
 }) {
   const [cardsScores, setcardsScores] = useState([]);
 
+  const crownify = (dateObjectScoresArray) => {
+    if (dateObjectScoresArray?.length === 0) return null;
+
+    let tieIndexList = [[], [], [], [], [], []];
+
+    if (toggleState === false) {
+      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
+        if (userScoreObject?.score) {
+          tieIndexList[userScoreObject?.score?.length - 1].push(idx);
+        }
+      });
+    }
+
+    if (toggleState === true) {
+      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
+        if (userScoreObject?.worldleScore) {
+          tieIndexList[userScoreObject?.worldleScore?.length - 1].push(idx);
+        }
+      });
+    }
+
+    for (let i = 0; i < 6; i++) {
+      if (tieIndexList[i].length > 1 && i < 5) {
+        return null;
+      }
+      if (tieIndexList[i].length === 1) {
+        return dateObjectScoresArray[tieIndexList[i][0]].name;
+      }
+    }
+
+    if (tieIndexList[5].length > 1) {
+      let mappedLastRowList = [];
+      mappedLastRowList = dateObjectScoresArray
+        .map((dateObject, idx) => {
+          if (tieIndexList[5].includes(idx)) {
+            return dateObject;
+          }
+        })
+        .filter((x) => x !== undefined);
+
+      const LastRow = 5;
+      let gotItLastGuessList = [];
+      mappedLastRowList.forEach((userScoreObj) => {
+        if (toggleState === false) {
+          if (userScoreObj.score[LastRow].filter((x) => x === 2).length === 5) {
+            gotItLastGuessList.push(userScoreObj);
+          }
+        }
+
+        if (toggleState === true) {
+          if (
+            userScoreObj.worldleScore[LastRow].filter((x) => x === 2).length ===
+            5
+          ) {
+            gotItLastGuessList.push(userScoreObj);
+          }
+        }
+      });
+      if (gotItLastGuessList.length === 1) return gotItLastGuessList[0].name;
+      return null;
+    }
+  };
+
   useEffect(() => {
-    let sortedScoredleDateObjectsArray = allDateObjects.sort(
+    let sortedScoredleDateObjectsArray = allDateObjects?.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     );
 
@@ -25,8 +88,8 @@ export default function Cards({
       if (dontShowUsers?.length > 0) {
         let filteredScores;
 
-        filteredScores = dateObject.scores.filter((scoreUser) => {
-          return !dontShowUsers.some((dsu) => dsu == scoreUser.name);
+        filteredScores = dateObject?.scores?.filter((scoreUser) => {
+          return !dontShowUsers?.some((dsu) => dsu == scoreUser.name);
         });
 
         let newDateObject;

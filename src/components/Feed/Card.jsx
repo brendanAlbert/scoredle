@@ -3,30 +3,35 @@ import ScoreGrid from "./ScoreGrid";
 import WorldleScoreGrid from "./WorldleScoreGrid";
 import Typography from "@mui/material/Typography";
 
-function Card({ userScoresObject, toggleState }) {
+function Card({ crowned, userScoresObject, toggleState }) {
   let length;
 
   if (toggleState === false && userScoresObject?.score?.length > 0) {
     length =
-      userScoresObject.score.length < 6
-        ? userScoresObject.score.length
-        : userScoresObject.score[5].includes(0) ||
-          userScoresObject.score[5].includes(1)
+      userScoresObject?.score?.length < 6
+        ? userScoresObject?.score?.length
+        : userScoresObject?.score[5].includes(0) ||
+          userScoresObject?.score[5].includes(1)
         ? "X"
-        : userScoresObject.score.length;
+        : userScoresObject?.score?.length;
   }
 
   if (toggleState === true && userScoresObject?.worldleScore?.length > 0) {
     length =
-      userScoresObject.worldleScore.length < 6
-        ? userScoresObject.worldleScore.length
-        : userScoresObject.worldleScore[5].includes(0) ||
-          userScoresObject.worldleScore[5].includes(1)
+      userScoresObject?.worldleScore?.length < 6
+        ? userScoresObject?.worldleScore?.length
+        : userScoresObject?.worldleScore[5].includes(0) ||
+          userScoresObject?.worldleScore[5].includes(1)
         ? "X"
-        : userScoresObject.worldleScore.length;
+        : userScoresObject?.worldleScore?.length;
   }
 
   const ratio = `${length} / 6`;
+
+  let name =
+    crowned && crowned === userScoresObject?.name && length !== "X"
+      ? "👑 " + userScoresObject?.name
+      : userScoresObject?.name;
 
   if (length) {
     return (
