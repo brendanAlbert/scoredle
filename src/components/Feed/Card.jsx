@@ -1,7 +1,5 @@
-import Grid from "@mui/material/Grid";
 import ScoreGrid from "./ScoreGrid";
 import WorldleScoreGrid from "./WorldleScoreGrid";
-import Typography from "@mui/material/Typography";
 
 function Card({ crowned, userScoresObject, toggleState }) {
   let length;
@@ -35,33 +33,27 @@ function Card({ crowned, userScoresObject, toggleState }) {
 
   if (length) {
     return (
-      <Grid
-        container
-        sx={{
-          mt: "15px",
-          justifyContent: "center",
-          alignItems: "start",
+      <div
+        style={{
+          width: "350px",
+          display: "grid",
+          gap: "6px",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          color: "#FFF",
+          marginTop: "20px",
+          fontFamily: "Roboto",
         }}
-        spacing={2}
       >
-        <Grid item sx={{ minWidth: 95, maxWidth: 95, pr: 2 }} align="end">
-          <Typography component="div" sx={{ color: "#ffffff" }}>
-            {userScoresObject?.name ? userScoresObject.name : worldleScore.name}
-          </Typography>
-        </Grid>
-        <Grid item sx={{ minWidth: 100, maxWidth: 100 }} align="center">
+        <div style={{ justifySelf: "flex-end" }}>{name}</div>
+        <div style={{ justifySelf: "center" }}>
           {toggleState === false ? (
             <ScoreGrid score={userScoresObject.score} />
           ) : (
             <WorldleScoreGrid worldleScore={userScoresObject.worldleScore} />
           )}
-        </Grid>
-        <Grid item sx={{ minWidth: 80, maxWidth: 80 }} align="center">
-          <Typography component="div" sx={{ color: "#ffffff" }}>
-            {ratio}
-          </Typography>
-        </Grid>
-      </Grid>
+        </div>
+        <div>{ratio}</div>
+      </div>
     );
   }
 
