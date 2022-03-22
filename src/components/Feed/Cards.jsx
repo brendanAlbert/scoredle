@@ -204,7 +204,6 @@ export default function Cards({
                   {dateObject?.scores?.map((userScoresObject) => (
                     <div key={guid()}>
                       <Card
-                        crowned={crownify(dateObject?.scores)}
                         toggleState={toggleState}
                         userScoresObject={userScoresObject}
                       />
