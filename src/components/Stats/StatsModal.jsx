@@ -241,7 +241,7 @@ export default function StatsModal({
       if (
         scoreObj.wordCrown !== null &&
         scoreObj.wordCrown !== undefined &&
-        scoreObj.wordCrown === user.given_name
+        scoreObj.wordCrown === user?.given_name
       ) {
         statsObject.word.crowns++;
       }
@@ -278,7 +278,7 @@ export default function StatsModal({
       if (
         scoreObj.worldCrown !== null &&
         scoreObj.worldCrown !== undefined &&
-        scoreObj.worldCrown === user.given_name
+        scoreObj.worldCrown === user?.given_name
       ) {
         statsObject.world.crowns++;
       }
