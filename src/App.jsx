@@ -5,6 +5,7 @@ import Cards from "./components/Feed/Cards";
 import RightDrawer from "./components/Drawer/Drawer";
 import Modal from "./components/Modals/Modal";
 import WorldleModal from "./components/Modals/WorldleModal";
+import StatsModal from "./components/Stats/StatsModal";
 import CurateUsersModal from "./components/Modals/CurateUsersModal";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -19,6 +20,7 @@ function App() {
   const [modalOpenState, setmodalOpenState] = useState(false);
   const [worldleModalOpenState, setWorldleModalOpenState] = useState(false);
   const [curateUserModalState, setCurateUserModalState] = useState(false);
+  const [statsModalOpenState, setStatsModalOpenState] = useState(false);
   const [scores, setScores] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [dontShowUsersList, setDontShowUsersList] = useState([]);
@@ -229,6 +231,7 @@ function App() {
         setmodalOpenState={setmodalOpenState}
         setWorldleModalOpenState={setWorldleModalOpenState}
         setCurateUserModalState={setCurateUserModalState}
+        setStatsModalOpenState={setStatsModalOpenState}
       />
       <Modal
         setmodalOpenState={setmodalOpenState}
@@ -247,6 +250,11 @@ function App() {
         curateUserModalState={curateUserModalState}
         setDontShowUsersList={setDontShowUsersList}
         persistNewDontShowUsersList={persistNewDontShowUsersList}
+      />
+      <StatsModal
+        setStatsModalOpenState={setStatsModalOpenState}
+        statsModalOpenState={statsModalOpenState}
+        scores={scores}
       />
     </>
   );
