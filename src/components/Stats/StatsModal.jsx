@@ -3,7 +3,6 @@ import { styled, Box } from "@mui/system";
 import ChartGeneratorv2 from "./ChartGeneratorv2";
 import { createTheme, ThemeProvider, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./StatsStyles.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Paper } from "@mui/material";
 
