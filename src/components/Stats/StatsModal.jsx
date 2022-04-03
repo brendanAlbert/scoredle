@@ -145,7 +145,8 @@ export default function StatsModal({
         const thisDaysScores = dateObject?.scores
           ?.map((userObject) => {
             if (
-              userObject.name === (import.meta.env.VITE_USER || user.given_name)
+              userObject.name ===
+              (import.meta.env.VITE_USER || user?.given_name)
             ) {
               return {
                 date: dateObject.date,
