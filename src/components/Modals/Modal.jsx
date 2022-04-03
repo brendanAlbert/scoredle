@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { styled, Box } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
 import DropZone from "./DropZone";
@@ -51,8 +51,6 @@ export default function ModalUnstyledComponent({
   const { user } = useAuth0();
   const [score, setLocalScore] = useState("");
   const [error, setError] = useState(false);
-
-  useEffect(() => {}, [modalOpenState]);
 
   const closeModal = () => {
     setmodalOpenState(false);
