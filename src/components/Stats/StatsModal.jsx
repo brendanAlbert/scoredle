@@ -286,22 +286,24 @@ export default function StatsModal({
 
       if (scoreObj.wordScore) {
         statsObject.word.games.played++;
-        statsObject.word.games.winPercentage =
+        statsObject.word.games.winPercentage = Math.ceil(
           (
             (statsObject.word.games.played -
               statsObject.wordleScoreDistribution["X"]) /
             statsObject.word.games.played
-          ).toFixed(2) * 100;
+          ).toFixed(2) * 100
+        );
       }
 
       if (scoreObj.worldScore) {
         statsObject.world.games.played++;
-        statsObject.world.games.winPercentage =
+        statsObject.world.games.winPercentage = Math.ceil(
           (
             (statsObject.world.games.played -
               statsObject.worldleScoreDistribution["X"]) /
             statsObject.world.games.played
-          ).toFixed(2) * 100;
+          ).toFixed(2) * 100
+        );
       }
     });
 
