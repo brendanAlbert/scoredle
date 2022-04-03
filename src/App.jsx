@@ -251,11 +251,13 @@ function App() {
         setDontShowUsersList={setDontShowUsersList}
         persistNewDontShowUsersList={persistNewDontShowUsersList}
       />
-      <StatsModal
-        setStatsModalOpenState={setStatsModalOpenState}
-        statsModalOpenState={statsModalOpenState}
-        scores={scores}
-      />
+      {user && (
+        <StatsModal
+          setStatsModalOpenState={setStatsModalOpenState}
+          statsModalOpenState={statsModalOpenState}
+          scores={scores}
+        />
+      )}
     </>
   );
 }
