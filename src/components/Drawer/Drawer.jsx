@@ -8,6 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import GroupIcon from "@mui/icons-material/Group";
 import LoginIcon from "@mui/icons-material/Login";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import { useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Toggle from "../Toggle/Toggle";
@@ -18,6 +19,7 @@ export default function RightDrawer({
   setmodalOpenState,
   setWorldleModalOpenState,
   setCurateUserModalState,
+  setStatsModalOpenState,
   toggleState,
   setToggleState,
 }) {
@@ -35,6 +37,10 @@ export default function RightDrawer({
 
   const openCurateUsersModal = () => {
     setCurateUserModalState(true);
+  };
+
+  const openStatsModal = () => {
+    setStatsModalOpenState(true);
   };
 
   const theme = createTheme({
@@ -110,6 +116,13 @@ export default function RightDrawer({
                 <AddBoxIcon />
               </ListItemIcon>
               <ListItemText primary={"Add Score"} />
+            </ListItem>
+
+            <ListItem button onClick={() => openStatsModal()}>
+              <ListItemIcon>
+                <QueryStatsIcon />
+              </ListItemIcon>
+              <ListItemText primary={"My Stats"} />
             </ListItem>
           </>
         )}
