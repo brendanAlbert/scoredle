@@ -65,6 +65,7 @@ const LetterBox = styled("span")({
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 export default function LeaderboardModal({
+  dontShowUsersList,
   LeaderboardModalOpen,
   setLeaderboardModalOpen,
   scores,
@@ -102,7 +103,11 @@ export default function LeaderboardModal({
       ([, a], [, b]) => b - a
     );
 
-    return sorted;
+    const filtered = sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return filtered;
   }, [scores]);
 
   const CloseLeaderboardModalIcon = (

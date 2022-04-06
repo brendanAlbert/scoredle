@@ -282,6 +282,7 @@ function App() {
       )}
       {LeaderboardModalOpen && (
         <LeaderboardModal
+          dontShowUsersList={dontShowUsersList}
           LeaderboardModalOpen={LeaderboardModalOpen}
           scores={scores}
           setLeaderboardModalOpen={setLeaderboardModalOpen}
