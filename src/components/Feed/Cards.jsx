@@ -116,7 +116,7 @@ export default function Cards({
         component="div"
         sx={{
           color: "#ffffff",
-          mt: 11,
+          mt: 1,
           typography: "body1",
           flexGrow: 1,
         }}
@@ -173,22 +173,18 @@ export default function Cards({
                       display: "flex",
                       justifyContent: "center",
                       marginTop:
-                        dateObject.svg && dateObject.svg !== ""
+                        dateObject?.svg && dateObject?.svg !== ""
                           ? "10px"
                           : "0px",
                     }}
                   >
-                    <img
-                      src={dateObject.svg}
+                    <div
                       style={{
-                        height:
-                          dateObject.svg && dateObject.svg !== ""
-                            ? "100px"
-                            : "0px",
                         filter:
                           "invert(100%) sepia(100%) saturate(2%) hue-rotate(27deg) brightness(104%) contrast(101%)",
                       }}
-                    ></img>
+                      dangerouslySetInnerHTML={{ __html: dateObject.svg }}
+                    ></div>
                   </div>
                 )}
                 <Box

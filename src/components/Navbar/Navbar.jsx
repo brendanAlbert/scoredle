@@ -4,6 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useMediaQuery } from "@mui/material";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import WordleLogo from "./WordleLogo";
@@ -19,12 +20,21 @@ const theme = createTheme({
 });
 
 export default function ButtonAppBar({ toggleDrawer, toggleState }) {
+  let mobile = useMediaQuery(`(max-width: 400px)`);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <ThemeProvider theme={theme}>
         <AppBar position="fixed">
-          <Toolbar>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                position: "absolute",
+                left: mobile ? "10px" : "24px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
               {!toggleState ? <WordleLogo /> : <WorldleLogo />}
             </Box>
 
@@ -41,7 +51,10 @@ export default function ButtonAppBar({ toggleDrawer, toggleState }) {
               edge="start"
               color="inherit"
               aria-label="menu"
-              sx={{ mr: 2 }}
+              sx={{
+                position: "absolute",
+                right: mobile ? "10px" : "40px",
+              }}
               onClick={toggleDrawer(true)}
             >
               <MenuIcon />

@@ -12,6 +12,7 @@ import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import { useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Toggle from "../Toggle/Toggle";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 export default function RightDrawer({
   drawerOpenState,
@@ -22,10 +23,11 @@ export default function RightDrawer({
   setStatsModalOpenState,
   toggleState,
   setToggleState,
+  setaddSvgModalOpen,
 }) {
   const DRAWER_DIRECTION_FROM_RIGHT = "right";
 
-  const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
+  const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0();
 
   const openWordleModal = () => {
     setmodalOpenState(true);
@@ -42,6 +44,12 @@ export default function RightDrawer({
   const openStatsModal = () => {
     setStatsModalOpenState(true);
   };
+
+  const openAddCountryModal = () => {
+    setaddSvgModalOpen(true);
+  };
+
+  const setLeaderboardModalOpen = () => {};
 
   const theme = createTheme({
     palette: {
@@ -60,6 +68,13 @@ export default function RightDrawer({
       </List>
     </Box>
   );
+
+  const handleLogout = () => {
+    let result = confirm("are you sure you want to logout ?");
+    if (result) {
+      logout();
+    }
+  };
 
   const list = () => (
     <Box
@@ -80,13 +95,6 @@ export default function RightDrawer({
 
         {isAuthenticated && (
           <>
-            {/* <ListItem button key={"Logout"} onClick={() => logout()}>
-              <ListItemIcon>
-                <LoginIcon />
-              </ListItemIcon>
-              <ListItemText>Log out</ListItemText>
-            </ListItem> */}
-
             <Divider />
 
             <ListItem
@@ -124,6 +132,22 @@ export default function RightDrawer({
               </ListItemIcon>
               <ListItemText primary={"My Stats"} />
             </ListItem>
+
+            <ListItem button key={"Logout"} onClick={() => handleLogout()}>
+              <ListItemIcon>
+                <LoginIcon />
+              </ListItemIcon>
+              <ListItemText>Log out</ListItemText>
+            </ListItem>
+
+            {/* {user?.given_name && user?.given_name === "Brendan" && (
+              <ListItem button onClick={() => openAddCountryModal()}>
+                <ListItemIcon>
+                  <AddPhotoAlternateIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Add Place Svg"} />
+              </ListItem>
+            )} */}
           </>
         )}
       </List>
