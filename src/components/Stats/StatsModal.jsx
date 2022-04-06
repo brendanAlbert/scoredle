@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Paper } from "@mui/material";
+import { crownify } from "../../helpers/helpers";
 
 const H5 = styled("h5")({
   textAlign: "center",
@@ -51,90 +52,6 @@ export default function StatsModal({
   const { user } = useAuth0();
 
   const [checked, setChecked] = useState(["word", "world"]);
-
-  const crownify = (dateObjectScoresArray, calculateForGameType) => {
-    if (dateObjectScoresArray?.length === 0) return null;
-
-    let tieIndexList = [[], [], [], [], [], []];
-
-    if (calculateForGameType === "wordle") {
-      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
-        if (userScoreObject?.score) {
-          tieIndexList[userScoreObject?.score?.length - 1].push(idx);
-        }
-      });
-    }
-
-    if (calculateForGameType === "worldle") {
-      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
-        if (userScoreObject?.worldleScore) {
-          tieIndexList[userScoreObject?.worldleScore?.length - 1].push(idx);
-        }
-      });
-    }
-
-    const LastRow = 5;
-
-    for (let i = 0; i < 6; i++) {
-      if (tieIndexList[i].length > 1 && i < 5) {
-        return null;
-      }
-
-      if (tieIndexList[i].length === 1) {
-        if (
-          calculateForGameType === "wordle" &&
-          i === LastRow &&
-          dateObjectScoresArray[tieIndexList[i][0]].score[LastRow].filter(
-            (x) => x === 2
-          ).length !== 5
-        ) {
-          return null;
-        }
-        if (
-          calculateForGameType === "worldle" &&
-          i === LastRow &&
-          dateObjectScoresArray[tieIndexList[i][0]].worldleScore[
-            LastRow
-          ].filter((x) => x === 2).length !== 5
-        ) {
-          return null;
-        }
-
-        return dateObjectScoresArray[tieIndexList[i][0]].name;
-      }
-    }
-
-    if (tieIndexList[5].length > 1) {
-      let mappedLastRowList = [];
-      mappedLastRowList = dateObjectScoresArray
-        .map((dateObject, idx) => {
-          if (tieIndexList[5].includes(idx)) {
-            return dateObject;
-          }
-        })
-        .filter((x) => x !== undefined);
-
-      let gotItLastGuessList = [];
-      mappedLastRowList.forEach((userScoreObj) => {
-        if (calculateForGameType === "wordle") {
-          if (userScoreObj.score[LastRow].filter((x) => x === 2).length === 5) {
-            gotItLastGuessList.push(userScoreObj);
-          }
-        }
-
-        if (calculateForGameType === "worldle") {
-          if (
-            userScoreObj.worldleScore[LastRow].filter((x) => x === 2).length ===
-            5
-          ) {
-            gotItLastGuessList.push(userScoreObj);
-          }
-        }
-      });
-      if (gotItLastGuessList.length === 1) return gotItLastGuessList[0].name;
-      return null;
-    }
-  };
 
   const myStats = useMemo(() => {
     const myScoresArray = scores

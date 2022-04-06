@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 const style = {
@@ -12,7 +11,7 @@ export default function DropZone({ setScore, score, placeholderText }) {
   const handleChange = (e) => {
     setScore(e.target.value);
   };
-  useEffect(() => {}, []);
+
   return (
     <TextareaAutosize
       aria-label="minimum height"
