@@ -110,6 +110,31 @@ export default function LeaderboardModal({
     return filtered;
   }, [scores]);
 
+  const userWorldleCrownScores = useMemo(() => {
+    let user_worldle_crown_scores = {};
+    const allusers = scores.map((dateobject) => {
+      dateobject.scores.map((userobject) => {
+        if (user_worldle_crown_scores[userobject.name] === undefined) {
+          user_worldle_crown_scores[userobject.name] = 0;
+        }
+      });
+      let winner = crownify(dateobject.scores, "worldle");
+      if (winner) {
+        user_worldle_crown_scores[winner]++;
+      }
+    });
+
+    const sorted = Object.entries(user_worldle_crown_scores).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const filtered = sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return filtered;
+  }, [scores]);
+
   const CloseLeaderboardModalIcon = (
     <Box
       tabIndex={0}
@@ -217,6 +242,29 @@ export default function LeaderboardModal({
                   )}
                 />
               </Paper>
+
+              <Paper
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
+                  <span style={{ fontWeight: "600", letterSpacing: "1.5px" }}>
+                    WOR<span style={{ color: "green" }}>L</span>DLE
+                  </span>
+                  <span style={{ paddingLeft: "10px" }}>Crowns 👑</span>
+                </Box>
+                <LeaderboardChart
+                  users={userWorldleCrownScores.map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={userWorldleCrownScores.map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
+              </Paper>
+
               <Paper
                 elevation={10}
                 sx={{

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
 import { guid } from "../../../helpers/helpers";
 
@@ -6,10 +6,38 @@ export default function LeaderboardChart({
   users = ["Al", "Bo", "Ca", "De", "Fo"],
   usersValuesArray = [6, 4, 3, 2, 1],
 }) {
+  const [medalsStack, setmedalsStack] = useState([]);
   let mobile = useMediaQuery(`(max-width: 420px)`);
   let minitablet = useMediaQuery(`(max-width: 570px)`);
   let tablet = useMediaQuery(`(max-width: 770px)`);
   let smalldesktop = useMediaQuery(`(max-width: 930px)`);
+
+  // let medalsArray = useMemo(() => {
+  //   let medals = ["🥇 ", "🥈 ", "🥉 "];
+  //   let place = 0;
+  //   let result = usersValuesArray.reduce((prev, curr) => {
+  //     console.log({ prev, curr });
+  //     if (prev > curr && place < 3) {
+  //       setmedalsStack(...medalsStack, medals[place++]);
+  //       return curr;
+  //     } else if (prev === curr && place < 3) {
+  //       setmedalsStack(...medalsStack, medals[place]);
+  //       return curr;
+  //     } else {
+  //       return curr;
+  //     }
+  //   });
+
+  //   console.log({
+  //     result,
+  //     place,
+  //     medalsStack,
+  //   });
+  // }, [usersValuesArray]);
+
+  // useEffect(() => {
+  //   console.log({ medalsArray });
+  // }, [medalsArray]);
 
   const getNormalizedArray = (array) => {
     // this will be useful for creating the bar chart when the numbers of peoples guesses reach the mid double digits

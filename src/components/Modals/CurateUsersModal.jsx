@@ -76,18 +76,6 @@ export default function CurateUsersModal({
     setDontShowUsersList(localModalCuratedUsers);
 
     closeModal();
-
-    await fetch(postUserUrl, {
-      method: "POST",
-      body: JSON.stringify({
-        user: import.meta.env.VITE_USER || user.given_name,
-        dontShowUsers: localModalCuratedUsers,
-      }),
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-    });
   };
 
   return (

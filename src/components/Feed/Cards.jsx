@@ -1,10 +1,11 @@
 import Container from "@mui/material/Container";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Card from "./Card";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { guid } from "../../helpers/helpers";
 import CircularProgress from "@mui/material/CircularProgress";
+import { crownify } from "../../helpers/helpers";
 
 const earthPhases = ["🌏", "🌍", "🌎"];
 
@@ -14,99 +15,25 @@ export default function Cards({
   loading,
   toggleState,
 }) {
-  const [cardsScores, setcardsScores] = useState([]);
-
-  const crownify = (dateObjectScoresArray) => {
-    if (dateObjectScoresArray?.length === 0) return null;
-
-    let tieIndexList = [[], [], [], [], [], []];
-
-    if (toggleState === false) {
-      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
-        if (userScoreObject?.score) {
-          tieIndexList[userScoreObject?.score?.length - 1].push(idx);
-        }
-      });
-    }
-
-    if (toggleState === true) {
-      dateObjectScoresArray?.forEach((userScoreObject, idx) => {
-        if (userScoreObject?.worldleScore) {
-          tieIndexList[userScoreObject?.worldleScore?.length - 1].push(idx);
-        }
-      });
-    }
-
-    for (let i = 0; i < 6; i++) {
-      if (tieIndexList[i].length > 1 && i < 5) {
-        return null;
-      }
-      if (tieIndexList[i].length === 1) {
-        return dateObjectScoresArray[tieIndexList[i][0]].name;
-      }
-    }
-
-    if (tieIndexList[5].length > 1) {
-      let mappedLastRowList = [];
-      mappedLastRowList = dateObjectScoresArray
-        .map((dateObject, idx) => {
-          if (tieIndexList[5].includes(idx)) {
-            return dateObject;
-          }
-        })
-        .filter((x) => x !== undefined);
-
-      const LastRow = 5;
-      let gotItLastGuessList = [];
-      mappedLastRowList.forEach((userScoreObj) => {
-        if (toggleState === false) {
-          if (userScoreObj.score[LastRow].filter((x) => x === 2).length === 5) {
-            gotItLastGuessList.push(userScoreObj);
-          }
-        }
-
-        if (toggleState === true) {
-          if (
-            userScoreObj.worldleScore[LastRow].filter((x) => x === 2).length ===
-            5
-          ) {
-            gotItLastGuessList.push(userScoreObj);
-          }
-        }
-      });
-      if (gotItLastGuessList.length === 1) return gotItLastGuessList[0].name;
-      return null;
-    }
-  };
-
-  useEffect(() => {
+  const filteredCardScores = useMemo(() => {
     let sortedScoredleDateObjectsArray = allDateObjects?.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     );
 
     let filtered = sortedScoredleDateObjectsArray?.map((dateObject) => {
-      if (dontShowUsers?.length > 0) {
-        let filteredScores;
+      let filteredScores = dateObject?.scores?.filter((scoreUser) => {
+        return !dontShowUsers?.some((dsu) => dsu == scoreUser.name);
+      });
 
-        filteredScores = dateObject?.scores?.filter((scoreUser) => {
-          return !dontShowUsers?.some((dsu) => dsu == scoreUser.name);
-        });
-
-        let newDateObject;
-
-        newDateObject = {
-          date: dateObject.date,
-          scores: filteredScores,
-        };
-
-        return newDateObject;
-      } else {
-        return dateObject;
-      }
+      return {
+        date: dateObject.date,
+        scores: filteredScores,
+        svg: dateObject.svg,
+      };
     });
 
-    setcardsScores(filtered);
-  }, [allDateObjects, dontShowUsers, toggleState]);
+    return filtered;
+  }, [allDateObjects, dontShowUsers]);
 
   return (
     <Container sx={{ mb: "100px" }} maxWidth="lg">
@@ -145,8 +72,8 @@ export default function Cards({
         </Box>
       ) : (
         <>
-          {cardsScores &&
-            cardsScores?.map((dateObject) => (
+          {filteredCardScores &&
+            filteredCardScores?.map((dateObject) => (
               <div key={guid()}>
                 <Typography
                   variant="h6"
@@ -180,11 +107,16 @@ export default function Cards({
                   >
                     <div
                       style={{
+                        height:
+                          dateObject?.svg && dateObject?.svg !== ""
+                            ? "100px"
+                            : "0px",
                         filter:
                           "invert(100%) sepia(100%) saturate(2%) hue-rotate(27deg) brightness(104%) contrast(101%)",
                       }}
-                      dangerouslySetInnerHTML={{ __html: dateObject.svg }}
-                    ></div>
+                    >
+                      <img style={{ height: "100px" }} src={dateObject?.svg} />
+                    </div>
                   </div>
                 )}
                 <Box
@@ -200,7 +132,10 @@ export default function Cards({
                   {dateObject?.scores?.map((userScoresObject) => (
                     <div key={guid()}>
                       <Card
-                        crowned={crownify(dateObject?.scores)}
+                        crowned={crownify(
+                          dateObject?.scores,
+                          toggleState === false ? "wordle" : "worldle"
+                        )}
                         toggleState={toggleState}
                         userScoresObject={userScoresObject}
                       />

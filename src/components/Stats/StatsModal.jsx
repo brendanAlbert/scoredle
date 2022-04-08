@@ -251,7 +251,7 @@ export default function StatsModal({
     borderRadius: "6px",
     color: "#eee",
     maxHeight: mobile ? "600px" : "800px",
-    height: mobile ? "800px" : "900px",
+    height: mobile ? "700px" : "700px",
     padding: mobile ? "0px" : "0px 24px",
     overflowY: "scroll",
   };
@@ -319,8 +319,8 @@ export default function StatsModal({
                   <Paper
                     elevation={6}
                     sx={{
-                      padding: "40px",
                       margin: "18px",
+                      height: "260px",
                     }}
                   >
                     {checked.indexOf("word") !== -1 && (
@@ -329,6 +329,7 @@ export default function StatsModal({
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
+                          height: "260px",
                         }}
                       >
                         <H5>
@@ -360,6 +361,10 @@ export default function StatsModal({
                     elevation={6}
                     sx={{
                       margin: "18px",
+                      height: "260px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <div
@@ -443,8 +448,8 @@ export default function StatsModal({
                   <Paper
                     elevation={12}
                     sx={{
-                      padding: "40px",
                       margin: "18px",
+                      height: "260px",
                     }}
                   >
                     {checked.indexOf("world") !== -1 && (
@@ -471,7 +476,15 @@ export default function StatsModal({
                             >
                               🌎
                             </span>{" "}
-                            WORLDLE
+                            <span
+                              style={{
+                                fontWeight: "600",
+                                fontSize: "18px",
+                                letterSpacing: "1.5px",
+                              }}
+                            >
+                              WOR<span style={{ color: "green" }}>L</span>DLE
+                            </span>
                           </Box>
                           <div style={{ paddingTop: "10px" }}>
                             score distribution
@@ -495,6 +508,10 @@ export default function StatsModal({
                     elevation={12}
                     sx={{
                       margin: "18px",
+                      height: "260px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <div
