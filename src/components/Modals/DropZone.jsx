@@ -19,6 +19,7 @@ export default function DropZone({ setScore, score, placeholderText }) {
       value={score}
       placeholder={placeholderText}
       onChange={handleChange}
+      autoFocus={true}
       style={style}
     />
   );

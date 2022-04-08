@@ -132,97 +132,93 @@ export default function StatsModal({
     let worldMaxStreak = 0;
     let worldCurrentStreak = 0;
 
-    myScoresArray.forEach((scoreObj) => {
-      if (scoreObj?.wordScore?.length === 6) {
-        if (scoreObj?.wordScore[5]?.filter((x) => x === 2).length === 5) {
-          // got it in 6 guesses
-          statsObject.wordleScoreDistribution[6]++;
-          wordCurrentStreak++;
+    myScoresArray
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .forEach((scoreObj) => {
+        if (scoreObj?.wordScore?.length === 6) {
+          if (scoreObj?.wordScore[5]?.filter((x) => x === 2).length === 5) {
+            // got it in 6 guesses
+            statsObject.wordleScoreDistribution[6]++;
+            wordCurrentStreak++;
+            if (wordCurrentStreak >= wordMaxStreak) {
+              wordMaxStreak = wordCurrentStreak;
+            }
+          } else {
+            // missed it
+            wordCurrentStreak = 0;
+            statsObject.wordleScoreDistribution["X"]++;
+          }
+        } else {
+          if (scoreObj?.wordScore?.length > 0) {
+            wordCurrentStreak++;
+          }
           if (wordCurrentStreak >= wordMaxStreak) {
             wordMaxStreak = wordCurrentStreak;
           }
-        } else {
-          // missed it
-          wordCurrentStreak = 0;
-          statsObject.wordleScoreDistribution["X"]++;
+          if (scoreObj?.wordScore) {
+            statsObject.wordleScoreDistribution[scoreObj?.wordScore?.length]++;
+          }
         }
-      } else {
-        wordCurrentStreak++;
-        if (wordCurrentStreak >= wordMaxStreak) {
-          wordMaxStreak = wordCurrentStreak;
-        }
-        if (scoreObj?.wordScore) {
-          statsObject.wordleScoreDistribution[scoreObj?.wordScore?.length]++;
-        }
-      }
 
-      if (
-        scoreObj.wordCrown !== null &&
-        scoreObj.wordCrown !== undefined &&
-        scoreObj.wordCrown === user?.given_name
-      ) {
-        statsObject.word.crowns++;
-      }
+        if (scoreObj?.wordCrown && scoreObj?.wordCrown === user?.given_name) {
+          statsObject.word.crowns++;
+        }
 
-      if (scoreObj?.worldScore?.length === 6) {
-        // check if the last row is all 2s or else
-        if (scoreObj?.worldScore[5]?.filter((x) => x === 2).length === 5) {
-          // got it in 6 guesses
-          statsObject.worldleScoreDistribution[6]++;
-          worldCurrentStreak++;
-          if (worldCurrentStreak >= worldMaxStreak) {
-            worldMaxStreak = worldCurrentStreak;
+        if (scoreObj?.worldScore?.length === 6) {
+          // check if the last row is all 2s or else
+          if (scoreObj?.worldScore[5]?.filter((x) => x === 2).length === 5) {
+            // got it in 6 guesses
+            statsObject.worldleScoreDistribution[6]++;
+            worldCurrentStreak++;
+            if (worldCurrentStreak >= worldMaxStreak) {
+              worldMaxStreak = worldCurrentStreak;
+            }
+          } else {
+            // missed it
+            worldCurrentStreak = 0;
+            statsObject.worldleScoreDistribution["X"]++;
           }
         } else {
-          // missed it
-          worldCurrentStreak = 0;
-          statsObject.worldleScoreDistribution["X"]++;
-        }
-      } else {
-        if (scoreObj?.worldScore) {
-          worldCurrentStreak++;
-          if (worldCurrentStreak >= worldMaxStreak) {
-            worldMaxStreak = worldCurrentStreak;
-          }
+          if (scoreObj?.worldScore?.length > 0) {
+            worldCurrentStreak++;
+            if (worldCurrentStreak >= worldMaxStreak) {
+              worldMaxStreak = worldCurrentStreak;
+            }
 
-          if (scoreObj?.worldScore) {
-            statsObject.worldleScoreDistribution[
-              scoreObj?.worldScore?.length
-            ]++;
+            if (scoreObj?.worldScore) {
+              statsObject.worldleScoreDistribution[
+                scoreObj?.worldScore?.length
+              ]++;
+            }
           }
         }
-      }
 
-      if (
-        scoreObj.worldCrown !== null &&
-        scoreObj.worldCrown !== undefined &&
-        scoreObj.worldCrown === user?.given_name
-      ) {
-        statsObject.world.crowns++;
-      }
+        if (scoreObj.worldCrown && scoreObj.worldCrown === user?.given_name) {
+          statsObject.world.crowns++;
+        }
 
-      if (scoreObj.wordScore) {
-        statsObject.word.games.played++;
-        statsObject.word.games.winPercentage = Math.ceil(
-          (
-            (statsObject.word.games.played -
-              statsObject.wordleScoreDistribution["X"]) /
-            statsObject.word.games.played
-          ).toFixed(2) * 100
-        );
-      }
+        if (scoreObj.wordScore) {
+          statsObject.word.games.played++;
+          statsObject.word.games.winPercentage = Math.ceil(
+            (
+              (statsObject.word.games.played -
+                statsObject.wordleScoreDistribution["X"]) /
+              statsObject.word.games.played
+            ).toFixed(2) * 100
+          );
+        }
 
-      if (scoreObj.worldScore) {
-        statsObject.world.games.played++;
-        statsObject.world.games.winPercentage = Math.ceil(
-          (
-            (statsObject.world.games.played -
-              statsObject.worldleScoreDistribution["X"]) /
-            statsObject.world.games.played
-          ).toFixed(2) * 100
-        );
-      }
-    });
+        if (scoreObj.worldScore) {
+          statsObject.world.games.played++;
+          statsObject.world.games.winPercentage = Math.ceil(
+            (
+              (statsObject.world.games.played -
+                statsObject.worldleScoreDistribution["X"]) /
+              statsObject.world.games.played
+            ).toFixed(2) * 100
+          );
+        }
+      });
 
     statsObject.word.streak.max = wordMaxStreak;
     statsObject.word.streak.current = wordCurrentStreak;
