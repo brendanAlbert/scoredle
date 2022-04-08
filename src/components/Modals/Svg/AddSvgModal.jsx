@@ -79,9 +79,6 @@ export default function ModalUnstyledComponent({
 
     let b64 = `data:image/svg+xml;base64,${window.btoa(svg)}`;
 
-    console.log({ b64 });
-    console.log(b64);
-
     // Send base64 string to database
 
     closeModal();
