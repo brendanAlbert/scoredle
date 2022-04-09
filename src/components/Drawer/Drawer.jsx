@@ -13,6 +13,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Toggle from "../Toggle/Toggle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 
 export default function RightDrawer({
   drawerOpenState,
@@ -24,6 +25,7 @@ export default function RightDrawer({
   toggleState,
   setToggleState,
   setaddSvgModalOpen,
+  setfeaturesModalState,
 }) {
   const DRAWER_DIRECTION_FROM_RIGHT = "right";
 
@@ -50,6 +52,10 @@ export default function RightDrawer({
   };
 
   const setLeaderboardModalOpen = () => {};
+
+  const openFeaturesModal = () => {
+    setfeaturesModalState(true);
+  };
 
   const theme = createTheme({
     palette: {
@@ -131,6 +137,13 @@ export default function RightDrawer({
                 <QueryStatsIcon />
               </ListItemIcon>
               <ListItemText primary={"My Stats"} />
+            </ListItem>
+
+            <ListItem button onClick={() => openFeaturesModal()}>
+              <ListItemIcon>
+                <WorkspacePremiumIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Checkout Features"} />
             </ListItem>
 
             <ListItem button key={"Logout"} onClick={() => handleLogout()}>
