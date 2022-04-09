@@ -141,7 +141,7 @@ export default function LeaderboardModal({
     return filtered;
   }, [scores]);
 
-  const maxStreaksWordle = useMemo(() => {
+  const streaksWordle = useMemo(() => {
     let user_word_curr_streaks = {};
     let user_word_max_streaks = {};
     scores
@@ -182,58 +182,88 @@ export default function LeaderboardModal({
         });
       });
 
-    const sorted = Object.entries(user_word_max_streaks).sort(
+    const maxsorted = Object.entries(user_word_max_streaks).sort(
       ([, a], [, b]) => b - a
     );
 
-    const filtered = sorted.filter((kvp) => {
+    const maxfiltered = maxsorted.filter((kvp) => {
       return !dontShowUsersList.includes(kvp[0]);
     });
 
-    return filtered;
+    const currsorted = Object.entries(user_word_curr_streaks).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const currfiltered = currsorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return [maxfiltered, currfiltered];
   }, [scores]);
 
-  const currentStreaksWordle = useMemo(() => {
-    let user_word_current_streaks = {};
+  const streaksWorldle = useMemo(() => {
+    let user_world_curr_streaks = {};
+    let user_world_max_streaks = {};
     scores
       .sort((a, b) => new Date(a.date) - new Date(b.date))
       .map((dateobject) => {
         dateobject.scores.map((userobject) => {
-          if (userobject?.score?.length > 0 && userobject?.score?.length < 6) {
-            if (user_word_current_streaks[userobject.name]) {
-              user_word_current_streaks[userobject.name]++;
+          if (
+            userobject?.worldleScore?.length > 0 &&
+            userobject?.worldleScore?.length < 6
+          ) {
+            if (user_world_curr_streaks[userobject.name]) {
+              user_world_curr_streaks[userobject.name]++;
+              user_world_max_streaks[userobject.name] = Math.max(
+                user_world_max_streaks[userobject.name],
+                user_world_curr_streaks[userobject.name]
+              );
+            } else if (!user_world_curr_streaks[userobject.name]) {
+              user_world_curr_streaks[userobject.name] = 1;
+              user_world_max_streaks[userobject.name] = 1;
             }
-            if (!user_word_current_streaks[userobject.name]) {
-              user_word_current_streaks[userobject.name] = 1;
-            }
-          } else if (userobject?.score?.length === 6) {
-            if (userobject?.score[5]?.filter((x) => x === 2).length === 5) {
-              if (user_word_current_streaks[userobject.name]) {
-                user_word_current_streaks[userobject.name]++;
-              }
-              if (!user_word_current_streaks[userobject.name]) {
-                user_word_current_streaks[userobject.name] = 1;
+          } else if (userobject?.worldleScore?.length === 6) {
+            if (
+              userobject?.worldleScore[5]?.filter((x) => x === 2).length === 5
+            ) {
+              if (user_world_curr_streaks[userobject.name]) {
+                user_world_curr_streaks[userobject.name]++;
+                user_world_max_streaks[userobject.name] = Math.max(
+                  user_world_max_streaks[userobject.name],
+                  user_world_curr_streaks[userobject.name]
+                );
+              } else if (!user_world_curr_streaks[userobject.name]) {
+                user_world_curr_streaks[userobject.name] = 1;
+                user_world_max_streaks[userobject.name] = 1;
               }
             } else {
-              if (user_word_current_streaks[userobject.name]) {
-                user_word_current_streaks[userobject.name] = 0;
-              } else if (!user_word_current_streaks[userobject.name]) {
-                user_word_current_streaks[userobject.name] = 0;
+              if (user_world_curr_streaks[userobject.name]) {
+                user_world_curr_streaks[userobject.name] = 0;
+              } else if (!user_world_curr_streaks[userobject.name]) {
+                user_world_curr_streaks[userobject.name] = 0;
               }
             }
           }
         });
       });
 
-    const sorted = Object.entries(user_word_current_streaks).sort(
+    const maxsorted = Object.entries(user_world_max_streaks).sort(
       ([, a], [, b]) => b - a
     );
 
-    const filtered = sorted.filter((kvp) => {
+    const currsorted = Object.entries(user_world_curr_streaks).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const maxfiltered = maxsorted.filter((kvp) => {
       return !dontShowUsersList.includes(kvp[0]);
     });
 
-    return filtered;
+    const currfiltered = currsorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return [maxfiltered, currfiltered];
   }, [scores]);
 
   const CloseLeaderboardModalIcon = (
@@ -375,28 +405,6 @@ export default function LeaderboardModal({
                 }}
               >
                 <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
-                  <span style={{ fontWeight: "600", letterSpacing: "1.5px" }}>
-                    WOR<span style={{ color: "green" }}>L</span>DLE
-                  </span>
-                  <span style={{ paddingLeft: "10px" }}>Crowns 👑</span>
-                </Box>
-                <LeaderboardChart
-                  users={userWorldleCrownScores.map(
-                    (userScoreArray) => userScoreArray[0]
-                  )}
-                  usersValuesArray={userWorldleCrownScores.map(
-                    (userScoreArray) => userScoreArray[1]
-                  )}
-                />
-              </Paper>
-
-              <Paper
-                elevation={10}
-                sx={{
-                  margin: "18px",
-                }}
-              >
-                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
                   <span>
                     <WLetterBox
                       sx={{
@@ -445,14 +453,15 @@ export default function LeaderboardModal({
                 </Box>
 
                 <LeaderboardChart
-                  users={maxStreaksWordle.map(
+                  users={streaksWordle[0].map(
                     (userScoreArray) => userScoreArray[0]
                   )}
-                  usersValuesArray={maxStreaksWordle.map(
+                  usersValuesArray={streaksWordle[0].map(
                     (userScoreArray) => userScoreArray[1]
                   )}
                 />
               </Paper>
+
               <Paper
                 elevation={10}
                 sx={{
@@ -509,14 +518,87 @@ export default function LeaderboardModal({
                   </span>
                 </Box>
                 <LeaderboardChart
-                  users={currentStreaksWordle.map(
+                  users={streaksWordle[1].map(
                     (userScoreArray) => userScoreArray[0]
                   )}
-                  usersValuesArray={currentStreaksWordle.map(
+                  usersValuesArray={streaksWordle[1].map(
                     (userScoreArray) => userScoreArray[1]
                   )}
                 />
               </Paper>
+
+              <Paper
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
+                  <span style={{ fontWeight: "600", letterSpacing: "1.5px" }}>
+                    WOR<span style={{ color: "green" }}>L</span>DLE
+                  </span>
+                  <span style={{ paddingLeft: "10px" }}>Crowns 👑</span>
+                </Box>
+                <LeaderboardChart
+                  users={userWorldleCrownScores.map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={userWorldleCrownScores.map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
+              </Paper>
+
+              <Paper
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
+                  <span>
+                    <span style={{ fontWeight: "600", letterSpacing: "1.5px" }}>
+                      WOR<span style={{ color: "green" }}>L</span>DLE
+                    </span>
+                    <span style={{ paddingLeft: "10px" }}>Max Streak 🔥</span>
+                  </span>
+                </Box>
+                <LeaderboardChart
+                  users={streaksWorldle[0].map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={streaksWorldle[0].map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
+              </Paper>
+
+              <Paper
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
+                  <span>
+                    <span style={{ fontWeight: "600", letterSpacing: "1.5px" }}>
+                      WOR<span style={{ color: "green" }}>L</span>DLE
+                    </span>
+                    <span style={{ paddingLeft: "10px" }}>
+                      Current Streak 📈
+                    </span>
+                  </span>
+                </Box>
+                <LeaderboardChart
+                  users={streaksWorldle[1].map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={streaksWorldle[1].map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
+              </Paper>
+
               <Paper
                 elevation={10}
                 sx={{
