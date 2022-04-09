@@ -11,6 +11,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AddSvgModal from "./components/Modals/Svg/AddSvgModal";
 import Iconbar from "./components/Iconbar/Iconbar";
 import LeaderboardModal from "./components/Modals/Leaderboard/LeaderboardModal";
+import FeaturesModal from "./components/Modals/Features/FeaturesModal";
 
 const apiurl = import.meta.env.VITE_API_URL;
 const fetchUsersUrl = import.meta.env.VITE_FETCH_USERS_URL;
@@ -26,6 +27,7 @@ function App() {
   const [statsModalOpenState, setStatsModalOpenState] = useState(false);
   const [addSvgModalOpen, setaddSvgModalOpen] = useState(false);
   const [LeaderboardModalOpen, setLeaderboardModalOpen] = useState(false);
+  const [featuresModalState, setfeaturesModalState] = useState(false);
   const [scores, setScores] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [dontShowUsersList, setDontShowUsersList] = useState([]);
@@ -248,6 +250,7 @@ function App() {
         setCurateUserModalState={setCurateUserModalState}
         setStatsModalOpenState={setStatsModalOpenState}
         setaddSvgModalOpen={setaddSvgModalOpen}
+        setfeaturesModalState={setfeaturesModalState}
       />
       <Modal
         setmodalOpenState={setmodalOpenState}
@@ -286,6 +289,12 @@ function App() {
           LeaderboardModalOpen={LeaderboardModalOpen}
           scores={scores}
           setLeaderboardModalOpen={setLeaderboardModalOpen}
+        />
+      )}
+      {featuresModalState && (
+        <FeaturesModal
+          featuresModalState={featuresModalState}
+          setfeaturesModalState={setfeaturesModalState}
         />
       )}
     </>
