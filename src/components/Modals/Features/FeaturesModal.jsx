@@ -112,12 +112,9 @@ export default function FeaturesModal({
             position: "relative",
             width: mobile ? "calc(100% - 20px)" : "calc(100% - 200px)",
             maxWidth: "1000px",
-            // margin: "0 auto",
             background: "#444",
             maxHeight: "704px",
-            // paddingBottom: "40px",
             overflowY: "scroll",
-            // height: mobile ? "calc(100% - 100px)" : "calc(100% - 200px)",
           }}
         >
           <Box
@@ -143,7 +140,6 @@ export default function FeaturesModal({
               <Paper
                 elevation={10}
                 sx={{
-                  //   margin: "18px",
                   height: "100%",
                   padding: mobile ? "0px" : "30px",
                 }}
@@ -203,7 +199,7 @@ export default function FeaturesModal({
                     </TimelineSeparator>
                     <TimelineContent sx={{ py: "12px", px: 2 }}>
                       <Typography variant="h6" component="span">
-                        Automation
+                        Automate
                       </Typography>
                       <Typography>
                         Would like to automate adding the daily country svg and
@@ -231,8 +227,8 @@ export default function FeaturesModal({
                         Settings
                       </Typography>
                       <Typography>
-                        Customization settings: horizontal/vertical feed. Toggle
-                        if you want to show icons directly in feed.
+                        Custom settings: horizontal / vertical feed. Toggle if
+                        you want to show icons directly in feed.
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
@@ -359,7 +355,7 @@ export default function FeaturesModal({
                     </TimelineSeparator>
                     <TimelineContent sx={{ py: "12px", px: 2 }}>
                       <Typography variant="h6" component="span">
-                        Optimization
+                        Optimize
                       </Typography>
                       <Typography>
                         Scoredle is starting to show signs of scale issues with
