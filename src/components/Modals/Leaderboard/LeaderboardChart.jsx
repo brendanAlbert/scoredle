@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { useMediaQuery } from "@mui/material";
 import { guid } from "../../../helpers/helpers";
 
@@ -6,38 +6,32 @@ export default function LeaderboardChart({
   users = ["Al", "Bo", "Ca", "De", "Fo"],
   usersValuesArray = [6, 4, 3, 2, 1],
 }) {
-  const [medalsStack, setmedalsStack] = useState([]);
   let mobile = useMediaQuery(`(max-width: 420px)`);
   let minitablet = useMediaQuery(`(max-width: 570px)`);
   let tablet = useMediaQuery(`(max-width: 770px)`);
   let smalldesktop = useMediaQuery(`(max-width: 930px)`);
 
-  // let medalsArray = useMemo(() => {
-  //   let medals = ["🥇 ", "🥈 ", "🥉 "];
-  //   let place = 0;
-  //   let result = usersValuesArray.reduce((prev, curr) => {
-  //     console.log({ prev, curr });
-  //     if (prev > curr && place < 3) {
-  //       setmedalsStack(...medalsStack, medals[place++]);
-  //       return curr;
-  //     } else if (prev === curr && place < 3) {
-  //       setmedalsStack(...medalsStack, medals[place]);
-  //       return curr;
-  //     } else {
-  //       return curr;
-  //     }
-  //   });
+  const medalStack = useMemo(() => {
+    let medals = ["🥇 ", "🥈 ", "🥉 "];
 
-  //   console.log({
-  //     result,
-  //     place,
-  //     medalsStack,
-  //   });
-  // }, [usersValuesArray]);
+    let medalStack = [];
 
-  // useEffect(() => {
-  //   console.log({ medalsArray });
-  // }, [medalsArray]);
+    usersValuesArray.reduce((prev, curr) => {
+      if (prev > curr) {
+        medalStack.push(medals[0]);
+        medals.shift();
+      } else if (prev === curr) {
+        medalStack.push(medals[0]);
+      }
+      return curr;
+    });
+
+    if (medals[0]) {
+      medalStack.push(medals[0]);
+    }
+
+    return medalStack;
+  }, []);
 
   const getNormalizedArray = (array) => {
     // this will be useful for creating the bar chart when the numbers of peoples guesses reach the mid double digits
@@ -76,9 +70,7 @@ export default function LeaderboardChart({
             gridTemplateColumns: mobile ? "10px 100px 2fr" : "10px 110px 3fr",
           }}
         >
-          <span>
-            {idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}
-          </span>
+          <span>{medalStack[idx] ? medalStack[idx] : ""}</span>
           <span
             style={{
               paddingRight: "8px",

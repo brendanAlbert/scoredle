@@ -1,8 +1,6 @@
 import { useMemo } from "react";
 import { styled, Box } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
-import Button from "@mui/material/Button";
-import { useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Paper } from "@mui/material";
@@ -62,6 +60,15 @@ const LetterBox = styled("span")({
   marginRight: "2px",
 });
 
+const colors = ["#2ECC71", "#F1C40F", "#7F8C8D"];
+
+const WLetterBox = styled("span")({
+  fontSize: "clamp(12px, 2vw ,16px)",
+  padding: "4px 6px",
+  fontWeight: 600,
+  marginRight: "2px",
+});
+
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 export default function LeaderboardModal({
@@ -70,7 +77,6 @@ export default function LeaderboardModal({
   setLeaderboardModalOpen,
   scores,
 }) {
-  const { user } = useAuth0();
   let mobile = useMediaQuery(`(max-width: 662px)`);
 
   const closeModal = () => {
@@ -87,7 +93,7 @@ export default function LeaderboardModal({
 
   const userWordleCrownScores = useMemo(() => {
     let user_wordle_crown_scores = {};
-    const allusers = scores.map((dateobject) => {
+    scores.map((dateobject) => {
       dateobject.scores.map((userobject) => {
         if (user_wordle_crown_scores[userobject.name] === undefined) {
           user_wordle_crown_scores[userobject.name] = 0;
@@ -112,7 +118,7 @@ export default function LeaderboardModal({
 
   const userWorldleCrownScores = useMemo(() => {
     let user_worldle_crown_scores = {};
-    const allusers = scores.map((dateobject) => {
+    scores.map((dateobject) => {
       dateobject.scores.map((userobject) => {
         if (user_worldle_crown_scores[userobject.name] === undefined) {
           user_worldle_crown_scores[userobject.name] = 0;
@@ -125,6 +131,101 @@ export default function LeaderboardModal({
     });
 
     const sorted = Object.entries(user_worldle_crown_scores).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const filtered = sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return filtered;
+  }, [scores]);
+
+  const maxStreaksWordle = useMemo(() => {
+    let user_word_curr_streaks = {};
+    let user_word_max_streaks = {};
+    scores
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map((dateobject) => {
+        dateobject.scores.map((userobject) => {
+          if (userobject?.score?.length > 0 && userobject?.score?.length < 6) {
+            if (user_word_curr_streaks[userobject.name]) {
+              user_word_curr_streaks[userobject.name]++;
+              user_word_max_streaks[userobject.name] = Math.max(
+                user_word_max_streaks[userobject.name],
+                user_word_curr_streaks[userobject.name]
+              );
+            } else if (!user_word_curr_streaks[userobject.name]) {
+              user_word_curr_streaks[userobject.name] = 1;
+              user_word_max_streaks[userobject.name] = 1;
+            }
+          } else if (userobject?.score?.length === 6) {
+            if (userobject?.score[5]?.filter((x) => x === 2).length === 5) {
+              if (user_word_curr_streaks[userobject.name]) {
+                user_word_curr_streaks[userobject.name]++;
+                user_word_max_streaks[userobject.name] = Math.max(
+                  user_word_max_streaks[userobject.name],
+                  user_word_curr_streaks[userobject.name]
+                );
+              } else if (!user_word_curr_streaks[userobject.name]) {
+                user_word_curr_streaks[userobject.name] = 1;
+                user_word_max_streaks[userobject.name] = 1;
+              }
+            } else {
+              if (user_word_curr_streaks[userobject.name]) {
+                user_word_curr_streaks[userobject.name] = 0;
+              } else if (!user_word_curr_streaks[userobject.name]) {
+                user_word_curr_streaks[userobject.name] = 0;
+              }
+            }
+          }
+        });
+      });
+
+    const sorted = Object.entries(user_word_max_streaks).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const filtered = sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return filtered;
+  }, [scores]);
+
+  const currentStreaksWordle = useMemo(() => {
+    let user_word_current_streaks = {};
+    scores
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map((dateobject) => {
+        dateobject.scores.map((userobject) => {
+          if (userobject?.score?.length > 0 && userobject?.score?.length < 6) {
+            if (user_word_current_streaks[userobject.name]) {
+              user_word_current_streaks[userobject.name]++;
+            }
+            if (!user_word_current_streaks[userobject.name]) {
+              user_word_current_streaks[userobject.name] = 1;
+            }
+          } else if (userobject?.score?.length === 6) {
+            if (userobject?.score[5]?.filter((x) => x === 2).length === 5) {
+              if (user_word_current_streaks[userobject.name]) {
+                user_word_current_streaks[userobject.name]++;
+              }
+              if (!user_word_current_streaks[userobject.name]) {
+                user_word_current_streaks[userobject.name] = 1;
+              }
+            } else {
+              if (user_word_current_streaks[userobject.name]) {
+                user_word_current_streaks[userobject.name] = 0;
+              } else if (!user_word_current_streaks[userobject.name]) {
+                user_word_current_streaks[userobject.name] = 0;
+              }
+            }
+          }
+        });
+      });
+
+    const sorted = Object.entries(user_word_current_streaks).sort(
       ([, a], [, b]) => b - a
     );
 
@@ -212,24 +313,48 @@ export default function LeaderboardModal({
                 }}
               >
                 <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
-                  <LetterBox>
-                    <Letter>W</Letter>
-                  </LetterBox>
-                  <LetterBox>
-                    <Letter>O</Letter>
-                  </LetterBox>
-                  <LetterBox>
-                    <Letter>R</Letter>
-                  </LetterBox>
-                  <LetterBox>
-                    <Letter>D</Letter>
-                  </LetterBox>
-                  <LetterBox>
-                    <Letter>L</Letter>
-                  </LetterBox>
-                  <LetterBox>
-                    <Letter>E</Letter>
-                  </LetterBox>
+                  <WLetterBox
+                    sx={{
+                      backgroundColor: colors[Math.floor(Math.random() * 3)],
+                    }}
+                  >
+                    W
+                  </WLetterBox>
+                  <WLetterBox
+                    sx={{
+                      backgroundColor: colors[Math.floor(Math.random() * 3)],
+                    }}
+                  >
+                    O
+                  </WLetterBox>
+                  <WLetterBox
+                    sx={{
+                      backgroundColor: colors[Math.floor(Math.random() * 3)],
+                    }}
+                  >
+                    R
+                  </WLetterBox>
+                  <WLetterBox
+                    sx={{
+                      backgroundColor: colors[Math.floor(Math.random() * 3)],
+                    }}
+                  >
+                    D
+                  </WLetterBox>
+                  <WLetterBox
+                    sx={{
+                      backgroundColor: colors[Math.floor(Math.random() * 3)],
+                    }}
+                  >
+                    L
+                  </WLetterBox>
+                  <WLetterBox
+                    sx={{
+                      backgroundColor: colors[Math.floor(Math.random() * 3)],
+                    }}
+                  >
+                    E
+                  </WLetterBox>
 
                   <span style={{ paddingLeft: "10px" }}>Crowns 👑</span>
                 </Box>
@@ -269,27 +394,133 @@ export default function LeaderboardModal({
                 elevation={10}
                 sx={{
                   margin: "18px",
-                  textAlign: "center",
-                  padding: "30px",
                 }}
               >
-                Wordle Max Streak - 👷 👷 🚧 Coming Soon !
+                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
+                  <span>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      W
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      O
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      R
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      D
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      L
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      E
+                    </WLetterBox>
+                    <span style={{ paddingLeft: "10px" }}>Max Streak 🔥</span>
+                  </span>
+                </Box>
+
+                <LeaderboardChart
+                  users={maxStreaksWordle.map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={maxStreaksWordle.map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
               </Paper>
               <Paper
                 elevation={10}
                 sx={{
                   margin: "18px",
-                  textAlign: "center",
-                  padding: "30px",
                 }}
               >
-                Wordle Current Streak - 👷 👷 🚧 Coming Soon !
+                <Box sx={{ paddingTop: "20px", paddingLeft: "20px" }}>
+                  <span>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      W
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      O
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      R
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      D
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      L
+                    </WLetterBox>
+                    <WLetterBox
+                      sx={{
+                        backgroundColor: colors[Math.floor(Math.random() * 3)],
+                      }}
+                    >
+                      E
+                    </WLetterBox>
+                    <span style={{ paddingLeft: "10px" }}>
+                      Current Streak 📈
+                    </span>
+                  </span>
+                </Box>
+                <LeaderboardChart
+                  users={currentStreaksWordle.map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={currentStreaksWordle.map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
               </Paper>
               <Paper
                 elevation={10}
                 sx={{
                   margin: "18px",
-                  textAlign: "center",
                   padding: "30px",
                 }}
               >
