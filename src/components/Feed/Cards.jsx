@@ -1,13 +1,29 @@
 import Container from "@mui/material/Container";
 import { useMemo } from "react";
 import Card from "./Card";
-import Box from "@mui/material/Box";
+import { styled, Box } from "@mui/system";
+
 import Typography from "@mui/material/Typography";
 import { guid } from "../../helpers/helpers";
 import CircularProgress from "@mui/material/CircularProgress";
 import { crownify } from "../../helpers/helpers";
 
 const earthPhases = ["🌏", "🌍", "🌎"];
+
+const DAY_MS = 86_400_000;
+
+const WLetterBox = styled("div")({
+  display: "inline-flex",
+  justifyContent: "center",
+  alignItems: "center",
+  fontSize: "8px",
+  padding: "4px 6px",
+  width: "2px",
+  height: "4px",
+  fontWeight: 800,
+  marginRight: "2px",
+  backgroundColor: "#538d4e",
+});
 
 export default function Cards({
   scores: allDateObjects,
@@ -29,6 +45,8 @@ export default function Cards({
         date: dateObject.date,
         scores: filteredScores,
         svg: dateObject.svg,
+        country: dateObject.country,
+        word: dateObject.word,
       };
     });
 
@@ -107,6 +125,7 @@ export default function Cards({
                   >
                     <div
                       style={{
+                        position: "relative",
                         height:
                           dateObject?.svg && dateObject?.svg !== ""
                             ? "100px"
@@ -115,8 +134,48 @@ export default function Cards({
                           "invert(100%) sepia(100%) saturate(2%) hue-rotate(27deg) brightness(104%) contrast(101%)",
                       }}
                     >
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: "110px",
+                          fontSize: "10px",
+                          color: "#aaa",
+                        }}
+                      >
+                        {new Date() - new Date(dateObject?.date) >= DAY_MS
+                          ? dateObject.country
+                          : ""}
+                      </span>
                       <img style={{ height: "100px" }} src={dateObject?.svg} />
                     </div>
+                  </div>
+                )}
+                {toggleState === false && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop:
+                        dateObject?.svg && dateObject?.svg !== ""
+                          ? "10px"
+                          : "0px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "10px",
+                        textTransform: "uppercase",
+                        color: "#FFF",
+                      }}
+                    >
+                      {new Date() - new Date(dateObject?.date) >= DAY_MS
+                        ? dateObject?.word?.split("").map((char) => (
+                            <WLetterBox>
+                              <div style={{ color: "#FFF" }}>{char}</div>
+                            </WLetterBox>
+                          ))
+                        : ""}
+                    </span>
                   </div>
                 )}
                 <Box
