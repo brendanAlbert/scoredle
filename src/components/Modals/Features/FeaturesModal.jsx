@@ -281,7 +281,10 @@ export default function FeaturesModal({
                         <a href="https://framed.wtf/">framed.wtf</a>.
                         <div>
                           Get all 3 'dles and the Framed to achieve a quadfecta!
-                          W ✅ 🌍 ✅ 🎶 ✅ 🎥 ✅
+                          <div>W ✅</div>
+                          <div>🌍 ✅</div>
+                          <div>🎶 ✅</div>
+                          <div>🎥 ✅</div>
                         </div>
                       </Typography>
                     </TimelineContent>
@@ -311,7 +314,9 @@ export default function FeaturesModal({
                         <a href="https://www.heardle.app">heardle.app</a>. Get
                         all 3 'dles: word, world, and heard to achieve the
                         trifecta!
-                        <div>W ✅ 🌍 ✅ 🎶 ✅</div>
+                        <div>W ✅</div>
+                        <div>🌍 ✅</div>
+                        <div>🎶 ✅</div>
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
