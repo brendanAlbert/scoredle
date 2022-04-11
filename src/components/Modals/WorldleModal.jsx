@@ -120,10 +120,26 @@ export default function WorldleModal({
         worldle = match[0];
       }
 
+      const country_svg_regex = /svg=([A-Z:/.])+/gi;
+      const countrySvgRegexBuilder = new RegExp(country_svg_regex);
+      const svg_url_match = countrySvgRegexBuilder.exec(score);
+
+      const country_regex = /country=([A-Z\s])+/gi;
+      const countryRegexBuilder = new RegExp(country_regex);
+      const country_match = countryRegexBuilder.exec(score);
+
       handleWorldleAddScore({
         name: import.meta.env.VITE_USER || user.given_name,
         worldleScore: newScoreArray,
         worldle,
+        country:
+          country_match && country_match[0].split("=")[1]
+            ? country_match[0].split("=")[1]
+            : undefined,
+        svg:
+          svg_url_match && svg_url_match[0]?.split("=")[1]
+            ? svg_url_match[0]?.split("=")[1]
+            : undefined,
       });
 
       closeModal();

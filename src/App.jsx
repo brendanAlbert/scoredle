@@ -174,7 +174,15 @@ function App() {
         newScore.wordle;
     } else {
       let lastIndex = Math.max(0, currentScores[index].scores.length);
-      currentScores[index].scores[lastIndex] = newScore;
+      currentScores[index].scores[lastIndex] = {
+        name: newScore.name,
+        score: newScore.score,
+        wordle: newScore.wordle,
+      };
+    }
+
+    if (newScore.word) {
+      currentScores[index].word = newScore.word;
     }
 
     if (currentScores[index].wordle == "" && newScore.wordle != "") {
@@ -205,7 +213,19 @@ function App() {
         newScore.worldle;
     } else {
       let lastIndex = Math.max(0, currentWorldleScores[index].scores.length);
-      currentWorldleScores[index].scores[lastIndex] = newScore;
+      currentWorldleScores[index].scores[lastIndex] = {
+        name: newScore.name,
+        worldleScore: newScore.worldleScore,
+        worldle: newScore.worldle,
+      };
+    }
+
+    if (newScore.country) {
+      currentWorldleScores[index].country = newScore.country;
+    }
+
+    if (newScore.svg) {
+      currentWorldleScores[index].svg = newScore.svg;
     }
 
     if (currentWorldleScores[index].worldle == "" && newScore.worldle != "") {

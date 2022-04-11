@@ -7,7 +7,7 @@ const env = process.env.VITE_NODE_ENV;
 const localDbUri = process.env.LOCAL_JSON_DB;
 
 const postScoredle = async (db, document) => {
-  const result = await db
+  let result = await db
     .collection(env === "prod" ? collectionname : stagingCollectionName)
     .updateOne(
       { date: document.date },
@@ -16,6 +16,9 @@ const postScoredle = async (db, document) => {
           scores: document.scores,
           worldle: document.worldle ? document.worldle : "",
           wordle: document.wordle ? document.wordle : "",
+          word: document.word ? document.word : "",
+          svg: document.svg ? document.svg : "",
+          country: document.country ? document.country : "",
         },
       },
       {
@@ -36,8 +39,6 @@ const postScoredle = async (db, document) => {
 };
 
 const { MongoClient } = require("mongodb");
-
-require("dotenv").config();
 
 const uri = process.env.VITE_MONGO_URI;
 
@@ -75,6 +76,8 @@ exports.handler = async function (event, context) {
     const { readFile, writeFile } = require("fs/promises");
 
     let newScoredleDateObject = JSON.parse(event.body);
+
+    console.log({ newScoredleDateObject });
 
     const jsondb = JSON.parse(await readFile(new URL(localDbUri)));
 
