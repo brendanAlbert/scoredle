@@ -26,6 +26,7 @@ import TheatersIcon from "@mui/icons-material/Theaters";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import PublicIcon from "@mui/icons-material/Public";
 import LanguageIcon from "@mui/icons-material/Language";
+import RedoIcon from "@mui/icons-material/Redo";
 import Typography from "@mui/material/Typography";
 
 const StyledModal = styled(ModalUnstyled)`
@@ -79,7 +80,7 @@ export default function FeaturesModal({
         position: "absolute",
         right: "18px",
         display: "flex",
-        top: "18px",
+        top: mobile ? "48px" : "18px",
         background: "#00000024",
         borderRadius: "6px",
         cursor: "pointer",
@@ -142,18 +143,19 @@ export default function FeaturesModal({
                 sx={{
                   height: "100%",
                   padding: mobile ? "0px" : "30px",
+                  marginBottom: "40px",
                 }}
               >
                 <div
                   style={{
                     color: "#FFF",
                     fontWeight: 600,
-                    fontSize: "clamp(18px, 4vw ,30px)",
-                    marginTop: "80px",
+                    fontSize: "clamp(26px, 4vw ,30px)",
+                    marginTop: mobile ? "130px" : "80px",
                     paddingLeft: "30px",
                   }}
                 >
-                  {"Features Implemented & Roadmap"}
+                  {"Features Roadmap"}
                 </div>
 
                 <Timeline position="alternate">
@@ -279,7 +281,10 @@ export default function FeaturesModal({
                         <a href="https://framed.wtf/">framed.wtf</a>.
                         <div>
                           Get all 3 'dles and the Framed to achieve a quadfecta!
-                          W ✅ 🌍 ✅ 🎶 ✅ 🎥 ✅
+                          <div>W ✅</div>
+                          <div>🌍 ✅</div>
+                          <div>🎶 ✅</div>
+                          <div>🎥 ✅</div>
                         </div>
                       </Typography>
                     </TimelineContent>
@@ -309,7 +314,9 @@ export default function FeaturesModal({
                         <a href="https://www.heardle.app">heardle.app</a>. Get
                         all 3 'dles: word, world, and heard to achieve the
                         trifecta!
-                        <div>W ✅ 🌍 ✅ 🎶 ✅</div>
+                        <div>W ✅</div>
+                        <div>🌍 ✅</div>
+                        <div>🎶 ✅</div>
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
@@ -366,6 +373,34 @@ export default function FeaturesModal({
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Sun April 10, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="success" variant="outlined">
+                        <RedoIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Word / Name
+                      </Typography>
+                      <Typography>
+                        Country name and wordle word will show up in feed the
+                        next day. Admin can add word, country name and svg from
+                        Scoredle.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
                   <TimelineItem>
                     <TimelineOppositeContent
                       sx={{ m: "auto 0" }}

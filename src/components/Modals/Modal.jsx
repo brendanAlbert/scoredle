@@ -129,10 +129,18 @@ export default function ModalUnstyledComponent({
         wordle = match[0];
       }
 
+      const days_word_regex = /word=([A-Z]){5}/gi;
+      const daysWordRegexBuilder = new RegExp(days_word_regex);
+      const days_word_match = daysWordRegexBuilder.exec(score);
+
       handleDropAddScore({
         name: import.meta.env.VITE_USER || user.given_name,
         score: newScoreArray,
         wordle,
+        word:
+          days_word_match && days_word_match[0].split("=")[1]
+            ? days_word_match[0].split("=")[1]
+            : undefined,
       });
 
       closeModal();
