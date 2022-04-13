@@ -278,14 +278,9 @@ export default function FeaturesModal({
                       </Typography>
                       <Typography>
                         Track your scores from{" "}
-                        <a href="https://framed.wtf/">framed.wtf</a>.
-                        <div>
-                          Get all 3 'dles and the Framed to achieve a quadfecta!
-                          <div>W ✅</div>
-                          <div>🌍 ✅</div>
-                          <div>🎶 ✅</div>
-                          <div>🎥 ✅</div>
-                        </div>
+                        <a href="https://framed.wtf/">framed.wtf</a>. Get all 3
+                        'dles and the Framed to achieve a quadfecta! W ✅ 🌍 ✅
+                        🎶 ✅ 🎥 ✅
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
@@ -313,10 +308,7 @@ export default function FeaturesModal({
                         Track your scores from{" "}
                         <a href="https://www.heardle.app">heardle.app</a>. Get
                         all 3 'dles: word, world, and heard to achieve the
-                        trifecta!
-                        <div>W ✅</div>
-                        <div>🌍 ✅</div>
-                        <div>🎶 ✅</div>
+                        trifecta! W ✅ 🌍 ✅ 🎶 ✅
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
