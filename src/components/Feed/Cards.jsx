@@ -170,7 +170,7 @@ export default function Cards({
                     >
                       {new Date() - new Date(dateObject?.date) >= DAY_MS
                         ? dateObject?.word?.split("").map((char) => (
-                            <WLetterBox>
+                            <WLetterBox key={guid()}>
                               <div style={{ color: "#FFF" }}>{char}</div>
                             </WLetterBox>
                           ))

@@ -167,7 +167,9 @@ export default function LeaderboardModal({
                   user_word_max_streaks[userobject.name],
                   user_word_curr_streaks[userobject.name]
                 );
-              } else if (!user_word_curr_streaks[userobject.name]) {
+              } else if (
+                user_word_curr_streaks[userobject.name] === undefined
+              ) {
                 user_word_curr_streaks[userobject.name] = 1;
                 user_word_max_streaks[userobject.name] = 1;
               }
@@ -212,13 +214,15 @@ export default function LeaderboardModal({
             userobject?.worldleScore?.length > 0 &&
             userobject?.worldleScore?.length < 6
           ) {
-            if (user_world_curr_streaks[userobject.name]) {
+            if (user_world_curr_streaks[userobject.name] >= 0) {
               user_world_curr_streaks[userobject.name]++;
-              user_world_max_streaks[userobject.name] = Math.max(
-                user_world_max_streaks[userobject.name],
-                user_world_curr_streaks[userobject.name]
-              );
-            } else if (!user_world_curr_streaks[userobject.name]) {
+
+              let max = user_world_max_streaks[userobject.name]
+                ? user_world_max_streaks[userobject.name]
+                : 0;
+              let curr = user_world_curr_streaks[userobject.name];
+              user_world_max_streaks[userobject.name] = Math.max(curr, max);
+            } else if (user_world_curr_streaks[userobject.name] === undefined) {
               user_world_curr_streaks[userobject.name] = 1;
               user_world_max_streaks[userobject.name] = 1;
             }
@@ -226,22 +230,24 @@ export default function LeaderboardModal({
             if (
               userobject?.worldleScore[5]?.filter((x) => x === 2).length === 5
             ) {
-              if (user_world_curr_streaks[userobject.name]) {
+              if (user_world_curr_streaks[userobject.name] >= 0) {
                 user_world_curr_streaks[userobject.name]++;
+
+                let max = user_world_max_streaks[userobject.name]
+                  ? user_world_max_streaks[userobject.name]
+                  : 0;
                 user_world_max_streaks[userobject.name] = Math.max(
-                  user_world_max_streaks[userobject.name],
+                  max,
                   user_world_curr_streaks[userobject.name]
                 );
-              } else if (!user_world_curr_streaks[userobject.name]) {
+              } else if (
+                user_world_curr_streaks[userobject.name] === undefined
+              ) {
                 user_world_curr_streaks[userobject.name] = 1;
                 user_world_max_streaks[userobject.name] = 1;
               }
             } else {
-              if (user_world_curr_streaks[userobject.name]) {
-                user_world_curr_streaks[userobject.name] = 0;
-              } else if (!user_world_curr_streaks[userobject.name]) {
-                user_world_curr_streaks[userobject.name] = 0;
-              }
+              user_world_curr_streaks[userobject.name] = 0;
             }
           }
         });

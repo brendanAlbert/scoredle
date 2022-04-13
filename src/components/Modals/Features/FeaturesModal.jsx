@@ -278,14 +278,9 @@ export default function FeaturesModal({
                       </Typography>
                       <Typography>
                         Track your scores from{" "}
-                        <a href="https://framed.wtf/">framed.wtf</a>.
-                        <div>
-                          Get all 3 'dles and the Framed to achieve a quadfecta!
-                          <div>W ✅</div>
-                          <div>🌍 ✅</div>
-                          <div>🎶 ✅</div>
-                          <div>🎥 ✅</div>
-                        </div>
+                        <a href="https://framed.wtf/">framed.wtf</a>. Get all 3
+                        'dles and the Framed to achieve a quadfecta! W ✅ 🌍 ✅
+                        🎶 ✅ 🎥 ✅
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
@@ -313,10 +308,7 @@ export default function FeaturesModal({
                         Track your scores from{" "}
                         <a href="https://www.heardle.app">heardle.app</a>. Get
                         all 3 'dles: word, world, and heard to achieve the
-                        trifecta!
-                        <div>W ✅</div>
-                        <div>🌍 ✅</div>
-                        <div>🎶 ✅</div>
+                        trifecta! W ✅ 🌍 ✅ 🎶 ✅
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
@@ -370,6 +362,31 @@ export default function FeaturesModal({
                         showing too much or doing too many calculations.
                         Exploring options like virtualized list or limited feed
                         size may solve this.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Tue April 12, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="success" variant="outlined">
+                        <BugReportIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Bugfix
+                      </Typography>
+                      <Typography>
+                        Fixed bug affecting Worldle max streak in leaderboard.
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
