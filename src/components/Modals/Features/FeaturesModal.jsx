@@ -380,6 +380,31 @@ export default function FeaturesModal({
                       variant="body2"
                       color="text.secondary"
                     >
+                      Tue April 12, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="success" variant="outlined">
+                        <BugReportIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Bugfix
+                      </Typography>
+                      <Typography>
+                        Fixed bug affecting Worldle max streak in leaderboard.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
                       Sun April 10, 2022
                     </TimelineOppositeContent>
                     <TimelineSeparator>
