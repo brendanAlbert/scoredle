@@ -27,6 +27,7 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 import PublicIcon from "@mui/icons-material/Public";
 import LanguageIcon from "@mui/icons-material/Language";
 import RedoIcon from "@mui/icons-material/Redo";
+import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
 import Typography from "@mui/material/Typography";
 
 const StyledModal = styled(ModalUnstyled)`
@@ -337,6 +338,61 @@ export default function FeaturesModal({
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      April
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="primary" variant="outlined">
+                        <SouthAmericaIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Regions
+                      </Typography>
+                      <Typography>
+                        Track users' performance by region of the world in
+                        worldle. Africa, North/South America, Asia, Caribbean,
+                        Europe, Middle East, Oceania.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Sat April 16, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="success" variant="outlined">
+                        <BugReportIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Load More
+                      </Typography>
+                      <Typography>
+                        Add [load 5 more] button. Limiting the feed size this
+                        way seems to help the performance a bit. Fixed wordle
+                        max streak bug in leaderboard.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
                   <TimelineItem>
                     <TimelineOppositeContent
                       sx={{ m: "auto 0" }}
