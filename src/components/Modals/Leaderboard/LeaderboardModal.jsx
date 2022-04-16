@@ -149,24 +149,26 @@ export default function LeaderboardModal({
       .map((dateobject) => {
         dateobject.scores.map((userobject) => {
           if (userobject?.score?.length > 0 && userobject?.score?.length < 6) {
-            if (user_word_curr_streaks[userobject.name]) {
+            if (user_word_curr_streaks[userobject.name] >= 0) {
               user_word_curr_streaks[userobject.name]++;
-              user_word_max_streaks[userobject.name] = Math.max(
-                user_word_max_streaks[userobject.name],
-                user_word_curr_streaks[userobject.name]
-              );
-            } else if (!user_word_curr_streaks[userobject.name]) {
+              let max = user_word_max_streaks[userobject.name]
+                ? user_word_max_streaks[userobject.name]
+                : 0;
+              let curr = user_word_curr_streaks[userobject.name];
+              user_word_max_streaks[userobject.name] = Math.max(max, curr);
+            } else if (user_word_curr_streaks[userobject.name] === undefined) {
               user_word_curr_streaks[userobject.name] = 1;
               user_word_max_streaks[userobject.name] = 1;
             }
           } else if (userobject?.score?.length === 6) {
             if (userobject?.score[5]?.filter((x) => x === 2).length === 5) {
-              if (user_word_curr_streaks[userobject.name]) {
+              if (user_word_curr_streaks[userobject.name] >= 0) {
                 user_word_curr_streaks[userobject.name]++;
-                user_word_max_streaks[userobject.name] = Math.max(
-                  user_word_max_streaks[userobject.name],
-                  user_word_curr_streaks[userobject.name]
-                );
+                let max = user_word_max_streaks[userobject.name]
+                  ? user_word_max_streaks[userobject.name]
+                  : 0;
+                let curr = user_word_curr_streaks[userobject.name];
+                user_word_max_streaks[userobject.name] = Math.max(max, curr);
               } else if (
                 user_word_curr_streaks[userobject.name] === undefined
               ) {
@@ -174,11 +176,7 @@ export default function LeaderboardModal({
                 user_word_max_streaks[userobject.name] = 1;
               }
             } else {
-              if (user_word_curr_streaks[userobject.name]) {
-                user_word_curr_streaks[userobject.name] = 0;
-              } else if (!user_word_curr_streaks[userobject.name]) {
-                user_word_curr_streaks[userobject.name] = 0;
-              }
+              user_word_curr_streaks[userobject.name] = 0;
             }
           }
         });

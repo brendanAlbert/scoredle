@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
-import Cards from "./components/Feed/Cards";
+import WordleFeed from "./components/Feed/WordleFeed";
+import WorldleFeed from "./components/Feed/WorldleFeed";
 import RightDrawer from "./components/Drawer/Drawer";
 import Modal from "./components/Modals/Modal";
 import WorldleModal from "./components/Modals/WorldleModal";
@@ -33,6 +34,8 @@ function App() {
   const [dontShowUsersList, setDontShowUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
+  const [wordleCardsLoaded, setWordleCardsLoaded] = useState(5);
+  const [worldleCardsLoaded, setWorldleCardsLoaded] = useState(5);
 
   const [toggleState, setToggleState] = useState(false);
 
@@ -236,14 +239,54 @@ function App() {
     setScores(currentWorldleScores);
   };
 
+  const filteredWordleScores = useMemo(() => {
+    let sortedScoredleDateObjectsArray = scores?.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    let filtered = sortedScoredleDateObjectsArray?.map((dateObject) => {
+      let filteredScores = dateObject?.scores?.filter((scoreUser) => {
+        return !dontShowUsersList?.some((dsu) => dsu == scoreUser.name);
+      });
+
+      return {
+        date: dateObject.date,
+        scores: filteredScores,
+        word: dateObject.word,
+      };
+    });
+
+    let shorterList = filtered.splice(0, wordleCardsLoaded);
+
+    return shorterList;
+  }, [scores, dontShowUsersList, wordleCardsLoaded]);
+
+  const filteredWorldleScores = useMemo(() => {
+    let sortedScoredleDateObjectsArray = scores?.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    let filtered = sortedScoredleDateObjectsArray?.map((dateObject) => {
+      let filteredScores = dateObject?.scores?.filter((scoreUser) => {
+        return !dontShowUsersList?.some((dsu) => dsu == scoreUser.name);
+      });
+
+      return {
+        date: dateObject.date,
+        scores: filteredScores,
+        svg: dateObject.svg,
+        country: dateObject.country,
+      };
+    });
+
+    let shorterWorldleList = filtered.splice(0, worldleCardsLoaded);
+
+    return shorterWorldleList;
+  }, [scores, dontShowUsersList, worldleCardsLoaded]);
+
   return (
     <>
-      <Navbar
-        toggleState={toggleState}
-        toggleDrawer={toggleDrawer}
-        drawerOpenState={drawerOpenState}
-      />
-
+      <Navbar toggleState={toggleState} toggleDrawer={toggleDrawer} />
       <Iconbar
         loading={loading}
         toggleState={toggleState}
@@ -253,13 +296,26 @@ function App() {
         setmodalOpenState={setmodalOpenState}
       />
 
-      <Cards
-        scores={scores}
-        toggleState={toggleState}
-        loading={loading}
-        dontShowUsers={dontShowUsersList}
-        setmodalOpenState={setmodalOpenState}
-      />
+      {toggleState === false && (
+        <WordleFeed
+          max={scores.length}
+          filteredWordleScores={filteredWordleScores}
+          loading={loading}
+          wordleCardsLoaded={wordleCardsLoaded}
+          setWordleCardsLoaded={setWordleCardsLoaded}
+        />
+      )}
+
+      {toggleState === true && (
+        <WorldleFeed
+          max={scores.length}
+          filteredWorldleScores={filteredWorldleScores}
+          loading={loading}
+          worldleCardsLoaded={worldleCardsLoaded}
+          setWorldleCardsLoaded={setWorldleCardsLoaded}
+        />
+      )}
+
       <RightDrawer
         toggleState={toggleState}
         setToggleState={setToggleState}
@@ -272,24 +328,34 @@ function App() {
         setaddSvgModalOpen={setaddSvgModalOpen}
         setfeaturesModalState={setfeaturesModalState}
       />
-      <Modal
-        setmodalOpenState={setmodalOpenState}
-        modalOpenState={modalOpenState}
-        handleDropAddScore={handleDropAddScore}
-      />
-      <WorldleModal
-        setWorldleModalOpenState={setWorldleModalOpenState}
-        worldleModalOpenState={worldleModalOpenState}
-        handleWorldleAddScore={handleWorldleAddScore}
-      />
-      <CurateUsersModal
-        allUsers={allUsers}
-        dontShowUsersList={dontShowUsersList}
-        setCurateUserModalState={setCurateUserModalState}
-        curateUserModalState={curateUserModalState}
-        setDontShowUsersList={setDontShowUsersList}
-        persistNewDontShowUsersList={persistNewDontShowUsersList}
-      />
+
+      {modalOpenState && (
+        <Modal
+          setmodalOpenState={setmodalOpenState}
+          modalOpenState={modalOpenState}
+          handleDropAddScore={handleDropAddScore}
+        />
+      )}
+
+      {worldleModalOpenState && (
+        <WorldleModal
+          setWorldleModalOpenState={setWorldleModalOpenState}
+          worldleModalOpenState={worldleModalOpenState}
+          handleWorldleAddScore={handleWorldleAddScore}
+        />
+      )}
+
+      {curateUserModalState && (
+        <CurateUsersModal
+          allUsers={allUsers}
+          dontShowUsersList={dontShowUsersList}
+          setCurateUserModalState={setCurateUserModalState}
+          curateUserModalState={curateUserModalState}
+          setDontShowUsersList={setDontShowUsersList}
+          persistNewDontShowUsersList={persistNewDontShowUsersList}
+        />
+      )}
+
       {user && (
         <StatsModal
           setStatsModalOpenState={setStatsModalOpenState}
