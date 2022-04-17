@@ -345,6 +345,36 @@ export default function FeaturesModal({
                       variant="body2"
                       color="text.secondary"
                     >
+                      Sun April 17, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="success" variant="outlined">
+                        <BugReportIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Validation
+                      </Typography>
+                      <Typography>
+                        1. Part 1 of 2 for the framework to track users'
+                        performance by region in worldle is in place. 2. Added
+                        validation so it is harder to accidentally paste a
+                        Worldle score in the Wordle dropzone and vice versa. 3.
+                        Added logging to help identify why sometimes scores
+                        don't save.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
                       April
                     </TimelineOppositeContent>
                     <TimelineSeparator>

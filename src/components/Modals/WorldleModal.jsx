@@ -45,6 +45,16 @@ const style = {
 
 const placeholderText = "add worldle score";
 
+const darkgraybox = "⬛";
+const graybox = "⬜";
+const yellowbox = "🟨";
+const greenbox = "🟩";
+
+const errorMsgDict = {
+  0: "woops! this is for Worldle, not Wordle",
+  1: "woops! make sure to paste a valid format",
+};
+
 export default function WorldleModal({
   setWorldleModalOpenState,
   worldleModalOpenState,
@@ -53,16 +63,18 @@ export default function WorldleModal({
   const { user } = useAuth0();
   const [score, setLocalScore] = useState("");
   const [error, setError] = useState(false);
+  const [errorNumber, setErrorNumber] = useState(-1);
 
   const closeModal = () => {
     setWorldleModalOpenState(false);
   };
 
   const handleClick = () => {
-    const darkgraybox = "⬛";
-    const graybox = "⬜";
-    const yellowbox = "🟨";
-    const greenbox = "🟩";
+    if (score.includes("Wordle")) {
+      setError(true);
+      setErrorNumber(0);
+      return;
+    }
 
     let greenboxcount = [...score.matchAll(new RegExp(greenbox, "gim"))].map(
       (a) => a.index
@@ -84,6 +96,7 @@ export default function WorldleModal({
 
     if (match) {
       setError(false);
+      setErrorNumber(-1);
 
       let newScoreArray = [];
       let scoreRowArray = [];
@@ -124,6 +137,10 @@ export default function WorldleModal({
       const countrySvgRegexBuilder = new RegExp(country_svg_regex);
       const svg_url_match = countrySvgRegexBuilder.exec(score);
 
+      const region_regex = /region=((af)|(na)|(sa)|(as)|(cb)|(eu)|(me)|(oc))/gi;
+      const regionRegexBuilder = new RegExp(region_regex);
+      const region_match = regionRegexBuilder.exec(score);
+
       const country_regex = /country=([A-Z\s])+/gi;
       const countryRegexBuilder = new RegExp(country_regex);
       const country_match = countryRegexBuilder.exec(score);
@@ -136,6 +153,10 @@ export default function WorldleModal({
           country_match && country_match[0].split("=")[1]
             ? country_match[0].split("=")[1]
             : undefined,
+        region:
+          region_match && region_match[0].split("=")[1]
+            ? region_match[0].split("=")[1]
+            : undefined,
         svg:
           svg_url_match && svg_url_match[0]?.split("=")[1]
             ? svg_url_match[0]?.split("=")[1]
@@ -146,6 +167,7 @@ export default function WorldleModal({
       setLocalScore("");
     } else {
       setError(true);
+      setErrorNumber(1);
     }
   };
 
@@ -167,7 +189,7 @@ export default function WorldleModal({
               color: `#ff0000${error ? "ff" : "00"}`,
             }}
           >
-            woops! make sure to paste a valid format
+            {errorMsgDict[errorNumber]}
           </p>
           <DropZone
             setScore={setLocalScore}
