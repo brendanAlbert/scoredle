@@ -81,9 +81,13 @@ function App() {
   };
 
   const persistScoredles = async (newScoredleDateObject) => {
+    let dataTransferScoredleObject = {
+      ...newScoredleDateObject,
+      user: user.given_name || import.meta.env.VITE_USER,
+    };
     await fetch(postScoredleUrl, {
       method: "POST",
-      body: JSON.stringify(newScoredleDateObject),
+      body: JSON.stringify(dataTransferScoredleObject),
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
@@ -229,6 +233,10 @@ function App() {
 
     if (newScore.svg) {
       currentWorldleScores[index].svg = newScore.svg;
+    }
+
+    if (newScore.region) {
+      currentWorldleScores[index].region = newScore.region;
     }
 
     if (currentWorldleScores[index].worldle == "" && newScore.worldle != "") {

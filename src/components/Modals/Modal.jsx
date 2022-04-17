@@ -43,6 +43,16 @@ const style = {
 
 const placeholderText = "paste your wordle score here";
 
+const darkgraybox = "⬛";
+const graybox = "⬜";
+const yellowbox = "🟨";
+const greenbox = "🟩";
+
+const errorMsgDict = {
+  0: "woops! this is for Wordle, not Worldle",
+  1: "woops! make sure to paste a valid format",
+};
+
 export default function ModalUnstyledComponent({
   setmodalOpenState,
   modalOpenState,
@@ -51,16 +61,18 @@ export default function ModalUnstyledComponent({
   const { user } = useAuth0();
   const [score, setLocalScore] = useState("");
   const [error, setError] = useState(false);
+  const [errorNumber, setErrorNumber] = useState(-1);
 
   const closeModal = () => {
     setmodalOpenState(false);
   };
 
   const handleClick = () => {
-    const darkgraybox = "⬛";
-    const graybox = "⬜";
-    const yellowbox = "🟨";
-    const greenbox = "🟩";
+    if (score.includes("Worldle")) {
+      setError(true);
+      setErrorNumber(0);
+      return;
+    }
 
     let greenboxcount = [...score.matchAll(new RegExp(greenbox, "gim"))].map(
       (a) => a.index
@@ -82,6 +94,7 @@ export default function ModalUnstyledComponent({
 
     if (match) {
       setError(false);
+      setErrorNumber(-1);
 
       let newScoreArray = [];
       let scoreRowArray = [];
@@ -147,6 +160,7 @@ export default function ModalUnstyledComponent({
       setLocalScore("");
     } else {
       setError(true);
+      setErrorNumber(1);
     }
   };
 
@@ -168,7 +182,7 @@ export default function ModalUnstyledComponent({
               color: `#ff0000${error ? "ff" : "00"}`,
             }}
           >
-            woops! make sure to paste a valid format
+            {errorMsgDict[errorNumber]}
           </p>
           <DropZone
             setScore={setLocalScore}

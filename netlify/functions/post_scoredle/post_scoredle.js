@@ -1,6 +1,7 @@
 require("dotenv").config();
 const collectionname = process.env.VITE_MONGO_DB_COLLECTION_NAME;
 const stagingCollectionName = process.env.VITE_MONGO_DB_STAGING_COLLECTION_NAME;
+const errorLogCollection = process.env.ERROR_LOG_COLLECTION;
 
 const dbname = process.env.MONGO_DB_NAME;
 const env = process.env.VITE_NODE_ENV;
@@ -19,12 +20,31 @@ const postScoredle = async (db, document) => {
           word: document.word ? document.word : "",
           svg: document.svg ? document.svg : "",
           country: document.country ? document.country : "",
+          region: document.region ? document.region : "",
         },
       },
       {
         upsert: true,
       }
     );
+
+  let year_month = new Date().getFullYear() + "/" + (new Date().getMonth() + 1);
+
+  let errorLogResult = await db.collection(errorLogCollection).updateOne(
+    { year_month: year_month },
+    {
+      $push: {
+        logs: {
+          entry: `${document.user} ~ [${new Date()}] - ${JSON.stringify(
+            result
+          )} ${JSON.stringify(document)}`,
+        },
+      },
+    },
+    {
+      upsert: true,
+    }
+  );
 
   return {
     statusCode: 200,
