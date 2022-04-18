@@ -83,7 +83,7 @@ function App() {
   const persistScoredles = async (newScoredleDateObject) => {
     let dataTransferScoredleObject = {
       ...newScoredleDateObject,
-      user: user.given_name || import.meta.env.VITE_USER,
+      user: user?.given_name || import.meta.env.VITE_USER,
     };
     await fetch(postScoredleUrl, {
       method: "POST",
@@ -111,12 +111,12 @@ function App() {
 
     let index = localAllUsers.findIndex(
       (userobj) =>
-        userobj.user === (import.meta.env.VITE_USER || user.given_name)
+        userobj.user === (import.meta.env.VITE_USER || user?.given_name)
     );
 
     if (index === -1) {
       let newUserObject = {
-        user: import.meta.env.VITE_USER || user.given_name,
+        user: import.meta.env.VITE_USER || user?.given_name,
         dontShowUsers: [],
       };
       let newAllUsersResult = [...localAllUsers, newUserObject];
@@ -143,7 +143,7 @@ function App() {
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        user: import.meta.env.VITE_USER || user.given_name,
+        user: import.meta.env.VITE_USER || user?.given_name,
         dontShowUsers:
           newDontShowUsersList && newDontShowUsersList.length > 0
             ? newDontShowUsersList
