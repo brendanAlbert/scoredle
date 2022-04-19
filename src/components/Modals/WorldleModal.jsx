@@ -141,7 +141,7 @@ export default function WorldleModal({
       const regionRegexBuilder = new RegExp(region_regex);
       const region_match = regionRegexBuilder.exec(score);
 
-      const country_regex = /country=([A-Z\s])+/gi;
+      const country_regex = /country=([A-Z ])+/gi;
       const countryRegexBuilder = new RegExp(country_regex);
       const country_match = countryRegexBuilder.exec(score);
 
