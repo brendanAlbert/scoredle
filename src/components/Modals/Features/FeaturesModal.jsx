@@ -29,6 +29,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import RedoIcon from "@mui/icons-material/Redo";
 import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
 import Typography from "@mui/material/Typography";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -335,6 +336,33 @@ export default function FeaturesModal({
                       <Typography>
                         Searching for bug which causes scores to sometimes not
                         persist.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Thursday April 21, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot color="warning" variant="outlined">
+                        <AnnouncementIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Regions + Messenger
+                      </Typography>
+                      <Typography>
+                        1. Part 2 of 2 of the regions feature is in place.
+                        Regions feature now live! Improved region acceptance
+                        regex. Added alert messenger.
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>

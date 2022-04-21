@@ -13,6 +13,8 @@ import AddSvgModal from "./components/Modals/Svg/AddSvgModal";
 import Iconbar from "./components/Iconbar/Iconbar";
 import LeaderboardModal from "./components/Modals/Leaderboard/LeaderboardModal";
 import FeaturesModal from "./components/Modals/Features/FeaturesModal";
+import Alert from "@mui/material/Alert";
+import { useMediaQuery } from "@mui/material";
 
 const apiurl = import.meta.env.VITE_API_URL;
 const fetchUsersUrl = import.meta.env.VITE_FETCH_USERS_URL;
@@ -36,8 +38,10 @@ function App() {
   const { user } = useAuth0();
   const [wordleCardsLoaded, setWordleCardsLoaded] = useState(5);
   const [worldleCardsLoaded, setWorldleCardsLoaded] = useState(5);
-
+  const [showNotice, setShowNotice] = useState(true);
   const [toggleState, setToggleState] = useState(false);
+
+  let mobile = useMediaQuery(`(max-width: 662px)`);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -295,6 +299,25 @@ function App() {
   return (
     <>
       <Navbar toggleState={toggleState} toggleDrawer={toggleDrawer} />
+
+      {!loading && showNotice && (
+        <Alert
+          sx={{
+            position: "absolute",
+            top: "90px",
+            right: "30px",
+            left: mobile ? "30px" : null,
+          }}
+          onClose={() => {
+            setShowNotice(false);
+          }}
+          variant="filled"
+          severity="info"
+        >
+          New regions feature for Worldle players added to leaderboard! <br />
+        </Alert>
+      )}
+
       <Iconbar
         loading={loading}
         toggleState={toggleState}

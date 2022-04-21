@@ -1,11 +1,17 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { styled, Box } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
 import { createTheme, ThemeProvider, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Paper } from "@mui/material";
 import LeaderboardChart from "./LeaderboardChart";
-import { crownify } from "../../../helpers/helpers";
+import { crownify, guid } from "../../../helpers/helpers";
+import EuropeIcon from "../../../assets/europe.png";
+import NorthAmericaIcon from "../../../assets/northAmerica.png";
+import SouthAmericaIcon from "../../../assets/southAmerica.png";
+import AsiaIcon from "../../../assets/asia.png";
+import AfricaIcon from "../../../assets/africa.png";
+import OceaniaIcon from "../../../assets/oceania.png";
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -71,6 +77,26 @@ const WLetterBox = styled("span")({
 
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
+const regionMap = {
+  af: "Africa",
+  as: "Asia",
+  na: "North America + Caribbean",
+  sa: "Central + South America",
+  eu: "Europe",
+  me: "Middle East",
+  oc: "Oceania",
+};
+
+const regionIconMap = {
+  af: AfricaIcon,
+  as: AsiaIcon,
+  na: NorthAmericaIcon,
+  sa: SouthAmericaIcon,
+  eu: EuropeIcon,
+  me: Math.floor(Math.random() * 2) % 2 == 0 ? AfricaIcon : AsiaIcon,
+  oc: OceaniaIcon,
+};
+
 export default function LeaderboardModal({
   dontShowUsersList,
   LeaderboardModalOpen,
@@ -78,6 +104,21 @@ export default function LeaderboardModal({
   scores,
 }) {
   let mobile = useMediaQuery(`(max-width: 662px)`);
+
+  const [showNewText, setShowNewText] = useState([
+    "af",
+    "na",
+    "sa",
+    "as",
+    "eu",
+    "me",
+    "oc",
+  ]);
+
+  const removeOnHover = (regionString) => {
+    let newShowNewTextArray = showNewText.filter((txt) => txt != regionString);
+    setShowNewText(newShowNewTextArray);
+  };
 
   const closeModal = () => {
     setLeaderboardModalOpen(false);
@@ -268,6 +309,138 @@ export default function LeaderboardModal({
     });
 
     return [maxfiltered, currfiltered];
+  }, [scores]);
+
+  const regionScores = useMemo(() => {
+    let user_region_scores = {};
+
+    let af_scores = {};
+    let na_scores = {};
+    let sa_scores = {};
+    let eu_scores = {};
+    let me_scores = {};
+    let as_scores = {};
+    let oc_scores = {};
+
+    scores.map((dateobject) => {
+      dateobject.scores.map((userobject) => {
+        if (userobject.worldleScore) {
+          let len = userobject.worldleScore.length;
+          if (
+            (len > 0 && len < 6) ||
+            (len === 6 &&
+              userobject?.worldleScore[5]?.filter((x) => x === 2).length === 5)
+          ) {
+            if (dateobject.region === "af") {
+              af_scores[userobject.name] =
+                af_scores[userobject.name] >= 0
+                  ? af_scores[userobject.name] + 1
+                  : 1;
+            }
+
+            if (dateobject.region === "na") {
+              na_scores[userobject.name] =
+                na_scores[userobject.name] >= 0
+                  ? na_scores[userobject.name] + 1
+                  : 1;
+            }
+
+            if (dateobject.region === "sa") {
+              sa_scores[userobject.name] =
+                sa_scores[userobject.name] >= 0
+                  ? sa_scores[userobject.name] + 1
+                  : 1;
+            }
+
+            if (dateobject.region === "eu") {
+              eu_scores[userobject.name] =
+                eu_scores[userobject.name] >= 0
+                  ? eu_scores[userobject.name] + 1
+                  : 1;
+            }
+
+            if (dateobject.region === "me") {
+              me_scores[userobject.name] =
+                me_scores[userobject.name] >= 0
+                  ? me_scores[userobject.name] + 1
+                  : 1;
+            }
+
+            if (dateobject.region === "as") {
+              as_scores[userobject.name] =
+                as_scores[userobject.name] >= 0
+                  ? as_scores[userobject.name] + 1
+                  : 1;
+            }
+
+            if (dateobject.region === "oc") {
+              oc_scores[userobject.name] =
+                oc_scores[userobject.name] >= 0
+                  ? oc_scores[userobject.name] + 1
+                  : 1;
+            }
+          }
+        }
+      });
+    });
+
+    const africa_sorted = Object.entries(af_scores).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const africa_filtered = africa_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const as_sorted = Object.entries(as_scores).sort(([, a], [, b]) => b - a);
+
+    const as_filtered = as_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const na_sorted = Object.entries(na_scores).sort(([, a], [, b]) => b - a);
+
+    const na_filtered = na_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const sa_sorted = Object.entries(sa_scores).sort(([, a], [, b]) => b - a);
+
+    const sa_filtered = sa_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const me_sorted = Object.entries(me_scores).sort(([, a], [, b]) => b - a);
+
+    const me_filtered = me_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const oc_sorted = Object.entries(oc_scores).sort(([, a], [, b]) => b - a);
+
+    const oc_filtered = oc_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const europe_sorted = Object.entries(eu_scores).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const europe_filtered = europe_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    user_region_scores = {
+      af: africa_filtered,
+      na: na_filtered,
+      sa: sa_filtered,
+      as: as_filtered,
+      me: me_filtered,
+      eu: europe_filtered,
+      oc: oc_filtered,
+    };
+
+    return user_region_scores;
   }, [scores]);
 
   const CloseLeaderboardModalIcon = (
@@ -603,6 +776,71 @@ export default function LeaderboardModal({
                 />
               </Paper>
 
+              {["af", "as", "na", "sa", "eu", "me", "oc"].map(
+                (region) =>
+                  regionScores[region].length > 0 && (
+                    <Paper
+                      key={guid()}
+                      elevation={10}
+                      sx={{
+                        margin: "18px",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          paddingTop: "20px",
+                          paddingLeft: "20px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            width: "100%",
+                            marginBottom: "30px",
+                            color: "#4cd137",
+                            display: showNewText.includes(region)
+                              ? "block"
+                              : "none",
+                          }}
+                          onMouseOver={() => removeOnHover(region)}
+                        >
+                          New!
+                        </div>
+                        <span>
+                          <span
+                            style={{
+                              fontWeight: "600",
+                              letterSpacing: "1.5px",
+                            }}
+                          >
+                            WOR<span style={{ color: "green" }}>L</span>DLE
+                          </span>
+                          <span style={{ paddingLeft: "10px" }}>
+                            {regionMap[region]}
+                            <img
+                              style={{
+                                transform: "translate(10px, 10px)",
+                                width: "40px",
+                              }}
+                              src={regionIconMap[region]}
+                            />
+                          </span>
+                        </span>
+                      </Box>
+                      <LeaderboardChart
+                        users={regionScores[region]?.map(
+                          (userScoreArray) => userScoreArray[0]
+                        )}
+                        usersValuesArray={regionScores[region]?.map(
+                          (userScoreArray) => userScoreArray[1]
+                        )}
+                      />
+                    </Paper>
+                  )
+              )}
+
               <Paper
                 elevation={10}
                 sx={{
@@ -611,6 +849,12 @@ export default function LeaderboardModal({
                 }}
               >
                 Mystery Features - Coming Soon !
+                <br />
+                <br />
+                Continent icons from{" "}
+                <a href="https://flaticons.com">flaticons.com</a>
+                <br />
+                author - Freepik
               </Paper>
             </ThemeProvider>
           </Box>
