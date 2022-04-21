@@ -13,6 +13,8 @@ import AddSvgModal from "./components/Modals/Svg/AddSvgModal";
 import Iconbar from "./components/Iconbar/Iconbar";
 import LeaderboardModal from "./components/Modals/Leaderboard/LeaderboardModal";
 import FeaturesModal from "./components/Modals/Features/FeaturesModal";
+import Alert from "@mui/material/Alert";
+import { useMediaQuery } from "@mui/material";
 
 const apiurl = import.meta.env.VITE_API_URL;
 const fetchUsersUrl = import.meta.env.VITE_FETCH_USERS_URL;
@@ -36,8 +38,10 @@ function App() {
   const { user } = useAuth0();
   const [wordleCardsLoaded, setWordleCardsLoaded] = useState(5);
   const [worldleCardsLoaded, setWorldleCardsLoaded] = useState(5);
-
+  const [showNotice, setShowNotice] = useState(true);
   const [toggleState, setToggleState] = useState(false);
+
+  let mobile = useMediaQuery(`(max-width: 662px)`);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -83,7 +87,7 @@ function App() {
   const persistScoredles = async (newScoredleDateObject) => {
     let dataTransferScoredleObject = {
       ...newScoredleDateObject,
-      user: user.given_name || import.meta.env.VITE_USER,
+      user: user?.given_name || import.meta.env.VITE_USER,
     };
     await fetch(postScoredleUrl, {
       method: "POST",
@@ -111,12 +115,12 @@ function App() {
 
     let index = localAllUsers.findIndex(
       (userobj) =>
-        userobj.user === (import.meta.env.VITE_USER || user.given_name)
+        userobj.user === (import.meta.env.VITE_USER || user?.given_name)
     );
 
     if (index === -1) {
       let newUserObject = {
-        user: import.meta.env.VITE_USER || user.given_name,
+        user: import.meta.env.VITE_USER || user?.given_name,
         dontShowUsers: [],
       };
       let newAllUsersResult = [...localAllUsers, newUserObject];
@@ -143,7 +147,7 @@ function App() {
     await fetch(postUserUrl, {
       method: "POST",
       body: JSON.stringify({
-        user: import.meta.env.VITE_USER || user.given_name,
+        user: import.meta.env.VITE_USER || user?.given_name,
         dontShowUsers:
           newDontShowUsersList && newDontShowUsersList.length > 0
             ? newDontShowUsersList
@@ -295,6 +299,25 @@ function App() {
   return (
     <>
       <Navbar toggleState={toggleState} toggleDrawer={toggleDrawer} />
+
+      {!loading && showNotice && (
+        <Alert
+          sx={{
+            position: "absolute",
+            top: "90px",
+            right: "30px",
+            left: mobile ? "30px" : null,
+          }}
+          onClose={() => {
+            setShowNotice(false);
+          }}
+          variant="filled"
+          severity="info"
+        >
+          New regions feature for Worldle players added to leaderboard! <br />
+        </Alert>
+      )}
+
       <Iconbar
         loading={loading}
         toggleState={toggleState}
