@@ -369,7 +369,7 @@ export default function FeaturesModal({
                       </Typography>
                       <Typography>
                         Third feed type added, Statele! Max and Current streaks
-                        added to Leaderboard. My Stats updated.
+                        and Crowns added to Leaderboard. My Stats updated.
                       </Typography>
                     </TimelineContent>
                   </TimelineItem>

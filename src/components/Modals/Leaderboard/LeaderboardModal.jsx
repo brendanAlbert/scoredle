@@ -446,9 +446,28 @@ export default function LeaderboardModal({
   const stateScores = useMemo(() => {
     let user_state_curr_streaks = {};
     let user_state_max_streaks = {};
+    let user_state_crown_scores = {};
+
+    let winner_found = false;
 
     sortedScores.map((dateobject) => {
+      winner_found = false;
       dateobject.scores.map((userobject) => {
+        if (userobject?.state_score?.length > 0) {
+          if (user_state_crown_scores[userobject.name] === undefined) {
+            user_state_crown_scores[userobject.name] = 0;
+          }
+
+          let winner = crownify(dateobject.scores, "statele");
+
+          if (!winner_found && winner) {
+            winner_found = true;
+            user_state_crown_scores[winner] = user_state_crown_scores[winner]
+              ? user_state_crown_scores[winner] + 1
+              : 1;
+          }
+        }
+
         if (
           userobject?.state_score?.length > 0 &&
           userobject?.state_score?.length < 6
@@ -504,8 +523,16 @@ export default function LeaderboardModal({
       return !dontShowUsersList.includes(kvp[0]);
     });
 
-    return [maxfiltered, currfiltered];
-  }, [scores]);
+    const crown_sorted = Object.entries(user_state_crown_scores).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const crown_filtered = crown_sorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return [maxfiltered, currfiltered, crown_filtered];
+  }, [sortedScores]);
 
   const CloseLeaderboardModalIcon = (
     <Box
@@ -905,6 +932,72 @@ export default function LeaderboardModal({
                     </Paper>
                   )
               )}
+
+              <Paper
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingTop: "20px",
+                    paddingLeft: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      marginBottom: "30px",
+                      color: "#4cd137",
+                      display: showNewText.includes("us_max")
+                        ? "block"
+                        : "none",
+                    }}
+                    onMouseOver={() => removeOnHover("us_max")}
+                  >
+                    New!
+                  </div>
+                  <span style={{ position: "relative", paddingTop: "20px" }}>
+                    <span
+                      style={{
+                        fontWeight: "600",
+                        letterSpacing: "1.5px",
+                      }}
+                    >
+                      <span style={{ color: "green" }}>STATE</span>LE
+                    </span>
+                    <span
+                      style={{
+                        paddingLeft: "10px",
+                        position: "absolute",
+                        top: "12px",
+                      }}
+                    >
+                      <USAIcon />
+                    </span>
+                  </span>
+                </Box>
+                <Box
+                  sx={{
+                    paddingLeft: "20px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <span>Crowns 👑</span>
+                </Box>
+                <LeaderboardChart
+                  users={stateScores[2].map(
+                    (userScoreArray) => userScoreArray[0]
+                  )}
+                  usersValuesArray={stateScores[2].map(
+                    (userScoreArray) => userScoreArray[1]
+                  )}
+                />
+              </Paper>
 
               <Paper
                 key={guid()}
