@@ -6,60 +6,59 @@ import getDirectionIcon from "../Directions/DirectionIcons";
 function WorldleScoreGrid({ worldleScore }) {
   return (
     <div key={guid()}>
-      {worldleScore &&
-        worldleScore.map((scorearray) => (
+      {worldleScore?.map((scorearray) => (
+        <Grid
+          container
+          key={guid()}
+          style={{
+            display: "flex",
+          }}
+        >
           <Grid
-            container
-            key={guid()}
-            style={{
-              display: "flex",
+            sx={{
+              mt: "-1px",
+              display: "inline-flex",
+              gap: "1px",
+              direction: "row",
             }}
+            key={guid()}
+            item
           >
-            <Grid
-              sx={{
-                mt: "-1px",
-                display: "inline-flex",
-                gap: "1px",
-                direction: "row",
-              }}
-              key={guid()}
-              item
-            >
-              {scorearray.map((colorNumber) =>
-                colorNumber < 3 ? (
-                  <Paper
-                    key={guid()}
-                    sx={{
-                      borderRadius: 0,
-                      height: 15,
-                      width: 15,
-                      backgroundColor: () => {
-                        return colorNumber == 0
-                          ? "#C4C4C4"
-                          : colorNumber == 1
-                          ? "#f1c40f"
-                          : colorNumber == 2
-                          ? "#2ecc71"
-                          : null;
-                      },
-                    }}
-                  />
-                ) : (
-                  <span
-                    style={{
-                      paddingLeft: "2px",
-                      height: "18px",
-                      marginTop: "-1px",
-                    }}
-                    key={guid()}
-                  >
-                    {getDirectionIcon(colorNumber)}
-                  </span>
-                )
-              )}
-            </Grid>
+            {scorearray.map((colorNumber) =>
+              colorNumber < 3 ? (
+                <Paper
+                  key={guid()}
+                  sx={{
+                    borderRadius: 0,
+                    height: 15,
+                    width: 15,
+                    backgroundColor: () => {
+                      return colorNumber == 0
+                        ? "#C4C4C4"
+                        : colorNumber == 1
+                        ? "#f1c40f"
+                        : colorNumber == 2
+                        ? "#2ecc71"
+                        : null;
+                    },
+                  }}
+                />
+              ) : (
+                <span
+                  style={{
+                    paddingLeft: "2px",
+                    height: "18px",
+                    marginTop: "-1px",
+                  }}
+                  key={guid()}
+                >
+                  {getDirectionIcon(colorNumber)}
+                </span>
+              )
+            )}
           </Grid>
-        ))}
+        </Grid>
+      ))}
     </div>
   );
 }

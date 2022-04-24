@@ -14,12 +14,15 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Toggle from "../Toggle/Toggle";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import FeedToggle from "../Toggle/FeedToggle";
+import { Typography } from "@mui/material";
 
 export default function RightDrawer({
   drawerOpenState,
   toggleDrawer,
   setmodalOpenState,
   setWorldleModalOpenState,
+  setStateleModalOpenState,
   setCurateUserModalState,
   setStatsModalOpenState,
   toggleState,
@@ -37,6 +40,10 @@ export default function RightDrawer({
 
   const openWorldleModal = () => {
     setWorldleModalOpenState(true);
+  };
+
+  const openStateleModal = () => {
+    setStateleModalOpenState(true);
   };
 
   const openCurateUsersModal = () => {
@@ -84,7 +91,6 @@ export default function RightDrawer({
 
   const list = () => (
     <Box
-      sx={{ width: 250 }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
@@ -117,11 +123,14 @@ export default function RightDrawer({
             <ListItem
               button
               onClick={() => {
-                if (toggleState == false) {
+                if (toggleState.word) {
                   openWordleModal();
                 }
-                if (toggleState) {
+                if (toggleState.world) {
                   openWorldleModal();
+                }
+                if (toggleState.state) {
+                  openStateleModal();
                 }
               }}
               key={"Add Score"}
@@ -175,8 +184,28 @@ export default function RightDrawer({
           open={drawerOpenState}
           onClose={toggleDrawer(false)}
         >
-          {toggleList()}
-          {list()}
+          {/* {toggleList()} */}
+          <Box
+            sx={{
+              height: "95%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box>
+              <FeedToggle
+                toggleState={toggleState}
+                setToggleState={setToggleState}
+              />
+              {list()}
+            </Box>
+            <Box sx={{ maxWidth: "180px", margin: "0 auto" }}>
+              <Typography color="#999" fontSize="12px">
+                Usa by Setyo Ari Wibowo from NounProject.com
+              </Typography>
+            </Box>
+          </Box>
         </Drawer>
       </ThemeProvider>
     </div>

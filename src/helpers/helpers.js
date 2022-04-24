@@ -32,6 +32,14 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
     });
   }
 
+  if (calculateForGameType === "statele") {
+    dateObjectScoresArray?.forEach((userScoreObject, idx) => {
+      if (userScoreObject?.state_score) {
+        tieIndexList[userScoreObject?.state_score?.length - 1].push(idx);
+      }
+    });
+  }
+
   const LastRow = 5;
 
   for (let i = 0; i < 6; i++) {
@@ -44,7 +52,7 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
         calculateForGameType === "wordle" &&
         i === LastRow &&
         dateObjectScoresArray[tieIndexList[i][0]].score[LastRow].filter(
-          (x) => x === 2
+          (x) => x == 2
         ).length !== 5
       ) {
         return null;
@@ -53,7 +61,16 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
         calculateForGameType === "worldle" &&
         i === LastRow &&
         dateObjectScoresArray[tieIndexList[i][0]].worldleScore[LastRow].filter(
-          (x) => x === 2
+          (x) => x == 2
+        ).length !== 5
+      ) {
+        return null;
+      }
+      if (
+        calculateForGameType === "statele" &&
+        i === LastRow &&
+        dateObjectScoresArray[tieIndexList[i][0]].state_score[LastRow].filter(
+          (x) => x == 2
         ).length !== 5
       ) {
         return null;
@@ -76,14 +93,22 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
     let gotItLastGuessList = [];
     mappedLastRowList.forEach((userScoreObj) => {
       if (calculateForGameType === "wordle") {
-        if (userScoreObj.score[LastRow].filter((x) => x === 2).length === 5) {
+        if (userScoreObj.score[LastRow].filter((x) => x == 2).length === 5) {
           gotItLastGuessList.push(userScoreObj);
         }
       }
 
       if (calculateForGameType === "worldle") {
         if (
-          userScoreObj.worldleScore[LastRow].filter((x) => x === 2).length === 5
+          userScoreObj.worldleScore[LastRow].filter((x) => x == 2).length === 5
+        ) {
+          gotItLastGuessList.push(userScoreObj);
+        }
+      }
+
+      if (calculateForGameType === "statele") {
+        if (
+          userScoreObj.state_score[LastRow].filter((x) => x == 2).length === 5
         ) {
           gotItLastGuessList.push(userScoreObj);
         }

@@ -4,7 +4,7 @@ import WorldleScoreGrid from "./WorldleScoreGrid";
 function Card({ crowned, userScoresObject, toggleState }) {
   let length;
 
-  if (toggleState === false && userScoresObject?.score?.length > 0) {
+  if (toggleState === "word" && userScoresObject?.score?.length > 0) {
     length =
       userScoresObject?.score?.length < 6
         ? userScoresObject?.score?.length
@@ -14,7 +14,7 @@ function Card({ crowned, userScoresObject, toggleState }) {
         : userScoresObject?.score?.length;
   }
 
-  if (toggleState === true && userScoresObject?.worldleScore?.length > 0) {
+  if (toggleState === "world" && userScoresObject?.worldleScore?.length > 0) {
     length =
       userScoresObject?.worldleScore?.length < 6
         ? userScoresObject?.worldleScore?.length
@@ -22,6 +22,16 @@ function Card({ crowned, userScoresObject, toggleState }) {
           userScoresObject?.worldleScore[5].includes(1)
         ? "X"
         : userScoresObject?.worldleScore?.length;
+  }
+
+  if (toggleState === "state" && userScoresObject?.state_score?.length > 0) {
+    length =
+      userScoresObject?.state_score?.length < 6
+        ? userScoresObject?.state_score?.length
+        : userScoresObject?.state_score[5].includes(0) ||
+          userScoresObject?.state_score[5].includes(1)
+        ? "X"
+        : userScoresObject?.state_score?.length;
   }
 
   const ratio = `${length} / 6`;
@@ -46,10 +56,12 @@ function Card({ crowned, userScoresObject, toggleState }) {
       >
         <div style={{ justifySelf: "flex-end" }}>{name}</div>
         <div style={{ justifySelf: "center" }}>
-          {toggleState === false ? (
+          {toggleState === "word" ? (
             <ScoreGrid score={userScoresObject.score} />
-          ) : (
+          ) : toggleState === "world" ? (
             <WorldleScoreGrid worldleScore={userScoresObject.worldleScore} />
+          ) : (
+            <WorldleScoreGrid worldleScore={userScoresObject.state_score} />
           )}
         </div>
         <div>{ratio}</div>

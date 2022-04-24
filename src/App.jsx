@@ -3,9 +3,11 @@ import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import WordleFeed from "./components/Feed/WordleFeed";
 import WorldleFeed from "./components/Feed/WorldleFeed";
+import StateleFeed from "./components/Feed/StateleFeed";
 import RightDrawer from "./components/Drawer/Drawer";
 import Modal from "./components/Modals/Modal";
 import WorldleModal from "./components/Modals/WorldleModal";
+import StateleModal from "./components/Modals/States/StateleModal";
 import StatsModal from "./components/Stats/StatsModal";
 import CurateUsersModal from "./components/Modals/CurateUsersModal";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -13,8 +15,7 @@ import AddSvgModal from "./components/Modals/Svg/AddSvgModal";
 import Iconbar from "./components/Iconbar/Iconbar";
 import LeaderboardModal from "./components/Modals/Leaderboard/LeaderboardModal";
 import FeaturesModal from "./components/Modals/Features/FeaturesModal";
-import Alert from "@mui/material/Alert";
-import { useMediaQuery } from "@mui/material";
+import { Messenger } from "./components/Messenger/Messenger";
 
 const apiurl = import.meta.env.VITE_API_URL;
 const fetchUsersUrl = import.meta.env.VITE_FETCH_USERS_URL;
@@ -26,6 +27,7 @@ function App() {
   const [drawerOpenState, setDrawerOpenState] = useState(false);
   const [modalOpenState, setmodalOpenState] = useState(false);
   const [worldleModalOpenState, setWorldleModalOpenState] = useState(false);
+  const [stateleModalOpenState, setStateleModalOpenState] = useState(false);
   const [curateUserModalState, setCurateUserModalState] = useState(false);
   const [statsModalOpenState, setStatsModalOpenState] = useState(false);
   const [addSvgModalOpen, setaddSvgModalOpen] = useState(false);
@@ -38,10 +40,12 @@ function App() {
   const { user } = useAuth0();
   const [wordleCardsLoaded, setWordleCardsLoaded] = useState(5);
   const [worldleCardsLoaded, setWorldleCardsLoaded] = useState(5);
-  const [showNotice, setShowNotice] = useState(true);
-  const [toggleState, setToggleState] = useState(false);
-
-  let mobile = useMediaQuery(`(max-width: 662px)`);
+  const [stateleCardsLoaded, setStateleCardsLoaded] = useState(5);
+  const [toggleState, setToggleState] = useState({
+    word: true,
+    world: false,
+    state: false,
+  });
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -251,6 +255,49 @@ function App() {
     setScores(currentWorldleScores);
   };
 
+  const handleStateleAddScore = (newScore) => {
+    const currentStateleScores = [...scores];
+    let index = currentStateleScores.findIndex(
+      (dateObject) => dateObject.date == new Date().toDateString()
+    );
+
+    let scoreExistsForThisUserIndex = currentStateleScores[
+      index
+    ].scores.findIndex(
+      (userScoreObject) => userScoreObject.name == newScore.name
+    );
+
+    if (scoreExistsForThisUserIndex > -1) {
+      currentStateleScores[index].scores[
+        scoreExistsForThisUserIndex
+      ].state_score = newScore.state_score;
+      currentStateleScores[index].scores[scoreExistsForThisUserIndex].statele =
+        newScore.statele;
+    } else {
+      let lastIndex = Math.max(0, currentStateleScores[index].scores.length);
+      currentStateleScores[index].scores[lastIndex] = {
+        name: newScore.name,
+        state_score: newScore.state_score,
+        statele: newScore.statele,
+      };
+    }
+
+    if (newScore.state) {
+      currentStateleScores[index].state = newScore.state;
+    }
+
+    if (newScore.state_svg) {
+      currentStateleScores[index].state_svg = newScore.state_svg;
+    }
+
+    if (currentStateleScores[index].statele == "" && newScore.statele != "") {
+      currentStateleScores[index].statele = newScore.statele;
+    }
+
+    persistScoredles(currentStateleScores[index]);
+    setScores(currentStateleScores);
+  };
+
   const filteredWordleScores = useMemo(() => {
     let sortedScoredleDateObjectsArray = scores?.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
@@ -296,38 +343,46 @@ function App() {
     return shorterWorldleList;
   }, [scores, dontShowUsersList, worldleCardsLoaded]);
 
+  const filteredStateleScores = useMemo(() => {
+    let sortedScoredleDateObjectsArray = scores?.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    let filtered = sortedScoredleDateObjectsArray?.map((dateObject) => {
+      let filteredScores = dateObject?.scores?.filter((scoreUser) => {
+        return !dontShowUsersList?.some((dsu) => dsu == scoreUser.name);
+      });
+
+      return {
+        date: dateObject.date,
+        scores: filteredScores,
+        state_svg: dateObject.state_svg,
+        state: dateObject.state,
+      };
+    });
+
+    let shorterStateleList = filtered.splice(0, stateleCardsLoaded);
+
+    return shorterStateleList;
+  }, [scores, dontShowUsersList, stateleCardsLoaded]);
+
   return (
     <>
       <Navbar toggleState={toggleState} toggleDrawer={toggleDrawer} />
 
-      {!loading && showNotice && (
-        <Alert
-          sx={{
-            position: "absolute",
-            top: "90px",
-            right: "30px",
-            left: mobile ? "30px" : null,
-          }}
-          onClose={() => {
-            setShowNotice(false);
-          }}
-          variant="filled"
-          severity="info"
-        >
-          New regions feature for Worldle players added to leaderboard! <br />
-        </Alert>
-      )}
+      {!loading && <Messenger />}
 
       <Iconbar
         loading={loading}
         toggleState={toggleState}
         setWorldleModalOpenState={setWorldleModalOpenState}
+        setStateleModalOpenState={setStateleModalOpenState}
         setaddSvgModalOpen={setaddSvgModalOpen}
         setLeaderboardModalOpen={setLeaderboardModalOpen}
         setmodalOpenState={setmodalOpenState}
       />
 
-      {toggleState === false && (
+      {toggleState.word && (
         <WordleFeed
           max={scores.length}
           filteredWordleScores={filteredWordleScores}
@@ -337,13 +392,23 @@ function App() {
         />
       )}
 
-      {toggleState === true && (
+      {toggleState.world && (
         <WorldleFeed
           max={scores.length}
           filteredWorldleScores={filteredWorldleScores}
           loading={loading}
           worldleCardsLoaded={worldleCardsLoaded}
           setWorldleCardsLoaded={setWorldleCardsLoaded}
+        />
+      )}
+
+      {toggleState.state && (
+        <StateleFeed
+          max={scores.length}
+          filteredStateleScores={filteredStateleScores}
+          loading={loading}
+          stateleCardsLoaded={stateleCardsLoaded}
+          setStateleCardsLoaded={setStateleCardsLoaded}
         />
       )}
 
@@ -358,6 +423,7 @@ function App() {
         setStatsModalOpenState={setStatsModalOpenState}
         setaddSvgModalOpen={setaddSvgModalOpen}
         setfeaturesModalState={setfeaturesModalState}
+        setStateleModalOpenState={setStateleModalOpenState}
       />
 
       {modalOpenState && (
@@ -373,6 +439,14 @@ function App() {
           setWorldleModalOpenState={setWorldleModalOpenState}
           worldleModalOpenState={worldleModalOpenState}
           handleWorldleAddScore={handleWorldleAddScore}
+        />
+      )}
+
+      {stateleModalOpenState && (
+        <StateleModal
+          setStateleModalOpenState={setStateleModalOpenState}
+          stateleModalOpenState={stateleModalOpenState}
+          handleStateleAddScore={handleStateleAddScore}
         />
       )}
 

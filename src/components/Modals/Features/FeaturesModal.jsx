@@ -30,6 +30,7 @@ import RedoIcon from "@mui/icons-material/Redo";
 import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
 import Typography from "@mui/material/Typography";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
+import { USAIcon } from "../../../assets/icons/USAIcon";
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -346,7 +347,40 @@ export default function FeaturesModal({
                       variant="body2"
                       color="text.secondary"
                     >
-                      Thursday April 21, 2022
+                      Sat April 23, 2022
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineConnector />
+                      <TimelineDot
+                        color="secondary"
+                        variant="outlined"
+                        sx={{
+                          width: "24px",
+                          height: "24px",
+                        }}
+                      >
+                        <USAIcon />
+                      </TimelineDot>
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent sx={{ py: "12px", px: 2 }}>
+                      <Typography variant="h6" component="span">
+                        Statele
+                      </Typography>
+                      <Typography>
+                        Third feed type added, Statele! Max and Current streaks
+                        added to Leaderboard. My Stats updated.
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+
+                  <TimelineItem>
+                    <TimelineOppositeContent
+                      sx={{ m: "auto 0" }}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Thr April 21, 2022
                     </TimelineOppositeContent>
                     <TimelineSeparator>
                       <TimelineConnector />

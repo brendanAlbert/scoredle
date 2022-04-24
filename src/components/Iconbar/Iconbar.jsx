@@ -13,6 +13,7 @@ const Iconbar = ({
   setLeaderboardModalOpen,
   setmodalOpenState,
   setWorldleModalOpenState,
+  setStateleModalOpenState,
   toggleState,
 }) => {
   const { user } = useAuth0();
@@ -75,11 +76,14 @@ const Iconbar = ({
   };
 
   const openAddScoreModal = () => {
-    if (toggleState === false) {
+    if (toggleState.word) {
       openWordleModal();
     }
-    if (toggleState === true) {
+    if (toggleState.world) {
       openWorldleModal();
+    }
+    if (toggleState.state) {
+      openStateleModal();
     }
   };
 
@@ -89,6 +93,10 @@ const Iconbar = ({
 
   const openWorldleModal = () => {
     setWorldleModalOpenState(true);
+  };
+
+  const openStateleModal = () => {
+    setStateleModalOpenState(true);
   };
 
   return (
@@ -204,7 +212,13 @@ const Iconbar = ({
             onClose={handlePopoverClose}
           >
             <Typography sx={{ p: 1 }}>
-              Add{toggleState === false ? " Wordle " : " Worldle "}Score
+              Add
+              {toggleState.word
+                ? " Wordle "
+                : toggleState.world
+                ? " Worldle "
+                : " Statele "}
+              Score
             </Typography>
           </Popover>
           <Box

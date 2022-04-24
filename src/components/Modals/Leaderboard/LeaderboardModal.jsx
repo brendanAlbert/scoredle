@@ -12,6 +12,8 @@ import SouthAmericaIcon from "../../../assets/southAmerica.png";
 import AsiaIcon from "../../../assets/asia.png";
 import AfricaIcon from "../../../assets/africa.png";
 import OceaniaIcon from "../../../assets/oceania.png";
+import { USAIcon } from "../../../assets/icons/USAIcon";
+import { Typography } from "@mui/material";
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -105,6 +107,10 @@ export default function LeaderboardModal({
 }) {
   let mobile = useMediaQuery(`(max-width: 662px)`);
 
+  const sortedScores = scores.sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
   const [showNewText, setShowNewText] = useState([
     "af",
     "na",
@@ -113,6 +119,8 @@ export default function LeaderboardModal({
     "eu",
     "me",
     "oc",
+    "us_max",
+    "us_curr",
   ]);
 
   const removeOnHover = (regionString) => {
@@ -185,11 +193,23 @@ export default function LeaderboardModal({
   const streaksWordle = useMemo(() => {
     let user_word_curr_streaks = {};
     let user_word_max_streaks = {};
-    scores
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .map((dateobject) => {
-        dateobject.scores.map((userobject) => {
-          if (userobject?.score?.length > 0 && userobject?.score?.length < 6) {
+
+    sortedScores.map((dateobject) => {
+      dateobject.scores.map((userobject) => {
+        if (userobject?.score?.length > 0 && userobject?.score?.length < 6) {
+          if (user_word_curr_streaks[userobject.name] >= 0) {
+            user_word_curr_streaks[userobject.name]++;
+            let max = user_word_max_streaks[userobject.name]
+              ? user_word_max_streaks[userobject.name]
+              : 0;
+            let curr = user_word_curr_streaks[userobject.name];
+            user_word_max_streaks[userobject.name] = Math.max(max, curr);
+          } else if (user_word_curr_streaks[userobject.name] === undefined) {
+            user_word_curr_streaks[userobject.name] = 1;
+            user_word_max_streaks[userobject.name] = 1;
+          }
+        } else if (userobject?.score?.length === 6) {
+          if (userobject?.score[5]?.filter((x) => x == 2).length === 5) {
             if (user_word_curr_streaks[userobject.name] >= 0) {
               user_word_curr_streaks[userobject.name]++;
               let max = user_word_max_streaks[userobject.name]
@@ -201,27 +221,12 @@ export default function LeaderboardModal({
               user_word_curr_streaks[userobject.name] = 1;
               user_word_max_streaks[userobject.name] = 1;
             }
-          } else if (userobject?.score?.length === 6) {
-            if (userobject?.score[5]?.filter((x) => x === 2).length === 5) {
-              if (user_word_curr_streaks[userobject.name] >= 0) {
-                user_word_curr_streaks[userobject.name]++;
-                let max = user_word_max_streaks[userobject.name]
-                  ? user_word_max_streaks[userobject.name]
-                  : 0;
-                let curr = user_word_curr_streaks[userobject.name];
-                user_word_max_streaks[userobject.name] = Math.max(max, curr);
-              } else if (
-                user_word_curr_streaks[userobject.name] === undefined
-              ) {
-                user_word_curr_streaks[userobject.name] = 1;
-                user_word_max_streaks[userobject.name] = 1;
-              }
-            } else {
-              user_word_curr_streaks[userobject.name] = 0;
-            }
+          } else {
+            user_word_curr_streaks[userobject.name] = 0;
           }
-        });
+        }
       });
+    });
 
     const maxsorted = Object.entries(user_word_max_streaks).sort(
       ([, a], [, b]) => b - a
@@ -245,52 +250,47 @@ export default function LeaderboardModal({
   const streaksWorldle = useMemo(() => {
     let user_world_curr_streaks = {};
     let user_world_max_streaks = {};
-    scores
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .map((dateobject) => {
-        dateobject.scores.map((userobject) => {
-          if (
-            userobject?.worldleScore?.length > 0 &&
-            userobject?.worldleScore?.length < 6
-          ) {
+
+    sortedScores.map((dateobject) => {
+      dateobject.scores.map((userobject) => {
+        if (
+          userobject?.worldleScore?.length > 0 &&
+          userobject?.worldleScore?.length < 6
+        ) {
+          if (user_world_curr_streaks[userobject.name] >= 0) {
+            user_world_curr_streaks[userobject.name]++;
+
+            let max = user_world_max_streaks[userobject.name]
+              ? user_world_max_streaks[userobject.name]
+              : 0;
+            let curr = user_world_curr_streaks[userobject.name];
+            user_world_max_streaks[userobject.name] = Math.max(curr, max);
+          } else if (user_world_curr_streaks[userobject.name] === undefined) {
+            user_world_curr_streaks[userobject.name] = 1;
+            user_world_max_streaks[userobject.name] = 1;
+          }
+        } else if (userobject?.worldleScore?.length === 6) {
+          if (userobject?.worldleScore[5]?.filter((x) => x == 2).length === 5) {
             if (user_world_curr_streaks[userobject.name] >= 0) {
               user_world_curr_streaks[userobject.name]++;
 
               let max = user_world_max_streaks[userobject.name]
                 ? user_world_max_streaks[userobject.name]
                 : 0;
-              let curr = user_world_curr_streaks[userobject.name];
-              user_world_max_streaks[userobject.name] = Math.max(curr, max);
+              user_world_max_streaks[userobject.name] = Math.max(
+                max,
+                user_world_curr_streaks[userobject.name]
+              );
             } else if (user_world_curr_streaks[userobject.name] === undefined) {
               user_world_curr_streaks[userobject.name] = 1;
               user_world_max_streaks[userobject.name] = 1;
             }
-          } else if (userobject?.worldleScore?.length === 6) {
-            if (
-              userobject?.worldleScore[5]?.filter((x) => x === 2).length === 5
-            ) {
-              if (user_world_curr_streaks[userobject.name] >= 0) {
-                user_world_curr_streaks[userobject.name]++;
-
-                let max = user_world_max_streaks[userobject.name]
-                  ? user_world_max_streaks[userobject.name]
-                  : 0;
-                user_world_max_streaks[userobject.name] = Math.max(
-                  max,
-                  user_world_curr_streaks[userobject.name]
-                );
-              } else if (
-                user_world_curr_streaks[userobject.name] === undefined
-              ) {
-                user_world_curr_streaks[userobject.name] = 1;
-                user_world_max_streaks[userobject.name] = 1;
-              }
-            } else {
-              user_world_curr_streaks[userobject.name] = 0;
-            }
+          } else {
+            user_world_curr_streaks[userobject.name] = 0;
           }
-        });
+        }
       });
+    });
 
     const maxsorted = Object.entries(user_world_max_streaks).sort(
       ([, a], [, b]) => b - a
@@ -329,7 +329,7 @@ export default function LeaderboardModal({
           if (
             (len > 0 && len < 6) ||
             (len === 6 &&
-              userobject?.worldleScore[5]?.filter((x) => x === 2).length === 5)
+              userobject?.worldleScore[5]?.filter((x) => x == 2).length === 5)
           ) {
             if (dateobject.region === "af") {
               af_scores[userobject.name] =
@@ -443,6 +443,70 @@ export default function LeaderboardModal({
     return user_region_scores;
   }, [scores]);
 
+  const stateScores = useMemo(() => {
+    let user_state_curr_streaks = {};
+    let user_state_max_streaks = {};
+
+    sortedScores.map((dateobject) => {
+      dateobject.scores.map((userobject) => {
+        if (
+          userobject?.state_score?.length > 0 &&
+          userobject?.state_score?.length < 6
+        ) {
+          if (user_state_curr_streaks[userobject.name] >= 0) {
+            user_state_curr_streaks[userobject.name]++;
+
+            let max = user_state_max_streaks[userobject.name]
+              ? user_state_max_streaks[userobject.name]
+              : 0;
+            let curr = user_state_curr_streaks[userobject.name];
+            user_state_max_streaks[userobject.name] = Math.max(curr, max);
+          } else if (user_state_curr_streaks[userobject.name] === undefined) {
+            user_state_curr_streaks[userobject.name] = 1;
+            user_state_max_streaks[userobject.name] = 1;
+          }
+        } else if (userobject?.state_score?.length === 6) {
+          if (userobject?.state_score[5]?.filter((x) => x == 2).length === 5) {
+            if (user_state_curr_streaks[userobject.name] >= 0) {
+              user_state_curr_streaks[userobject.name]++;
+
+              let max = user_state_max_streaks[userobject.name]
+                ? user_state_max_streaks[userobject.name]
+                : 0;
+              user_state_max_streaks[userobject.name] = Math.max(
+                max,
+                user_state_curr_streaks[userobject.name]
+              );
+            } else if (user_state_curr_streaks[userobject.name] === undefined) {
+              user_state_curr_streaks[userobject.name] = 1;
+              user_state_max_streaks[userobject.name] = 1;
+            }
+          } else {
+            user_state_curr_streaks[userobject.name] = 0;
+          }
+        }
+      });
+    });
+
+    const maxsorted = Object.entries(user_state_max_streaks).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const currsorted = Object.entries(user_state_curr_streaks).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const maxfiltered = maxsorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    const currfiltered = currsorted.filter((kvp) => {
+      return !dontShowUsersList.includes(kvp[0]);
+    });
+
+    return [maxfiltered, currfiltered];
+  }, [scores]);
+
   const CloseLeaderboardModalIcon = (
     <Box
       tabIndex={0}
@@ -489,6 +553,7 @@ export default function LeaderboardModal({
             maxHeight: "704px",
             paddingBottom: "40px",
             overflowY: "scroll",
+            overflowX: "hidden",
             height: mobile ? "calc(100% - 100px)" : "calc(100% - 200px)",
           }}
         >
@@ -842,6 +907,148 @@ export default function LeaderboardModal({
               )}
 
               <Paper
+                key={guid()}
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingTop: "20px",
+                    paddingLeft: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      marginBottom: "30px",
+                      color: "#4cd137",
+                      display: showNewText.includes("us_max")
+                        ? "block"
+                        : "none",
+                    }}
+                    onMouseOver={() => removeOnHover("us_max")}
+                  >
+                    New!
+                  </div>
+                  <span style={{ position: "relative", paddingTop: "20px" }}>
+                    <span
+                      style={{
+                        fontWeight: "600",
+                        letterSpacing: "1.5px",
+                      }}
+                    >
+                      <span style={{ color: "green" }}>STATE</span>LE
+                    </span>
+                    <span
+                      style={{
+                        paddingLeft: "10px",
+                        position: "absolute",
+                        top: "12px",
+                      }}
+                    >
+                      <USAIcon />
+                    </span>
+                  </span>
+                </Box>
+                <Box
+                  sx={{
+                    paddingTop: "12px",
+                    paddingLeft: "20px",
+                  }}
+                >
+                  Max Streak 🔥
+                </Box>
+
+                {stateScores[0]?.map((userScoreArray) => userScoreArray[1])
+                  ?.length > 0 && (
+                  <LeaderboardChart
+                    users={stateScores[0]?.map(
+                      (userScoreArray) => userScoreArray[0]
+                    )}
+                    usersValuesArray={stateScores[0]?.map(
+                      (userScoreArray) => userScoreArray[1]
+                    )}
+                  />
+                )}
+              </Paper>
+
+              <Paper
+                key={guid()}
+                elevation={10}
+                sx={{
+                  margin: "18px",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingTop: "20px",
+                    paddingLeft: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      marginBottom: "30px",
+                      color: "#4cd137",
+                      display: showNewText.includes("us_curr")
+                        ? "block"
+                        : "none",
+                    }}
+                    onMouseOver={() => removeOnHover("us_curr")}
+                  >
+                    New!
+                  </div>
+                  <span style={{ position: "relative", paddingTop: "20px" }}>
+                    <span
+                      style={{
+                        fontWeight: "600",
+                        letterSpacing: "1.5px",
+                      }}
+                    >
+                      <span style={{ color: "green" }}>STATE</span>LE
+                    </span>
+                    <span
+                      style={{
+                        paddingLeft: "10px",
+                        position: "absolute",
+                        top: "12px",
+                      }}
+                    >
+                      <USAIcon />
+                    </span>
+                  </span>
+                </Box>
+                <Box
+                  sx={{
+                    paddingTop: "12px",
+                    paddingLeft: "20px",
+                  }}
+                >
+                  Current Streak 📈
+                </Box>
+
+                {stateScores[1]?.map((userScoreArray) => userScoreArray[1])
+                  ?.length > 0 && (
+                  <LeaderboardChart
+                    users={stateScores[1]?.map(
+                      (userScoreArray) => userScoreArray[0]
+                    )}
+                    usersValuesArray={stateScores[1]?.map(
+                      (userScoreArray) => userScoreArray[1]
+                    )}
+                  />
+                )}
+              </Paper>
+
+              <Paper
                 elevation={10}
                 sx={{
                   margin: "18px",
@@ -851,10 +1058,17 @@ export default function LeaderboardModal({
                 Mystery Features - Coming Soon !
                 <br />
                 <br />
-                Continent icons from{" "}
-                <a href="https://flaticons.com">flaticons.com</a>
-                <br />
-                author - Freepik
+                <Typography color="#999" fontSize="12px">
+                  Continent icons from{" "}
+                  <a href="https://flaticons.com">flaticons.com</a>
+                  &nbsp;author - Freepik
+                </Typography>
+                <Box sx={{}}>
+                  <Typography color="#999" fontSize="12px">
+                    Usa by Setyo Ari Wibowo from&nbsp;
+                    <a href="https://NounProject.com">NounProject.com</a>
+                  </Typography>
+                </Box>
               </Paper>
             </ThemeProvider>
           </Box>
