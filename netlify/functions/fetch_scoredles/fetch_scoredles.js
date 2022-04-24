@@ -33,8 +33,6 @@ const getScoredles = async (db) => {
 
 const { MongoClient } = require("mongodb");
 
-require("dotenv").config();
-
 const uri = process.env.VITE_MONGO_URI;
 
 const options = {

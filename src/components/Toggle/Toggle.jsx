@@ -47,7 +47,20 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function ScoredleToggle({ toggleState, setToggleState }) {
   const handleToggle = () => {
-    setToggleState(!toggleState);
+    if (toggleState.word) {
+      setToggleState({
+        word: false,
+        world: true,
+        state: false,
+      });
+    }
+    if (toggleState.world) {
+      setToggleState({
+        word: true,
+        world: false,
+        state: false,
+      });
+    }
   };
   return (
     <FormGroup
@@ -86,7 +99,7 @@ export default function ScoredleToggle({ toggleState, setToggleState }) {
           control={
             <MaterialUISwitch
               onClick={handleToggle}
-              checked={toggleState}
+              checked={toggleState.world}
               sx={{ m: 1 }}
             />
           }

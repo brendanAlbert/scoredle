@@ -15,12 +15,15 @@ const postScoredle = async (db, document) => {
       {
         $set: {
           scores: document.scores,
-          worldle: document.worldle ? document.worldle : "",
-          wordle: document.wordle ? document.wordle : "",
-          word: document.word ? document.word : "",
-          svg: document.svg ? document.svg : "",
-          country: document.country ? document.country : "",
-          region: document.region ? document.region : "",
+          worldle: document.worldle ?? "",
+          wordle: document.wordle ?? "",
+          word: document.word ?? "",
+          svg: document.svg ?? "",
+          country: document.country ?? "",
+          region: document.region ?? "",
+          state: document.state ?? "",
+          statele: document.statele ?? "",
+          state_svg: document.state_svg ?? "",
         },
       },
       {

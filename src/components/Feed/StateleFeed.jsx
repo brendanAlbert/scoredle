@@ -1,6 +1,6 @@
 import Container from "@mui/material/Container";
 import Card from "./Card";
-import { styled, Box } from "@mui/system";
+import { Box } from "@mui/system";
 import Typography from "@mui/material/Typography";
 import { guid } from "../../helpers/helpers";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -9,24 +9,11 @@ import { Button } from "@mui/material";
 
 const DAY_MS = 86_400_000;
 
-const WLetterBox = styled("div")({
-  display: "inline-flex",
-  justifyContent: "center",
-  alignItems: "center",
-  fontSize: "8px",
-  padding: "4px 6px",
-  width: "2px",
-  height: "4px",
-  fontWeight: 800,
-  marginRight: "2px",
-  backgroundColor: "#538d4e",
-});
-
-export default function WordleFeed({
-  filteredWordleScores,
+export default function StateleFeed({
+  filteredStateleScores,
   loading,
-  setWordleCardsLoaded,
-  wordleCardsLoaded,
+  setStateleCardsLoaded,
+  stateleCardsLoaded,
   max,
 }) {
   return (
@@ -42,7 +29,9 @@ export default function WordleFeed({
           flexGrow: 1,
         }}
       >
-        <span style={{ fontWeight: "500" }}>{" WORDLE "}</span>
+        <span style={{ fontWeight: "500" }}>
+          <span style={{ color: "green" }}>STATE</span>LE
+        </span>{" "}
         scores
       </Typography>
 
@@ -59,8 +48,8 @@ export default function WordleFeed({
         </Box>
       ) : (
         <>
-          {filteredWordleScores &&
-            filteredWordleScores?.map((dateObject) => (
+          {filteredStateleScores &&
+            filteredStateleScores?.map((dateObject) => (
               <div key={guid()}>
                 <Typography
                   variant="h6"
@@ -86,27 +75,39 @@ export default function WordleFeed({
                     display: "flex",
                     justifyContent: "center",
                     marginTop:
-                      dateObject?.svg && dateObject?.svg !== ""
+                      dateObject?.state_svg && dateObject?.state_svg !== ""
                         ? "10px"
                         : "0px",
                   }}
                 >
-                  <span
+                  <div
                     style={{
-                      marginTop: "12px",
-                      fontSize: "10px",
-                      textTransform: "uppercase",
-                      color: "#FFF",
+                      position: "relative",
+                      height:
+                        dateObject?.state_svg && dateObject?.state_svg !== ""
+                          ? "100px"
+                          : "0px",
+                      filter:
+                        "invert(100%) sepia(100%) saturate(2%) hue-rotate(27deg) brightness(104%) contrast(101%)",
                     }}
                   >
-                    {new Date() - new Date(dateObject?.date) >= DAY_MS
-                      ? dateObject?.word?.split("").map((char) => (
-                          <WLetterBox key={guid()}>
-                            <div style={{ color: "#FFF" }}>{char}</div>
-                          </WLetterBox>
-                        ))
-                      : ""}
-                  </span>
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: "110px",
+                        fontSize: "10px",
+                        color: "#aaa",
+                      }}
+                    >
+                      {new Date() - new Date(dateObject?.date) >= DAY_MS
+                        ? dateObject.state
+                        : ""}
+                    </span>
+                    <img
+                      style={{ height: "100px" }}
+                      src={dateObject?.state_svg}
+                    />
+                  </div>
                 </div>
 
                 <Box
@@ -122,15 +123,15 @@ export default function WordleFeed({
                   {dateObject?.scores?.map((userScoresObject) => (
                     <div key={guid()}>
                       <Card
-                        crowned={crownify(dateObject?.scores, "wordle")}
-                        toggleState={"word"}
+                        crowned={crownify(dateObject?.scores, "statele")}
+                        toggleState={"state"}
                         userScoresObject={userScoresObject}
                       />
                     </div>
                   ))}
 
                   {!dateObject?.scores?.some(
-                    (userScoreObj) => userScoreObj.score
+                    (userScoreObj) => userScoreObj.state_score
                   ) && (
                     <Typography
                       variant="h5"
@@ -157,10 +158,10 @@ export default function WordleFeed({
               justifyContent: "center",
             }}
           >
-            {max > filteredWordleScores.length ? (
+            {max > filteredStateleScores.length ? (
               <Button
                 color="success"
-                onClick={() => setWordleCardsLoaded(wordleCardsLoaded + 5)}
+                onClick={() => setStateleCardsLoaded(stateleCardsLoaded + 5)}
                 variant="contained"
               >
                 Load 5 More

@@ -124,7 +124,7 @@ export default function WorldleFeed({
                     <div key={guid()}>
                       <Card
                         crowned={crownify(dateObject?.scores, "worldle")}
-                        toggleState={true}
+                        toggleState={"world"}
                         userScoresObject={userScoresObject}
                       />
                     </div>
