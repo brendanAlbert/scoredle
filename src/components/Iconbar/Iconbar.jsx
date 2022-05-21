@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import { useAuth0 } from "@auth0/auth0-react";
 import Popover from "@mui/material/Popover";
@@ -9,25 +8,16 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 
 const Iconbar = ({
   loading,
-  setaddSvgModalOpen,
   setLeaderboardModalOpen,
   setmodalOpenState,
   setWorldleModalOpenState,
   setStateleModalOpenState,
+  setDeutschlandleModalOpenState,
   toggleState,
 }) => {
   const { user } = useAuth0();
-  const [anchorElAddSvg, setAnchorElAddSvg] = useState(null);
   const [anchorElLeaderboard, setAnchorElLeaderboard] = useState(null);
   const [anchorElAddScore, setAnchorElAddScore] = useState(null);
-
-  const handleKeyPress = (event) => {
-    event.preventDefault();
-    const keys = ["Enter", "Space"];
-    if (keys.includes(event.code)) {
-      openAddCountryModal();
-    }
-  };
 
   const handleOpenLeaderboardKeyPress = (event) => {
     event.preventDefault();
@@ -45,17 +35,12 @@ const Iconbar = ({
     }
   };
 
-  const handlePopoverAddSvgOpen = (event) => {
-    setAnchorElAddSvg(event.currentTarget);
-  };
-
   const handlePopoverAddScoreOpen = (event) => {
     setAnchorElAddScore(event.currentTarget);
   };
 
   const handlePopoverClose = () => {
     setAnchorElLeaderboard(null);
-    setAnchorElAddSvg(null);
     setAnchorElAddScore(null);
   };
 
@@ -63,27 +48,25 @@ const Iconbar = ({
     setAnchorElLeaderboard(event.currentTarget);
   };
 
-  const addSvgOpen = Boolean(anchorElAddSvg);
   const leaderboardOpen = Boolean(anchorElLeaderboard);
   const addScoreOpen = Boolean(anchorElAddScore);
-
-  const openAddCountryModal = () => {
-    setaddSvgModalOpen(true);
-  };
 
   const openLeaderboardModal = () => {
     setLeaderboardModalOpen(true);
   };
 
   const openAddScoreModal = () => {
-    if (toggleState.word) {
+    if (toggleState === "word") {
       openWordleModal();
     }
-    if (toggleState.world) {
+    if (toggleState === "world") {
       openWorldleModal();
     }
-    if (toggleState.state) {
+    if (toggleState === "state") {
       openStateleModal();
+    }
+    if (toggleState === "germany") {
+      openDeutschlandleModal();
     }
   };
 
@@ -99,6 +82,10 @@ const Iconbar = ({
     setStateleModalOpenState(true);
   };
 
+  const openDeutschlandleModal = () => {
+    setDeutschlandleModalOpenState(true);
+  };
+
   return (
     <Box
       sx={{
@@ -112,48 +99,6 @@ const Iconbar = ({
         justifyContent: "center",
       }}
     >
-      {/* {!loading && user?.given_name && user?.given_name === "Brendan" && (
-        <>
-          <Popover
-            id="add-svg-icon"
-            sx={{
-              pointerEvents: "none",
-            }}
-            open={addSvgOpen}
-            anchorEl={anchorElAddSvg}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: 70,
-              horizontal: "right",
-            }}
-            onClose={handlePopoverClose}
-          >
-            <Typography sx={{ p: 1 }}>Add Country Svg</Typography>
-          </Popover>
-          <Box
-            tabIndex={0}
-            aria-owns={addSvgOpen ? "add-svg-icon" : undefined}
-            aria-haspopup="true"
-            onKeyPress={handleKeyPress}
-            onMouseEnter={handlePopoverAddSvgOpen}
-            onMouseLeave={handlePopoverClose}
-            onClick={() => openAddCountryModal()}
-            sx={{
-              color: "#2ecc71",
-              cursor: "pointer",
-              "& : hover": {
-                color: "#FFF",
-              },
-            }}
-          >
-            <AddPhotoAlternateIcon />
-          </Box>
-        </>
-      )} */}
-
       {!loading && user && (
         <>
           <Popover
@@ -213,11 +158,15 @@ const Iconbar = ({
           >
             <Typography sx={{ p: 1 }}>
               Add
-              {toggleState.word
+              {toggleState === "word"
                 ? " Wordle "
-                : toggleState.world
+                : toggleState === "world"
                 ? " Worldle "
-                : " Statele "}
+                : toggleState === "state"
+                ? " Statele "
+                : toggleState === "germany"
+                ? " Deutschlandle "
+                : ""}
               Score
             </Typography>
           </Popover>

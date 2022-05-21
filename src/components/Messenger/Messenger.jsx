@@ -3,15 +3,13 @@ import Alert from "@mui/material/Alert";
 import { useMediaQuery, Box } from "@mui/material";
 
 export const Messenger = ({}) => {
-  const [showNotice, setShowNotice] = useState(["statele"]);
+  const [showNotice, setShowNotice] = useState(["deutschlandle"]);
   let mobile = useMediaQuery(`(max-width: 662px)`);
 
   const config = {
-    url: "https://outflux.net/statele/",
-    msg: "New game type feed - ",
-    msg2: "Leaderboard updated",
-    msg3: "My Stats updated",
-    tagText: "Statele",
+    url: "https://deutschlandle.vercel.app",
+    msg: "New game type, ",
+    tagText: "Deutschlandle",
   };
 
   return (
@@ -25,25 +23,23 @@ export const Messenger = ({}) => {
     >
       <Alert
         sx={{
-          display: showNotice.indexOf("statele") !== -1 ? "flex" : "none",
+          display: showNotice.indexOf("deutschlandle") !== -1 ? "flex" : "none",
         }}
         onClose={() => {
-          let newList = showNotice.filter((notice) => notice != "statele");
+          let newList = showNotice.filter(
+            (notice) => notice != "deutschlandle"
+          );
           setShowNotice(newList);
         }}
         variant="filled"
-        severity="success"
+        severity="primary"
       >
         {config.msg}
         &nbsp;
         <a href={config.url} target="_blank">
           {config.tagText}
         </a>
-        &nbsp;! &nbsp;
-        <br />
-        {config.msg2}
-        <br />
-        {config.msg3}
+        &nbsp;!
       </Alert>
     </Box>
   );

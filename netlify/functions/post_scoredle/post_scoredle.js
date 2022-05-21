@@ -24,6 +24,8 @@ const postScoredle = async (db, document) => {
           state: document.state ?? "",
           statele: document.statele ?? "",
           state_svg: document.state_svg ?? "",
+          de_state: document.de_state ?? "",
+          de_svg: document.de_svg ?? "",
         },
       },
       {

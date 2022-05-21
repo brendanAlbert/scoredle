@@ -35,7 +35,7 @@ export default function ButtonAppBar({ toggleDrawer, toggleState }) {
                 alignItems: "center",
               }}
             >
-              {toggleState.word ? <WordleLogo /> : <WorldleLogo />}
+              {toggleState === "word" ? <WordleLogo /> : <WorldleLogo />}
             </Box>
 
             <Typography
