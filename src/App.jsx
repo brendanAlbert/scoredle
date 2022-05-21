@@ -4,10 +4,12 @@ import Navbar from "./components/Navbar/Navbar";
 import WordleFeed from "./components/Feed/WordleFeed";
 import WorldleFeed from "./components/Feed/WorldleFeed";
 import StateleFeed from "./components/Feed/StateleFeed";
+import DeutschlandleFeed from "./components/Feed/DeutschlandleFeed";
 import RightDrawer from "./components/Drawer/Drawer";
 import Modal from "./components/Modals/Modal";
 import WorldleModal from "./components/Modals/WorldleModal";
 import StateleModal from "./components/Modals/States/StateleModal";
+import DeutschlandleModal from "./components/Modals/Deutschlandle/DeutschlandleModal";
 import StatsModal from "./components/Stats/StatsModal";
 import CurateUsersModal from "./components/Modals/CurateUsersModal";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -28,6 +30,8 @@ function App() {
   const [modalOpenState, setmodalOpenState] = useState(false);
   const [worldleModalOpenState, setWorldleModalOpenState] = useState(false);
   const [stateleModalOpenState, setStateleModalOpenState] = useState(false);
+  const [deutschlandleModalOpenState, setDeutschlandleModalOpenState] =
+    useState(false);
   const [curateUserModalState, setCurateUserModalState] = useState(false);
   const [statsModalOpenState, setStatsModalOpenState] = useState(false);
   const [addSvgModalOpen, setaddSvgModalOpen] = useState(false);
@@ -41,11 +45,8 @@ function App() {
   const [wordleCardsLoaded, setWordleCardsLoaded] = useState(5);
   const [worldleCardsLoaded, setWorldleCardsLoaded] = useState(5);
   const [stateleCardsLoaded, setStateleCardsLoaded] = useState(5);
-  const [toggleState, setToggleState] = useState({
-    word: true,
-    world: false,
-    state: false,
-  });
+  const [deutschlandleCardsLoaded, setDeutschlandleCardsLoaded] = useState(5);
+  const [toggleState, setToggleState] = useState("word");
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -298,6 +299,52 @@ function App() {
     setScores(currentStateleScores);
   };
 
+  const handleDeutschlandleAddScore = (newScore) => {
+    const currentDeutschlandleScores = [...scores];
+    let index = currentDeutschlandleScores.findIndex(
+      (dateObject) => dateObject.date == new Date().toDateString()
+    );
+
+    let scoreExistsForThisUserIndex = currentDeutschlandleScores[
+      index
+    ].scores.findIndex(
+      (userScoreObject) => userScoreObject.name == newScore.name
+    );
+
+    if (scoreExistsForThisUserIndex > -1) {
+      currentDeutschlandleScores[index].scores[
+        scoreExistsForThisUserIndex
+      ].de_score = newScore.de_score;
+    } else {
+      let lastIndex = Math.max(
+        0,
+        currentDeutschlandleScores[index].scores.length
+      );
+      currentDeutschlandleScores[index].scores[lastIndex] = {
+        name: newScore.name,
+        de_score: newScore.de_score,
+      };
+    }
+
+    if (newScore.de_state) {
+      currentDeutschlandleScores[index].de_state = newScore.de_state;
+    }
+
+    if (newScore.de_svg) {
+      currentDeutschlandleScores[index].de_svg = newScore.de_svg;
+    }
+
+    if (
+      currentDeutschlandleScores[index].de_state == "" &&
+      newScore.de_state != ""
+    ) {
+      currentDeutschlandleScores[index].de_state = newScore.de_state;
+    }
+
+    persistScoredles(currentDeutschlandleScores[index]);
+    setScores(currentDeutschlandleScores);
+  };
+
   const filteredWordleScores = useMemo(() => {
     let sortedScoredleDateObjectsArray = scores?.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
@@ -366,23 +413,47 @@ function App() {
     return shorterStateleList;
   }, [scores, dontShowUsersList, stateleCardsLoaded]);
 
+  const filteredDeutschlandleScores = useMemo(() => {
+    let sortedScoredleDateObjectsArray = scores?.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    let filtered = sortedScoredleDateObjectsArray?.map((dateObject) => {
+      let filteredScores = dateObject?.scores?.filter((scoreUser) => {
+        return !dontShowUsersList?.some((dsu) => dsu == scoreUser.name);
+      });
+
+      return {
+        date: dateObject.date,
+        scores: filteredScores,
+        de_svg: dateObject.de_svg,
+        de_state: dateObject.de_state,
+      };
+    });
+
+    let shorterGermanStateList = filtered.splice(0, deutschlandleCardsLoaded);
+
+    return shorterGermanStateList;
+  }, [scores, dontShowUsersList, deutschlandleCardsLoaded]);
+
   return (
     <>
       <Navbar toggleState={toggleState} toggleDrawer={toggleDrawer} />
 
-      {/* {!loading && <Messenger />} */}
+      {!loading && <Messenger />}
 
       <Iconbar
         loading={loading}
         toggleState={toggleState}
         setWorldleModalOpenState={setWorldleModalOpenState}
         setStateleModalOpenState={setStateleModalOpenState}
+        setDeutschlandleModalOpenState={setDeutschlandleModalOpenState}
         setaddSvgModalOpen={setaddSvgModalOpen}
         setLeaderboardModalOpen={setLeaderboardModalOpen}
         setmodalOpenState={setmodalOpenState}
       />
 
-      {toggleState.word && (
+      {toggleState === "word" && (
         <WordleFeed
           max={scores.length}
           filteredWordleScores={filteredWordleScores}
@@ -392,7 +463,7 @@ function App() {
         />
       )}
 
-      {toggleState.world && (
+      {toggleState === "world" && (
         <WorldleFeed
           max={scores.length}
           filteredWorldleScores={filteredWorldleScores}
@@ -402,13 +473,23 @@ function App() {
         />
       )}
 
-      {toggleState.state && (
+      {toggleState === "state" && (
         <StateleFeed
           max={scores.length}
           filteredStateleScores={filteredStateleScores}
           loading={loading}
           stateleCardsLoaded={stateleCardsLoaded}
           setStateleCardsLoaded={setStateleCardsLoaded}
+        />
+      )}
+
+      {toggleState === "germany" && (
+        <DeutschlandleFeed
+          max={scores.length}
+          filteredDeutschlandleScores={filteredDeutschlandleScores}
+          loading={loading}
+          deutschlandleCardsLoaded={deutschlandleCardsLoaded}
+          setDeutschlandleCardsLoaded={setDeutschlandleCardsLoaded}
         />
       )}
 
@@ -424,6 +505,7 @@ function App() {
         setaddSvgModalOpen={setaddSvgModalOpen}
         setfeaturesModalState={setfeaturesModalState}
         setStateleModalOpenState={setStateleModalOpenState}
+        setDeutschlandleModalOpenState={setDeutschlandleModalOpenState}
       />
 
       {modalOpenState && (
@@ -447,6 +529,14 @@ function App() {
           setStateleModalOpenState={setStateleModalOpenState}
           stateleModalOpenState={stateleModalOpenState}
           handleStateleAddScore={handleStateleAddScore}
+        />
+      )}
+
+      {deutschlandleModalOpenState && (
+        <DeutschlandleModal
+          setDeutschlandleModalOpenState={setDeutschlandleModalOpenState}
+          deutschlandleModalOpenState={deutschlandleModalOpenState}
+          handleDeutschlandleAddScore={handleDeutschlandleAddScore}
         />
       )}
 

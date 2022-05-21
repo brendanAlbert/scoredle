@@ -40,6 +40,14 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
     });
   }
 
+  if (calculateForGameType === "deutschlandle") {
+    dateObjectScoresArray?.forEach((userScoreObject, idx) => {
+      if (userScoreObject?.de_score) {
+        tieIndexList[userScoreObject?.de_score?.length - 1].push(idx);
+      }
+    });
+  }
+
   const LastRow = 5;
 
   for (let i = 0; i < 6; i++) {
@@ -70,6 +78,15 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
         calculateForGameType === "statele" &&
         i === LastRow &&
         dateObjectScoresArray[tieIndexList[i][0]].state_score[LastRow].filter(
+          (x) => x == 2
+        ).length !== 5
+      ) {
+        return null;
+      }
+      if (
+        calculateForGameType === "deutschlandle" &&
+        i === LastRow &&
+        dateObjectScoresArray[tieIndexList[i][0]].de_score[LastRow].filter(
           (x) => x == 2
         ).length !== 5
       ) {
@@ -110,6 +127,12 @@ const crownify = (dateObjectScoresArray, calculateForGameType) => {
         if (
           userScoreObj.state_score[LastRow].filter((x) => x == 2).length === 5
         ) {
+          gotItLastGuessList.push(userScoreObj);
+        }
+      }
+
+      if (calculateForGameType === "deutschlandle") {
+        if (userScoreObj.de_score[LastRow].filter((x) => x == 2).length === 5) {
           gotItLastGuessList.push(userScoreObj);
         }
       }

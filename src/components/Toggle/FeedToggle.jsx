@@ -5,6 +5,7 @@ import { Grid } from "@mui/material";
 import AbcIcon from "@mui/icons-material/Abc";
 import PublicIcon from "@mui/icons-material/Public";
 import { USAIcon } from "../../assets/icons/USAIcon";
+import { GermanyIcon } from "../../assets/icons/GermanyIcon";
 
 import { styled, Box } from "@mui/system";
 
@@ -14,53 +15,142 @@ export default function ToggleFeed({ toggleState, setToggleState }) {
   const [alignment, setAlignment] = useState(toggleState.word);
 
   useEffect(() => {
-    let option;
-    for (const [key, value] of Object.entries(toggleState)) {
-      if (value) {
-        option = key;
-      }
-    }
-    console.log({ toggleState, option });
-    setAlignment(option);
+    setAlignment(toggleState);
   }, []);
 
   const handleAlignment = (event, newAlignment) => {
-    console.log(newAlignment);
     setAlignment(newAlignment);
-
-    if (newAlignment === "word") {
-      setToggleState({
-        word: true,
-        world: false,
-        state: false,
-      });
-    }
-    if (newAlignment === "world") {
-      setToggleState({
-        word: false,
-        world: true,
-        state: false,
-      });
-    }
-    if (newAlignment === "state") {
-      setToggleState({
-        word: false,
-        world: false,
-        state: true,
-      });
-    }
+    setToggleState(newAlignment);
   };
 
   const WLetterBox = styled("span")({
-    fontSize: toggleState.word ? "10px" : "6px",
-    padding: toggleState.word ? "2px 4px" : "1px 2px",
+    fontSize: "16px",
+    padding: "2px 4px",
     fontWeight: 600,
     marginRight: "2px",
   });
 
+  const wordle = (
+    <span>
+      <WLetterBox
+        sx={{
+          backgroundColor: colors[Math.floor(Math.random() * 3)],
+        }}
+      >
+        W
+      </WLetterBox>
+      <WLetterBox
+        sx={{
+          backgroundColor: colors[Math.floor(Math.random() * 3)],
+        }}
+      >
+        O
+      </WLetterBox>
+      <WLetterBox
+        sx={{
+          backgroundColor: colors[Math.floor(Math.random() * 3)],
+        }}
+      >
+        R
+      </WLetterBox>
+      <WLetterBox
+        sx={{
+          backgroundColor: colors[Math.floor(Math.random() * 3)],
+        }}
+      >
+        D
+      </WLetterBox>
+      <WLetterBox
+        sx={{
+          backgroundColor: colors[Math.floor(Math.random() * 3)],
+        }}
+      >
+        L
+      </WLetterBox>
+      <WLetterBox
+        sx={{
+          backgroundColor: colors[Math.floor(Math.random() * 3)],
+        }}
+      >
+        E
+      </WLetterBox>
+    </span>
+  );
+
+  const worldle = (
+    <span
+      style={{
+        color: "#FFF",
+        fontSize: "22px",
+        fontWeight: 700,
+        paddingTop: "6px",
+        paddingLeft: "6px",
+        paddingRight: "6px",
+      }}
+    >
+      WOR
+      <span style={{ color: "green" }}>L</span>DLE
+    </span>
+  );
+
+  const statele = (
+    <span
+      style={{
+        color: "#FFF",
+        fontSize: "22px",
+        fontWeight: 700,
+        paddingTop: "6px",
+        paddingLeft: "6px",
+      }}
+    >
+      <span style={{ color: "green" }}>STATE</span>LE
+    </span>
+  );
+
+  const deutschlandle = (
+    <span>
+      <span
+        style={{
+          fontSize: "22px",
+          color: "#111",
+          textShadow: "1px 1px 0 #000",
+        }}
+      >
+        Deut
+      </span>
+      <span
+        style={{
+          fontSize: "22px",
+          color: "#e74c3c",
+          textShadow: "1px 1px 0 #000",
+        }}
+      >
+        sch
+      </span>
+      <span
+        style={{
+          fontSize: "22px",
+          color: "#f1c40f",
+          textShadow: "1px 1px 0 #000",
+        }}
+      >
+        lan
+      </span>
+      <span
+        style={{
+          fontSize: "22px",
+          color: "green",
+          textShadow: "1px 1px 0 #000",
+        }}
+      >
+        dle
+      </span>
+    </span>
+  );
+
   return (
     <>
-      <Grid container sx={{ maxWidth: "300px" }}>
+      <Grid container sx={{ maxWidth: "270px" }}>
         <Grid
           item
           xs={12}
@@ -68,7 +158,7 @@ export default function ToggleFeed({ toggleState, setToggleState }) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: "18px",
+            paddingTop: "6px",
           }}
         >
           <Box
@@ -76,89 +166,23 @@ export default function ToggleFeed({ toggleState, setToggleState }) {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              minHeight: "40.5px",
             }}
           >
-            <span
-              style={{
-                paddingRight: "6px",
-                marginBottom: toggleState.word ? "3.25px" : "2px",
-              }}
-            >
-              <WLetterBox
-                sx={{
-                  backgroundColor: colors[Math.floor(Math.random() * 3)],
-                }}
-              >
-                W
-              </WLetterBox>
-              <WLetterBox
-                sx={{
-                  backgroundColor: colors[Math.floor(Math.random() * 3)],
-                }}
-              >
-                O
-              </WLetterBox>
-              <WLetterBox
-                sx={{
-                  backgroundColor: colors[Math.floor(Math.random() * 3)],
-                }}
-              >
-                R
-              </WLetterBox>
-              <WLetterBox
-                sx={{
-                  backgroundColor: colors[Math.floor(Math.random() * 3)],
-                }}
-              >
-                D
-              </WLetterBox>
-              <WLetterBox
-                sx={{
-                  backgroundColor: colors[Math.floor(Math.random() * 3)],
-                }}
-              >
-                L
-              </WLetterBox>
-              <WLetterBox
-                sx={{
-                  backgroundColor: colors[Math.floor(Math.random() * 3)],
-                }}
-              >
-                E
-              </WLetterBox>
-            </span>
-            /
-            <span
-              style={{
-                color: toggleState.world ? "#FFF" : "#999",
-                fontSize: toggleState.world ? "14px" : "10px",
-                fontWeight: toggleState.world ? 700 : 400,
-                paddingTop: "6px",
-                paddingLeft: "6px",
-                paddingRight: "6px",
-              }}
-            >
-              WOR
-              <span style={{ color: "green" }}>L</span>DLE
-            </span>{" "}
-            /
-            <span
-              style={{
-                color: toggleState.state ? "#FFF" : "#999",
-                fontSize: toggleState.state ? "14px" : "10px",
-                fontWeight: toggleState.state ? 700 : 400,
-                paddingTop: "6px",
-                paddingLeft: "6px",
-              }}
-            >
-              <span style={{ color: "green" }}>STATE</span>LE
-            </span>{" "}
+            {alignment === "word" && wordle}
+
+            {alignment === "world" && worldle}
+
+            {alignment === "state" && statele}
+
+            {alignment === "germany" && deutschlandle}
           </Box>
         </Grid>
         <Grid item xs={12}>
           <ToggleButtonGroup
             value={alignment}
             exclusive
+            orientation="horizontal"
             onChange={handleAlignment}
             aria-label="text alignment"
             sx={{
@@ -177,9 +201,9 @@ export default function ToggleFeed({ toggleState, setToggleState }) {
             <ToggleButton value="state" aria-label="right aligned">
               <USAIcon />
             </ToggleButton>
-            {/* <ToggleButton value="justify" aria-label="justified" disabled>
-      <FormatAlignJustifyIcon />
-    </ToggleButton> */}
+            <ToggleButton value="germany" aria-label="germany icon">
+              <GermanyIcon />
+            </ToggleButton>
           </ToggleButtonGroup>
         </Grid>
       </Grid>

@@ -34,6 +34,16 @@ function Card({ crowned, userScoresObject, toggleState }) {
         : userScoresObject?.state_score?.length;
   }
 
+  if (toggleState === "germany" && userScoresObject?.de_score?.length > 0) {
+    length =
+      userScoresObject?.de_score?.length < 6
+        ? userScoresObject?.de_score?.length
+        : userScoresObject?.de_score[5].includes(0) ||
+          userScoresObject?.de_score[5].includes(1)
+        ? "X"
+        : userScoresObject?.de_score?.length;
+  }
+
   const ratio = `${length} / 6`;
 
   let name =
@@ -60,8 +70,10 @@ function Card({ crowned, userScoresObject, toggleState }) {
             <ScoreGrid score={userScoresObject.score} />
           ) : toggleState === "world" ? (
             <WorldleScoreGrid worldleScore={userScoresObject.worldleScore} />
-          ) : (
+          ) : toggleState === "state" ? (
             <WorldleScoreGrid worldleScore={userScoresObject.state_score} />
+          ) : (
+            <WorldleScoreGrid worldleScore={userScoresObject.de_score} />
           )}
         </div>
         <div>{ratio}</div>

@@ -11,8 +11,6 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import { useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Toggle from "../Toggle/Toggle";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import FeedToggle from "../Toggle/FeedToggle";
 import { Typography } from "@mui/material";
@@ -23,11 +21,11 @@ export default function RightDrawer({
   setmodalOpenState,
   setWorldleModalOpenState,
   setStateleModalOpenState,
+  setDeutschlandleModalOpenState,
   setCurateUserModalState,
   setStatsModalOpenState,
   toggleState,
   setToggleState,
-  setaddSvgModalOpen,
   setfeaturesModalState,
 }) {
   const DRAWER_DIRECTION_FROM_RIGHT = "right";
@@ -46,6 +44,10 @@ export default function RightDrawer({
     setStateleModalOpenState(true);
   };
 
+  const openDeutschlandleModal = () => {
+    setDeutschlandleModalOpenState(true);
+  };
+
   const openCurateUsersModal = () => {
     setCurateUserModalState(true);
   };
@@ -53,12 +55,6 @@ export default function RightDrawer({
   const openStatsModal = () => {
     setStatsModalOpenState(true);
   };
-
-  const openAddCountryModal = () => {
-    setaddSvgModalOpen(true);
-  };
-
-  const setLeaderboardModalOpen = () => {};
 
   const openFeaturesModal = () => {
     setfeaturesModalState(true);
@@ -69,18 +65,6 @@ export default function RightDrawer({
       mode: "dark",
     },
   });
-
-  const toggleList = () => (
-    <Box
-      sx={{ width: 250 }}
-      role="presentation"
-      onKeyDown={toggleDrawer(false)}
-    >
-      <List>
-        <Toggle toggleState={toggleState} setToggleState={setToggleState} />
-      </List>
-    </Box>
-  );
 
   const handleLogout = () => {
     let result = confirm("are you sure you want to logout ?");
@@ -123,14 +107,17 @@ export default function RightDrawer({
             <ListItem
               button
               onClick={() => {
-                if (toggleState.word) {
+                if (toggleState === "word") {
                   openWordleModal();
                 }
-                if (toggleState.world) {
+                if (toggleState === "world") {
                   openWorldleModal();
                 }
-                if (toggleState.state) {
+                if (toggleState === "state") {
                   openStateleModal();
+                }
+                if (toggleState === "germany") {
+                  openDeutschlandleModal();
                 }
               }}
               key={"Add Score"}
@@ -161,15 +148,6 @@ export default function RightDrawer({
               </ListItemIcon>
               <ListItemText>Log out</ListItemText>
             </ListItem>
-
-            {/* {user?.given_name && user?.given_name === "Brendan" && (
-              <ListItem button onClick={() => openAddCountryModal()}>
-                <ListItemIcon>
-                  <AddPhotoAlternateIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Add Place Svg"} />
-              </ListItem>
-            )} */}
           </>
         )}
       </List>
@@ -184,7 +162,6 @@ export default function RightDrawer({
           open={drawerOpenState}
           onClose={toggleDrawer(false)}
         >
-          {/* {toggleList()} */}
           <Box
             sx={{
               height: "95%",
@@ -202,7 +179,8 @@ export default function RightDrawer({
             </Box>
             <Box sx={{ maxWidth: "180px", margin: "0 auto" }}>
               <Typography color="#999" fontSize="12px">
-                Usa by Setyo Ari Wibowo from NounProject.com
+                Usa by Setyo Ari Wibowo; Germany by Bence Bezeredy from
+                NounProject.com
               </Typography>
             </Box>
           </Box>
