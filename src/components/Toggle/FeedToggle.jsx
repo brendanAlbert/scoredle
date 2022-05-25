@@ -12,15 +12,17 @@ import { styled, Box } from "@mui/system";
 const colors = ["#2ECC71", "#F1C40F", "#7F8C8D"];
 
 export default function ToggleFeed({ toggleState, setToggleState }) {
-  const [alignment, setAlignment] = useState(toggleState.word);
+  const [alignment, setAlignment] = useState(toggleState);
 
   useEffect(() => {
     setAlignment(toggleState);
   }, []);
 
-  const handleAlignment = (event, newAlignment) => {
-    setAlignment(newAlignment);
-    setToggleState(newAlignment);
+  const handleAlignment = (_event, newAlignment) => {
+    if (newAlignment) {
+      setAlignment(newAlignment);
+      setToggleState(newAlignment);
+    }
   };
 
   const WLetterBox = styled("span")({

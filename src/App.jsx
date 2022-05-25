@@ -440,7 +440,7 @@ function App() {
     <>
       <Navbar toggleState={toggleState} toggleDrawer={toggleDrawer} />
 
-      {!loading && <Messenger />}
+      {/* {!loading && <Messenger />} */}
 
       <Iconbar
         loading={loading}
