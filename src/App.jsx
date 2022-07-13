@@ -80,7 +80,7 @@ function App() {
             wordle: "",
             worldle: "",
           };
-          setScores([newWordleDateObject]);
+          setScores([...scoredleData, newWordleDateObject]);
           persistScoredles(newWordleDateObject);
           setLoading(false);
         }
@@ -90,10 +90,21 @@ function App() {
   };
 
   const persistScoredles = async (newScoredleDateObject) => {
+    const dtoUser = user?.given_name || import.meta.env.VITE_USER;
+
     let dataTransferScoredleObject = {
-      ...newScoredleDateObject,
-      user: user?.given_name || import.meta.env.VITE_USER,
+      date: newScoredleDateObject.date,
+      scores: newScoredleDateObject.scores,
+      user: dtoUser,
     };
+
+    if (dtoUser === import.meta.env.VITE_ADMIN) {
+      dataTransferScoredleObject = {
+        ...dataTransferScoredleObject,
+        ...newScoredleDateObject,
+      };
+    }
+
     await fetch(postScoredleUrl, {
       method: "POST",
       body: JSON.stringify(dataTransferScoredleObject),

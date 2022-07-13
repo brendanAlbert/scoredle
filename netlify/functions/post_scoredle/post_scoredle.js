@@ -6,43 +6,86 @@ const errorLogCollection = process.env.ERROR_LOG_COLLECTION;
 const dbname = process.env.MONGO_DB_NAME;
 const env = process.env.VITE_NODE_ENV;
 const localDbUri = process.env.LOCAL_JSON_DB;
+const admin = process.env.VITE_ADMIN;
 
 const postScoredle = async (db, document) => {
-  let result = await db
+  let result;
+  if (document.user === admin) {
+    result = await db
+      .collection(env === "prod" ? collectionname : stagingCollectionName)
+      .updateOne(
+        { date: document.date },
+        {
+          $set: {
+            worldle: document.worldle ?? "",
+            wordle: document.wordle ?? "",
+            word: document.word ?? "",
+            svg: document.svg ?? "",
+            country: document.country ?? "",
+            region: document.region ?? "",
+            state: document.state ?? "",
+            statele: document.statele ?? "",
+            state_svg: document.state_svg ?? "",
+            de_state: document.de_state ?? "",
+            de_svg: document.de_svg ?? "",
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
+  }
+
+  const user = document.user;
+
+  let userScoreObject = document.scores?.filter((uso) => uso.name === user)[0];
+
+  const todaysGamesObject = await db
+    .collection(env === "prod" ? collectionname : stagingCollectionName)
+    .findOne({ date: document.date });
+
+  const { scores: latestScoresFromDB } = todaysGamesObject ?? {};
+
+  const filteredUserScoreObjFromDB = latestScoresFromDB?.filter(
+    (s) => s.name === user
+  )[0];
+
+  const newUserScoreObj = {
+    ...filteredUserScoreObjFromDB,
+    ...userScoreObject,
+  };
+
+  const scoresSansUsersObjList = latestScoresFromDB?.filter(
+    (s) => s.name !== user
+  );
+
+  const newScores =
+    Object.keys(newUserScoreObj).length > 0
+      ? [...(scoresSansUsersObjList ?? []), newUserScoreObj]
+      : [];
+
+  let result2 = await db
     .collection(env === "prod" ? collectionname : stagingCollectionName)
     .updateOne(
       { date: document.date },
       {
         $set: {
-          scores: document.scores,
-          worldle: document.worldle ?? "",
-          wordle: document.wordle ?? "",
-          word: document.word ?? "",
-          svg: document.svg ?? "",
-          country: document.country ?? "",
-          region: document.region ?? "",
-          state: document.state ?? "",
-          statele: document.statele ?? "",
-          state_svg: document.state_svg ?? "",
-          de_state: document.de_state ?? "",
-          de_svg: document.de_svg ?? "",
+          scores: newScores,
         },
       },
-      {
-        upsert: true,
-      }
+      { upsert: true }
     );
 
   let year_month = new Date().getFullYear() + "/" + (new Date().getMonth() + 1);
 
-  let errorLogResult = await db.collection(errorLogCollection).updateOne(
+  await db.collection(errorLogCollection).updateOne(
     { year_month: year_month },
     {
       $push: {
         logs: {
           entry: `${document.user} ~ [${new Date()}] - ${JSON.stringify(
             result
-          )} ${JSON.stringify(document)}`,
+          )} | ${JSON.stringify(result2)} | ${JSON.stringify(document)}`,
         },
       },
     },
