@@ -52,7 +52,7 @@ const yellowbox = "🟨";
 const greenbox = "🟩";
 
 const errorMsgDict = {
-  0: "woops! this is for Statele",
+  0: "woops! this is for Statele, not ",
   1: "woops! make sure to paste a valid format",
 };
 
@@ -63,6 +63,7 @@ export default function StateleModal({
 }) {
   const { user } = useAuth0();
   const [score, setLocalScore] = useState("");
+  const [errorGameType, setErrorGameType] = useState("");
   const [error, setError] = useState(false);
   const [errorNumber, setErrorNumber] = useState(-1);
 
@@ -71,9 +72,11 @@ export default function StateleModal({
   };
 
   const handleClick = () => {
-    if (score.match(/worl?dle/gi)) {
+    const errMatch = score.match(/worl?dle|🇩🇪/gi);
+    if (errMatch) {
       setError(true);
       setErrorNumber(0);
+      setErrorGameType(errMatch[0]);
       return;
     }
 
@@ -190,7 +193,7 @@ export default function StateleModal({
               color: `#ff0000${error ? "ff" : "00"}`,
             }}
           >
-            {errorMsgDict[errorNumber]}
+            {errorMsgDict[errorNumber] + errorGameType}
           </p>
           <DropZone
             setScore={setLocalScore}
