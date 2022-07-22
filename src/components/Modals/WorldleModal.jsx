@@ -53,6 +53,8 @@ const greenbox = "🟩";
 const errorMsgDict = {
   0: "woops! this is for Worldle, not Wordle",
   1: "woops! make sure to paste a valid format",
+  2: "woops! this is for Worldle, not Statele",
+  3: "woops! this is for Worldle, not 🇩🇪le",
 };
 
 export default function WorldleModal({
@@ -73,6 +75,14 @@ export default function WorldleModal({
     if (score.includes("Wordle")) {
       setError(true);
       setErrorNumber(0);
+      return;
+    } else if (score.includes("Statele")) {
+      setError(true);
+      setErrorNumber(2);
+      return;
+    } else if (score.includes("🇩🇪")) {
+      setError(true);
+      setErrorNumber(3);
       return;
     }
 
